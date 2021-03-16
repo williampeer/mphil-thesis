@@ -1,0 +1,85 @@
+%%%%%%%%%%%%%%%%%%%%%%%%
+% Sample use of the infthesis class to prepare an MSc thesis.
+% This can be used as a template to produce your own thesis.
+% Date: June 2019
+%
+%
+% The first line specifies style options for taught MSc.
+% You should add a final option specifying your degree.
+% *Do not* change or add any other options.
+%
+% So, pick one of the following:
+% \documentclass[msc,deptreport,adi]{infthesis}     % Adv Design Inf
+% \documentclass[msc,deptreport,ai]{infthesis}      % AI
+% \documentclass[msc,deptreport,cogsci]{infthesis}  % Cognitive Sci
+% \documentclass[msc,deptreport,cs]{infthesis}      % Computer Sci
+% \documentclass[msc,deptreport,cyber]{infthesis}   % Cyber Sec
+% \documentclass[msc,deptreport,datasci]{infthesis} % Data Sci
+% \documentclass[msc,deptreport,di]{infthesis}      % Design Inf
+% \documentclass[msc,deptreport,inf]{infthesis}     % Informatics
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[phd,deptreport,ai]{infthesis} % Do not change except to add your degree (see above).
+
+\begin{document}
+\begin{preliminary}
+
+\title{Spiking neural network model construction, inference, analysis and application}
+
+\author{William Peer Berg}
+
+\abstract{
+  Lorem ipsum. More computational power. More data, and higher res. data available. Modelling may (1) explain aspects about recorded site(s), and (2) generate hypotheses that may be tested with in vivo recording.
+  However, inference of high-dimensional biologically realistic (to some extent) models NP-hard, computationally costly, does not scale well with growing resolution due to dimensionality and cost, and not automated. Often experts are required to make an effort at hand-engineering models for particular data. As such, model inference of biologically realistic/plausible models is a highly challenging task, which if more automated might be of great benefit to the field of computational neuroscience.
+  Looking to machine learning and the success in applying gradient-based optimisation to tackle high-dimensional modelling problems, we here investigate the potential of applying this to the class of spiking neural network models. Further, we look at statistical assessment methods, and application of outlined methodology both to synthetically generated as well as biologically recorded in vivo data.
+  In sum, our results show that models may capture higher-order statistics of recorded nuclei, and that using some parallelisation tricks, we may decrease the computational cost to some extent. However, the lower bound on computational complexity still makes it challenging to apply the outlined methodology to very rich (i.e. high number of recorded nuclei) data sets.
+}
+
+\maketitle
+
+\section*{Acknowledgements}
+Arno.
+Nina.
+Patricia.
+Luke.
+Matthias.
+Shuzo.
+
+\tableofcontents
+\end{preliminary}
+
+
+\chapter{Introduction}
+
+
+% The report then contains a bibliography and any appendices, which may go beyond
+% page~40. The appendices are only for any supporting material that's important to
+% go on record. However, you cannot assume markers of dissertations will read them.
+
+% Citations (such as \cite{P1} or \cite{P2}) can be generated using
+% \texttt{BibTeX}. For more advanced usage, the \texttt{natbib} package is
+% recommended. You could also consider the newer \texttt{biblatex} system.
+
+% You may not change the dissertation format (e.g., reduce the font
+% size, change the margins, or reduce the line spacing from the default
+% 1.5 spacing). Over length or incorrectly-formatted dissertations will
+% not be accepted and you would have to modify your dissertation and
+% resubmit.  You cannot assume we will check your submission before the
+% final deadline and if it requires resubmission after the deadline to
+% conform to the page and style requirements you will be subject to the
+% usual late penalties based on your final submission time.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+%% You can include appendices like this:
+% \appendix
+% 
+% \chapter{First appendix}
+% 
+% \section{First section}
+% 
+% Markers do not have to consider appendices. Make sure that your contributions
+% are made clear in the main body of the dissertation (within the page limit).
+
+\end{document}
