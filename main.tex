@@ -98,10 +98,22 @@ Due largely to the biological plausibility of this class of neural network model
 However, training SNNs is yet of limited success, and model inference also faces a number of challenges due to the temporal constraints introduced by SNNs, as well as the increased complexity of this model class.
 We here revisit the state-of-the art for inferring SNN models using both surrogate gradient based optimisation and some of the most prominent spike metrics, as well as deep neural network amortized learning and approximate Bayesian computation (ABC), and compare how these approaches may be employed for SNN inference. Further, we hypothesise that recent ML techniques may be leveraged for successful and efficient model inference using surrogate gradient descent.
 We find that while ABC may be successful for population-level models, as has been shown recently in the literature, its algorithmic and computational complexity and cost thereof limits the methodology to a low number of nodes, particularly for more high-dimensional leaky integrate-and-fire (LIF) model extensions.
-However, using a surrogate gradient approach, we find that model inference for larger networks is made possible. We perform model inference using a set of LIF-extensions, leading up to the GLIF model using (both) synthetic (and biological) data, and demonstrate that higher order statistics may be captured (to some extent) even when performing neuron-level model inference over a mixed neuron-type network.
-This may advance research on SNN inference, and also demonstrates how modern ML frameworks as well as techniques may be leveraged to this end.
+However, using a surrogate gradient approach, we find that model inference for larger networks is made possible. 
+Since it would greatly help with SNN model construction if automatic inference based on various data became possible and available to the research community, this has been one of my primary research goals.
+Further, as usual, more and more data, and data of a higher resolution, is becoming available from neural brain recordings, only increasing the potential benefits of developing a scalable approach for model inference.
+We perform model inference using a set of LIF-extensions, leading up to the GLIF model using (both) synthetic (and biological) data, and demonstrate that higher order statistics may be captured (to some extent) even when performing neuron-level model inference over a mixed neuron-type network.
+% This may advance research on SNN inference, and also demonstrates how modern ML frameworks as well as techniques may be leveraged to this end.
+However, we observe that it is highly problematic to aim for retrieving ground-truth parameters in SNN models. A large part of the work presented in this thesis will revolve around why SNNs do not lend themselves as well as feedforward neural networks as within deep learning, even though they also implement a type of recurrence using recurrent units with memory, in addition to potential recurrent connectedness.
+To try and give an intuition about why this is; if we think about deep neural networks (DNNs) in the machine learning (ML) domain - these may approximate arbitrary data well, given that they are universal function approximators. However, this requires that the data is of such a format that it may be represented and captured by a function which the network learns by spatial representation and transformation.
+However, in the domain of SNNs, we introduce several new crucial properties, which results in distinct model dynamics. Each neuron now has a state, which depends on its previous state, and the behaviour is modelled typically as a system of ordinary differential equations (ODEs), containing parameters representing the membrane potential, membrane time constant relating to a refractory period, transmitter interaction, and other biological properties. 
+While this makes the model biologically interpretable with direct parallels between parameters and biological and cellular counterparts, it also changes the entire system's behaviour.
+The system now has activity inedpendently of input perturbation. The transformation of an input signal is no longer deterministic in the sense that it will result in one given output given a set of initial model parameters - it now depends on the current system's state, which again depends on the previous state.
+As such, gradients calculated in a manner similar to that of for DNNs in ML will also depend on the system's and neurons' state, greatly increasing complexity.
+In a way, one may still maintain the parallel to backpropagation through time for DNNs - however, there is a crucial difference in that a neuron's output is now of a much more binary nature; a spike or no spike, and in that the time series evolution of spikes, whilst potentially encoding much more information, now is a series of spike evolving over time, and thus the target signal cannot be regarded in the same way as in DNNs.
+This being said, I believe like noted by other authors such as \cite{Sindaci2018StatisticalFunction} that researchers are looking for a connection between the field of machine learning and computational neuroscience, the former having had its subfield of DNNs created based on inspiration from the brain, but now in a reverse way in which we may leverage the advances from the domain of ML in model construction.
+Even though we are not there yet, I believe the search for a connection here may both be highly beneficial for the community, and spawn a new sub-field of dynamical systems modelling using inference in computational neuroscience.
 
-Main findings summary:
+My main findings, although included throughout in the rest of my thesis, may be summarised as following:
 \subsection{SNNs are hard to optimise}
 I am starting to believe that they’re in fact not possible to optimise, due to the parameter landscape, which results from the temporal nature of the target signal.
 In DNNs, we only consider approximating a spatial transformation over the input data. Not only does this allow for higher parallelisation of the training algorithm, but it may also greatly constrain the parameter landscape in the sense that it does not depend on the past activity of the network itself, which vastly increases both the complexity and stochasticity of parameter inference. 
@@ -128,25 +140,85 @@ Temmporary conclusion:
 If this approach is intractable for the case we’re looking at, the best we may do is either to use other information theoretic approaches to assess whichever aspect it is that we are interested in, including potentially to hand-engineer and rigorously test a proposed model.
 
 
+\chapter{Spiking neural network models}
 
-\chapter{Background}
+\section{Models}
 
-% 1: Something you can learn about network, but also should be specific to a spiking net
-% Want to find something only in SNN, but which is also identifiable
-% Don’t need to find exact same sync act., not same identities of neurons which participate, just general properties, in spite of unknown input activity
+\subsection{LIF}
 
-% No model inputs
-% We can say something about the state - or if we can: Could this be used to constrain parameter search? Could it make the van Rossum distance better than the mean firing rate distance?
+\subsection{GLIF}
 
-Include LIF paper draft and report.
+\subsection{Izhikevich}
+\subsubsection{Contribution: Izhikevich recovery variables work (?)}
 
-\includepdf[pages=-]{files/icml2021_draft_snn_inference.pdf}
+\subsection{GIF}
 
-\cite{Lueckmann2018} amortised learning and ABC using DNNs.
+\subsection{NLIF}
 
+
+\section{The link to recurrent neural networks}
+
+
+\section{Optimisation}
 \cite{Taherkhani2020} learning in SNNs
 
+\subsection{Contribution: PyTorch}
+
+\subsection{Contribution: Batching and SNNs}
+
+\subsection{Contribution: Loss metrics comparison}
+
+\subsection{Contribution: LIF paper}
+% \includepdf[pages=-]{files/icml2021_draft_snn_inference.pdf}
+
+\subsection{Contribution: Stochasticity and SNNs}
+
+\subsection{Contribution: NLIF work}
+
+\subsection{Contribution: microGIF work}
+
+
+\section{Bayesian approaches}
+
+\subsection{MCMC sampling}
 \cite{Rene2020} "special case" i.e. mesoscopic-microscopic inference using first ABC (or GD?) on pop. level and then MCMC sampling for full approx. posterior?
+
+\subsection{Amortised learning with DNNs}
+\cite{Lueckmann2018} amortised learning and ABC using DNNs.
+
+% \section{Evolutionary algorithms}
+
+
+\section{Analysing SNNs}
+
+\subsection{NMF}
+
+\subsection{LDA}
+
+\subsection{Generalised Linear Models}
+
+
+
+\chapter{Sleep regulation in the rodent brainstem}
+
+My initial research proposal outlines a research project where the goal is to meet research needs within the field of sleep regulation through computational modelling.
+More specifically, the aspiration was to model neurons of the pedunculopontine and laterodorsal tegmental areas within the brainstem during different brain states, based on their neuroanatomy as described, even though scarcely, within the literature, and based on in vivo data from these brain areas \cite{Herice2019c, Tsunematsu2019, Pal2007, Martinez-Gonzalez2011, Fraigne2015}.
+Further, an overarching research goal was to be able to capture the emergence of neural ensembles as identified in vivo in the model by using non-negative matrix factorisation (NMF) \cite{Seung1999, Seung2001, Onken2016a}.
+Computational modelling and spiking neural network (SNN) inference covers several research needs within the field of sleep research and the synthesis of neuroscience and its computational counterpart in that it addresses model scarcity, as well as a methodology for accelerating modelling by inference through gradient-based optimisation \cite{Herice2019c, Huh2017, Taherkhani2020}.
+This was the foundation for sparking my interest in a methodological project in which we seek to automate biologically relevant neural network model inference, and more specifically to research both (1) the current state-of-the-art on SNN inference, and (2) leveraging ML based methods of gradient descent and optimisation for SNN inference \cite{Huh2017, Mostafa2020, Tavanaei2019b, Lee2016}.
+
+\section{Analysis of data}
+
+\section{Inference}
+
+\subsection{GBO}
+
+\subsection{ABC}
+
+\subsection{Comparison and conclusion}
+
+
+
 
 
 \bibliographystyle{plain}
