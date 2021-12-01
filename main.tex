@@ -135,17 +135,19 @@ In a way, one may still maintain the parallel to backpropagation through time fo
 This being said, I believe like noted by other authors such as \cite{Sindaci2018StatisticalFunction} that researchers are looking for a connection between the field of machine learning and computational neuroscience, the former having had its subfield of DNNs created based on inspiration from the brain, but now in a reverse way in which we may leverage the advances from the domain of ML in model construction.
 Even though we are not there yet, I believe the search for a connection here may both be highly beneficial for the community, and spawn a new sub-field of dynamical systems modelling using inference in computational neuroscience.
 
-My main findings, although included throughout in the rest of my thesis, may be summarised as following:
+% My main findings, although included throughout in the rest of my thesis, may be summarised as following:
+Although SNN inference certainly would be of great value to the field, there are some key issues that I have identified and tried to address in my work, some of which are included in the subsections below.
+
 \subsection{SNNs are hard to optimise}
-I am starting to believe that they’re in fact not possible to optimise, due to the parameter landscape, which results from the temporal nature of the target signal.
+% I am starting to believe that they’re in fact not possible to optimise, due to the parameter landscape, which results from the temporal nature of the target signal.
 In DNNs, we only consider approximating a spatial transformation over the input data. Not only does this allow for higher parallelisation of the training algorithm, but it may also greatly constrain the parameter landscape in the sense that it does not depend on the past activity of the network itself, which vastly increases both the complexity and stochasticity of parameter inference. 
 One way to ameliorate this is to eliminate some of the stochasticity by making the neurons non-leaky. Since we may computationally set the system’s initial conditions and random seed, the following deterministic computations have little to no fluctuations, and with no leakage, gradient propagation may be computed exactly according to the error signal.
 
-\subsection{Another issue of SNNs is the binary output signal}
+\subsection{The binary nature of spiking}
 One way of addressing this issue is by incorporating the signal below spike-threshold, i.e. the membrane potential, and have this generate a signal inside of an active zone, such as when the potential is above 0. This is not entirely biologically unrealistic, …, and it offers the advantage of a continuous signal centred around potential (no pun intended) spike pulses, or action potentials. Note that it also provides a gradient signal for spike generation even when the potential may be below threshold, still making the excitation visible to the optimiser.
 This bears some resemblance to loss metrics such as the van Rossum distance, in which each spike pulse is convolved with an exponentially decaying kernel, such that we may operate over a smoother signal. However, this signal transformation transforms each spike pulse the same, rendering the sub-threshold gating synapse model a more fine-grained candidate, since it contains richer differentiable information, and not just spike-time information.
 
-\subsection{Multiple local minima - no well-defined global optimum}
+\subsection{The parameter landscape contains a frontier with local minima}
 Even when addressing the issues above with the proposed approaches, and even if fixing all model parameters but the weight matrices, there are multiple weight configurations that may result in very similar behaviour and outputs.
 As noted by other researchers in the DNN as well as SNN literature (...) the initial configuration has a large effect on the resulting inferred weights and/or model. This holds particularly true for SNNs, where the previous model state also has an effect on the future state, and the model neurons may be brought to exert different modes of behaviour, depending on the previous and current input and state.
 
@@ -205,33 +207,33 @@ They also made a quasi-renewal approximation, and assumed independence between n
 SNPE
 
 \section{Evolutionary algorithms}
-I recall back to conferences talking about inferring complex, deep networks, which is a field where evolutionary algorithms (EAs) still are competitive and fruitful.
+% I recall back to conferences talking about inferring complex, deep networks, which is a field where evolutionary algorithms (EAs) still are competitive and fruitful.
 In short, when EAs are fruitful, this often means the search space is so vast that gradient-based approaches will not converge.
+Even so, the computational cost is comparable, or even worse, than for ABC.
 
-let's forget about casting the spike trains into a euclidean space, and propagating gradients. let's relax this to defined operations where there is a cost assigned to each operation, such that there is a minimal distance between two spike trains. this should let us define operations for moving single spikes, and shifting spikes. however, in my case there is uncertainty involved, so we should define operations for matching motifs instead. this makes it unclear for polynomial-time DP for calculating the distance. i can do pattern identification according to pre-defined rules, which will be exponential over a constant bound such that for longer time-intervals, a greedy comparison should be polynomial.
-if we assume that parts cannot cross in graph-matching, however, it becomes polynomial for the full distance-calculation (for larger intervals)
+% let's forget about casting the spike trains into a euclidean space, and propagating gradients. let's relax this to defined operations where there is a cost assigned to each operation, such that there is a minimal distance between two spike trains. this should let us define operations for moving single spikes, and shifting spikes. however, in my case there is uncertainty involved, so we should define operations for matching motifs instead. this makes it unclear for polynomial-time DP for calculating the distance. i can do pattern identification according to pre-defined rules, which will be exponential over a constant bound such that for longer time-intervals, a greedy comparison should be polynomial.
+% if we assume that parts cannot cross in graph-matching, however, it becomes polynomial for the full distance-calculation (for larger intervals)
 
-sin (f(s)) + cos (g(s)) ?
-where f(s) = D\^spike[q, k]
-and g(s) = D\^interval[q, k]
-assume same labels?
-
-
---> However, does not converge well.
+% sin (f(s)) + cos (g(s)) ?
+% where f(s) = D\^spike[q, k]
+% and g(s) = D\^interval[q, k]
+% assume same labels?
+% --> However, does not converge well.
 
 
-\section{Analysing SNNs}
+\section{Evaluating SNN models}
 
-Not straightforward how to analyse... Should this be in background or later?
+Not straightforward how to analyse... 
+% Should this be in background or later?
 
 \subsection{NMF}
 
 \subsection{LDA}
 
-\subsection{Generalised Linear Models}
+\subsection{Baseline: Generalised Linear Models}
 
 
-\section{Models}
+\section{Model definitions}
 
 \subsection{LIF}
 
@@ -353,7 +355,8 @@ Tricky design, stochasticity, lots of considerations, as we shall see only front
 \subsubsection{van Rossum distance}
 Hypothesis: Using the van rossum distance may guide search, allowing gradient-based methods to converge?
 
-Using the van-rossum distance as a loss function for the spike trains, we get something more continuous, since the discrete spike train is convolved with a time-based kernel. This should make the gradients more informed via the loss function in larger search areas.
+Using the van-rossum distance as a loss function for the spike trains, we get something more continuous, since the discrete spike train is convolved with a time-based kernel. 
+This should make the gradients more informed via the loss function in larger search areas.
 
 Main finding: 
 "\textit{wandering gradients}" for vRD.
@@ -361,6 +364,7 @@ Main finding:
 One thing is quantifying distances in terms of spike metrics.
 Another is designing a metric that is well-defined for gradient-descent.
 While the van Rossum metric describes the distance between two spike trains both in terms of rates and timing, due to its sensitivity to exact timing the gradient signal might be obscured for non-matching neurons, and more well-defined where the rates better match.
+
 
 \section{Leaky integrate-and-fire (LIF)}
 
@@ -481,11 +485,11 @@ Auto-encoding task of own readout would make sense. However, we only have the bi
 Non-leaky integrate-and-fire (NLIF) model with subthreshold continuous spike signals defined to sum to 1 inside of an active zone \cite{Huh2017}.
 % With NIF neurons, one could analytically show/solve the systems and show where noise would render the loss function useless. However, unsure how to test this for spike output task. Could we use (Mostafa, 2018) combined with (Huh \& Sejnowski, 2017)? Or at least the latter?
 
-\subsection{Gated sub-threshold spike-signal model}
+\section{Gated sub-threshold spike-signal model}
 
-\subsection{Contribution: NLIF work}
+\section{Contribution: NLIF work}
 
-analog output - discrete pulses, and internal states
+analog output versus discrete pulses and latent internal states (??)
 research has been impeded by lack of supervised learning algorithms
 they present differentiable formulation of SNNs, with exact gradient calculation
 simple tasks
