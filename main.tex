@@ -34,7 +34,18 @@
 %   However, inference of high-dimensional biologically realistic (to some extent) models NP-hard, computationally costly, does not scale well with growing resolution due to dimensionality and cost, and not automated. Often experts are required to make an effort at hand-engineering models for particular data. As such, model inference of biologically realistic/plausible models is a highly challenging task, which if more automated might be of great benefit to the field of computational neuroscience.
 %   Looking to machine learning and the success in applying gradient-based optimisation to tackle high-dimensional modelling problems, we here investigate the potential of applying this to the class of spiking neural network models. Further, we look at statistical assessment methods, and application of outlined methodology both to synthetically generated as well as biologically recorded in vivo data.
 %   In sum, our results show that models may capture higher-order statistics of recorded nuclei, and that using some parallelisation tricks, we may decrease the computational cost to some extent. However, the lower bound on computational complexity still makes it challenging to apply the outlined methodology to very rich (i.e. high number of recorded nuclei) data sets.
-SNNs biologically realistic models. Do we have the tools for SNN parameter inference, instead of rigorous and tedious hand-engineering?
+
+% ======== Should be rewritten after main text completed. ============
+Computational models are used to try and explain observed data.
+By implementing models that replicate observed data, the model itself may explain why and how the modelled system behaves as it does, and what its function is.
+However, in order to be able to propose that the behaviour and functioning indeed arises due to mechanisms and dynamics similar to those in the model, the parallel between model properties and dynamics and in our case the brain and recorded nuclei needs to be firmly established.
+These are usually established by design, and verified by statistical comparisons over different metrics.
+However, to this day, constructing biologically interpretable and realistic models remains highly challenging, with no robust data driven approach working for other than very small networks.
+While there is significant ongoing research efforts in bridging data driven approaches with computational modelling, this remains an unsolved task for neuron-level resolution spiking neural networks with a scalable methodology.
+Currently, the most promising algorithm involves approximate Bayesian computation by training a deep neural network to approximate the posterior of the output (here spike trains) over the model parameters as the prior, and using simulation-based inference in order to generate samples, i.e. to simulate spike trains given a prior.
+As the reader may note from this, the approach does not scale well - but it does maintain a full posterior over the parameters, as they are sampled altogether.
+% SNNs biologically realistic models. 
+Do we have the tools for SNN parameter inference, instead of rigorous and tedious hand-engineering?
 ML advances: GBO.
 SNNs differ from RNNs in a fundamental/crucial way. Show via parameter landscape and loss functions.
 However, can find frontier(s).
@@ -62,12 +73,18 @@ BONUS3: ?
 \maketitle
 
 \section*{Acknowledgements}
-Arno.
-Nina.
-Patricia.
-Luke.
-Matthias.
-Shuzo.
+
+I would like to thank my supervisory team for offering their advice throughout my research.
+I would also like to thank members of my lab group whom offered invaluable support and advice on everything from my project work to mastering stress and finding a flat in Edinburgh.
+I also sincerely appreciated input relating to mathematics and philosophy from two special friends in Ediburgh whom are outside of my lab group - you know who you are.
+Lastly, I would like to sincerely thank the head of our collaborative lab at the University of Strathclyde whom gave me access to in vivo data from the brainstem that was analysed wrt sleep regulation. It was truly inspiring and exciting to be able to see their experimental lab from early on in my project work.
+
+% Nina.
+% Matthias.
+% Shuzo.
+% Luke.
+% Patricia.
+% Etienne.
 
 \tableofcontents
 \end{preliminary}
@@ -530,6 +547,12 @@ Can we say something about this Pareto-front with GD?
 When sampling from full posterior dist from a SBI posterior we get realistic data - when independently sampling from marginals we get unrealistic data. Flaw in model, and in assuming parameter independence.
 
 Both of these methodologies get at a reasonable frontier - however, learning in itself in the structures is something different, remaining a mystery.
+
+
+If only the temporal unfolding of spike events was done according to linear transformations, or in a ...
+It may be argued that under similar conditions, we may detect things such as spike correlations and phase-locking, which may indicate a clear function of the timing of spiking in information processing - however, it is difficult to design a loss metric that would well capture this in a differentiable manner.
+By correlation and number of mutations of the ordered spike train set, we can get closer to this - but such a metric would not be differentiable, nor would even such a metric be able to precisely measure whether one network is functionally equivalent to another.
+Part of the difficulty stems from that (1) there are multiple configurations which can produce similar spike patterns, and thus we may hypothesise that there is no "ground-truth" optimal solution per se, and (2) due to the multiple factors of stochasticity we cannot operate with precise spike train comparisons. These two points result in that currently the way of going about to analyse biologically realistic models are closer to the way we analyse recordings from the biological brain. As such, a bridge between inference methodologies such as the ones successfully employed in ML, and the field of computational modelling is needed.
 
 
 
