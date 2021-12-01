@@ -161,38 +161,10 @@ These findings suggest that the best we can currently do is using approximate Ba
 Temmporary conclusion:
 If this approach is intractable for the case we’re looking at, the best we may do is either to use other information theoretic approaches to assess whichever aspect it is that we are interested in, including potentially to hand-engineer and rigorously test a proposed model.
 
+% =======================================================
+\chapter{Background: Biologically plausible computational modeling}
 
-\chapter{Spiking neural network models}
-
-\section{Models}
-
-\subsection{Leaky integrate-and-fire (LIF)}
-
-\subsection{Generalised leaky integrate-and-fire (GLIF)}
-
-\subsection{Non-leaky integrate-and-fire (NLIF)}
-
-\subsection{Izhikevich}
-\subsubsection{Contribution: Izhikevich recovery variables work (?)}
-
-\subsection{"Cortical microcolumn"-inspired general population stochastic integrate-and-fire (GIF)}
-
-
-\section{The link to recurrent neural networks (RNNs)}
-
-
-\section{Optimisation}
-Can we automate SNN inference, including all model parameters? (Positive implications -->)
-
-Goals and questions or hypotheses
-Novel method developed for advancing SNN inference by using gradient descent
-Binary in nature, by implementing subthreshold spike signals, we may facilitate optimisation, improving optimisation performance for gradient descent.
-We will retrieve a local minimum which is not approaching ground-truth in terms of model parameters, however, the model will capture the spike statistics to a greater extent than other models. As such, it may be used to evaluate the functional characteristics of the modeled nuclei.
-The input is unknown. The best we may do in this regard is to assume input spike trains of a Poissonian nature.
-SBI approach for SNN inference; limitations. Test potential.
-Better for true parameter estimation. However,  posteriors are probability densities, and do not have direct access to full model configurations as such, and may suffer from not capturing full specific model configurations that capture as many higher-order spike statistics.
-GLMs as a baseline to have comparable results for NMF analysis
-
+Various SNN models
 
 \cite{Taherkhani2020} learning in SNNs
 
@@ -203,201 +175,10 @@ Topological averaging.
 Search using micro-model directly? Data set requirements? Spike trains - rate per node and binom dist.?
 
 
+\section{Fundamental differences between SNNs and spike train PDF models}
 
 
-Input transformation (?, avg. relative spiking per population ?)
-
-net(x\_forward)
-
-Output transformation (avg. v per pop.)
-
-Can transform spike-train to average population membrane potential
-
-Synapses with dg/dt ?
-self.g = torch.ones\_like(self.v)  for one conductance per neuron (for n synapses)
-
-% ---------------------
-Different seeds that result in quite different spike patterns, yet are quite close in parameter-space.
-Let’s see if NMF can decode the ensembles…
-And if GD with Adam can retrieve the parameter values
-And if GD with Adam can capture the ensembles (they emerge when model is perturbed)
-Same with EAs as for GD with Adam
-
-\textbf{Something you can learn about network, but also should be specific to a spiking net
-Want to find something only in SNN, but which is also identifiable
-Don’t need to find exact same sync act., not same identities of neurons which participate, just general properties, in spite of unknown input activity}
-
-Advantages of SNNs compared to rate based/mean field
-Quantity
-Model statistics exhibited regardless of configuration
-Different inputs and generative model output variability
-
- “Vector strength is the Fourier component of the spike sequence at the stimulus frequency normalized by the total number of spikes”
-
-“It has been proposed that membrane time con- stant, spiking threshold, and the number of inputs per period are key parameters that determine the performance of a coincidence detector (Kempter et al. 1998)”
-On temporal info coded by phase-locked spikes processed in higher-order centers in the brain
-
-Precise firing sequence
-“Inappropriate surrogate” - high-order gamma dist great number of chance patterns due to generating quasiperiodic spike trains. Poissonian more unrelated periodic spike trains
-“Nonprecise time patterns” - interested in spike patterns (not one less precise peak in 3d corr M)
-
-% (Analysis and interpretation of interval and count variability in (single neuron) neural spike trains
-% Coefficient of variation (CV), trial-by trial count variability with the Fano factor (FF), estimation bias, …
-% Variability on tens to hundreds of ms
-% CV = SD(X)/E(X))
-
-Can we detect statistics relating to state in data using more sophisticated rate measures when compared to straightforward mean binned rates per state? Could this be used further?
-
-System. Spike train assumed to be distributed according to some distribution. Can invert and calculate probability and minimise. Fluctuation can for instance be regarded as due to “irregularity in time from a constant rate or regularly from a fluctuating rate”.
-Metric measuring ISI variability rescaled locally in time can suggest which is more plausible.
-When looking at more complex system this is less trivial..? MIght be used on higher-level such as neuron classes?
-
-Need to go beyond renewal processes to capture different neuronal modes of behaviour, and spike train adaptation - serial correlations in ISIs is one such step
-Hidden Markov processes, drawn from distribution relative to state
-“Memory” in nesting the probability such that it depends on N preceding ISIs
-
-Grün and Rotter, methods
-Characteristics that are stable in spite of different inputs
-
-Null hypothesis: Independence (spike trains)
-stochastic spike train models, posits probabilistic model for timing of spikes, based on the spike history. Simplest such; Poisson process.
-p(spike\_[t, t+dt]) ~~ Rdt, where R is the rate (for sufficiently small dt)
-Point processes for several spike trains (networks and not just neurons); papers (ignored here)
-
-\textbf{Fundamental differences between SNNs and spike train PDF models}
-
-\subsection{Contribution: PyTorch}
-
-\subsection{Contribution: Batching and SNNs}
-
-\subsection{Contribution: Loss metrics comparison}
-\subsubsection{van Rossum distance}
-Hypothesis: Using the van rossum distance may guide search, allowing gradient-based methods to converge?
-
-Using the van-rossum distance as a loss function for the spike trains, we get something more continuous, since the discrete spike train is convolved with a time-based kernel. This should make the gradients more informed via the loss function in larger search areas.
-
-"\textit{wandering gradients}" for vRD.
-
-One thing is quantifying distances in terms of spike metrics.
-Another is designing a metric that is well-defined for gradient-descent.
-While the van Rossum metric describes the distance between two spike trains both in terms of rates and timing, due to its sensitivity to exact timing the gradient signal might be obscured for non-matching neurons, and more well-defined where the rates better match.
-
-
-\subsection{Contribution: LIF paper}
-% \includepdf[pages=-]{files/icml2021_draft_snn_inference.pdf}
-Currently, I’ve implemented a setup that fits an arbitrary model to spike train data. I have generated synthetic data using a LIF model, and am trying to fit a LIF population model to this (the simplest scenario I could think of).
-When fixing most parameters, only trying to fit the population connectivity weights, it does not currently always converge. I am currently working on this.
-
-Gradient-based methods prone to finding sub-optimal solutions, i.e. local minimas. This is an issue particularly for high-dimensional feature spaces. Thus, I am led to believe this will be an issue when trying to infer the model parameters of complex neural networks using spike trains.
-
-%--------------------
-LIF work log:
-More nuanced
-Very noisy gradients for unstable/chaotic generative model perturbation?
-Dynamic R\_I in conjunction with frd might result in better convergence, due to constraining search space.
-By using dynamic R\_I (linear constraint), this makes behaviour more stable, and so may allow for more calibration/optimisation of the other parameters.
-
-vRD suddenly seems viable for more stable network behaviour. When model behaviour was more chaotic, frd was better. This makes sense, as gradient will not be well-defined for vRD when model is chaotic. Not necessarily for frd either, but this is more robust to noise.
-
-Some artefacts LIF (more linear, easier to have whole-network spiking with too little inhibition / simpler neuron dynamics)
-
-Initial conditions large effect on convergence
-
-vRD performance OK with tau=100.0
-frd better
-In conjunction: still sometimes silent neurons. Potentially due to local minima of vRD for silent neurons, and obscured parameter-landscape due to noise and the nature of the vRD-metric. Not necessarily orthogonal to frd either, and as such may interfere with its gradient
-
-Will have to look at vRD vs frd vs frd+vRD vs adaptive(frd+vRD) quantitatively for setups.
-
-There seem to be many regions for which there is no “information gain” when moving along gradients, such as for silent neurons. Some parameters might not have their effect obscured or less pronounced due to the change of other parameters in parallel, too. This is the reason other authors have performed sequential parameter optimisation.
-
-When constructing generative target models, we aimed for hand-engineering models entraining higher-order ensemble dynamics that were stable across different random seeds of model perturbation, such that we could test how well model inference would capture these statistics. To this end, we designed three populations of neurons, where each population had different neuron parameters, normally distributed around set means, with a standard deviation of 25 % around the population values for each neuron. 
-In order to not generate spurious data, such as if the generative model is driven primarily by its input perturbation, or where it behaves otherwise chaotically, we tested that the hand-engineered models’ higher order statistics indeed occurred across different random seeds.
-
-(To verify that the model would indeed be sensible for synthetic generation, we tested the stability of neuron rates across different random seeds. When a deviation lower than X was attained, we accepted the ensemble model as a generative model suitable for data generation in order to test our framework.)
-Note that this deviation test is only to determine that the model doesn’t behave chaotically, and does not fire spuriously, in which case optimisation would be like fitting to noise, which should not converge.
-
-
-\subsection{Contribution: Stochasticity and SNNs}
-
-\subsection{Contribution: NLIF work}
-
-analog output - discrete pulses, and internal states
-research has been impeded by lack of supervised learning algorithms
-they present differentiable formulation of SNNs, with exact gradient calculation
-simple tasks
-rate-based models fail to describe fast dynamics of spike-based computation
-difficult to optimise discrete, binary all-or-none signals
-other methods circumvent non-differentiability
-
-"Note that the gradient calculation procedure involves multiplication between the presynaptic input source and the postsynaptic adjoint state pv, which is driven by the g ˙ps term: i.e. the product of postsynaptic spike activity and temporal difference of error. This is analogous to reward-modulated spike-time dependent plasticity (STDP) [17]."
-
-\subsection{Contribution: microGIF work}
-
-\subsection{GLIF neurons}
-
-Can be highly parameter-sensitive and result in completely different mode of neuronal behaviour
-
-GD: 
-N=3
-LIF\_R, frd (SGD) looks good, albeit with mostly straight parameter trajectories
-LIF\_R, vrd (SGD) OK
-LIF\_R, rate+pcc (SGD) OK/good
-LIF\_R\_ASC, frd, good
-LIF\_R\_ASC, vrd, OK
-LIF\_R\_ASC, rate+pcc, good
-LIF (noisy target), frd, noisy OK
-LIF (noisy target), vrd, not satisfactory/OK-
-LIF (noisy target), rate+pcc, noisy OK
-LIF\_weights\_only, frd, noisy very low loss, somewhat trailing train/test
-LIF\_weight\_only, vrd, noisy higher loss, closely trailing train/test
-LIF\_weights\_only, rate+pcc, fairly low loss, somewhat more trailing train/test
-LIF\_fixed\_weights, frd, noisy medium/low loss
-GLIF, frd, somewhat noisy and trailing low loss, looks good, nonlinear param trajectories
-
-N=10/12: Breaks down(?), or wanders along frontiers (wandering gradients in SNNs)
-
-\subsection{Model input perturbation and formulation}
-
-Task: Model site from which spikes have been recorded and decoded. Issue: We don’t have the input to the site. Options: Auto-encode temporal evolution of spike train, or infer model to produce outputs when noise-driven. Question: Is this at all attainable?
-
-Learning methods:
-BP, BPTT, Surrogate gradient (what we’re doing), soft-threshold (very similar to what we’re doing, but not in-place), STDP (has similarities, but not what we’re doing - more suitable to local and temporal learning?)
-
-One finding is that we can infer a LIF SNN capturing higher-order statistics with a noise-driven setup (during inference). Using more temporally oriented loss functions quickly becomes problematic due to the input-noise, however. Can we show this analytically or empirically somehow for more complex models?
-Another scheme: Predict next input given previous - (learn patterns from the information we have) then predict when perturbing with noise. Would also allow for hand-engineering input with different qualities (inspired by vigilance/sleep state), and test whether functional ensembles resemble those observed during these states in vivo.
-
-Given the learning algorithms that we have available, how detailed spiking models may we infer by using common data sets? More specifically, can we increase the level of detail and level of higher-order statistics captured in a model by also inferring internal neuron variables by using gradient-based optimization? Is this possible by only using a one-dimensional target signal, such as spike trains? Does more detailed neuron models than LIF models enable capturing a higher level of detail and statistics, through allowing a wider array of model behaviour? Can we fit these models in a noise-driven scheme, such that the approach may be used on real-world data? If not, what are our alternative approaches? Could we for instance fit to output data given previous output data, i.e. similar to auto-regression? If so, would this enable us to predict output under different brain states?
-Model inference should be compared to common statistical models, including GLMs, Gaussian mixture models, and Poisson models.
-
-
-Method assumes access to observed neural activities and external input.
-René et al. (2019/20) paper:
-“The method we present assumes that the model to be inferred can be expressed as a
-set of stochastic equations and that we have access to time series for both the observed (and possibly aggregated) neural activities and external input”
-
-
-\subsubsection{Poisson input}
-
-\subsubsection{Cyclic input}
-
-\subsubsection{Cyclic input and white noise}
-
-\subsection{Multi-layer versus single-layer SNNs}
-
-Multi-layer net crucial for non-linear function approximation! We have not had this. If we only wish to capture the spike statistics, then a multi-layer version training on the next spike given the previous could perform better than the current single-layer noise-input to spike output?
-What we have tried is instantaneous reactivity given noise-input. Is this not largely spatially oriented? To include a more temporal orientation, we may need to redesign the setup.
-
-Auto-encoding task of own readout would make sense. However, we only have the binary spike output, and not continuous membrane potential
-
-With NIF neurons, one could analytically show/solve the systems and show where noise would render the loss function useless. However, unsure how to test this for spike output task. Could we use (Mostafa, 2018) combined with (Huh \& Sejnowski, 2017)? Or at least the latter?
-
-\section{Synapse models}
-
-\subsection{Gated sub-threshold spike-signal model}
-
-
-% Future work: Simulate DNN / network, then consider network as “flat”/shallow in analysis. See what this does to the statistics, or how they look.
+\section{The link to recurrent neural networks (RNNs)}
 
 
 \section{Bayesian approaches}
@@ -441,6 +222,8 @@ assume same labels?
 
 \section{Analysing SNNs}
 
+Not straightforward how to analyse... Should this be in background or later?
+
 \subsection{NMF}
 
 \subsection{LDA}
@@ -448,7 +231,272 @@ assume same labels?
 \subsection{Generalised Linear Models}
 
 
+\section{Models}
 
+\subsection{LIF}
+
+\subsection{Generalised leaky integrate-and-fire (GLIF)}
+
+\subsection{Non-leaky integrate-and-fire (NLIF)}
+
+\subsection{Izhikevich}
+
+Replicated \cite{Oliveira2019} merely to show that the resulting rates could be formulated more or less as a linear function, resulting from subthreshold oscillations, and that the model is highly sensitive to its initial parameter values.
+All modes of behaviour as observed in biology, however something needed to shift mode(s) of behaviour..
+Parallels to SNN inference etc
+
+\subsubsection{Poster: \textit{The effect of the recovery variable parameters on oscillating Izhikevich networks}}
+\includepdf[pages=-]{files/berg_and_onken_uk_neural_computation_2019_poster.pdf}
+
+
+\section{Loss metrics}
+
+% ---------------------
+\textbf{Something you can learn about network, but also should be specific to a spiking net
+Want to find something only in SNN, but which is also identifiable
+Don’t need to find exact same sync act., not same identities of neurons which participate, just general properties, in spite of unknown input activity}
+
+Advantages of SNNs compared to rate based/mean field
+Quantity
+Model statistics exhibited regardless of configuration
+Different inputs and generative model output variability
+
+“Vector strength is the Fourier component of the spike sequence at the stimulus frequency normalized by the total number of spikes”
+
+“It has been proposed that membrane time con- stant, spiking threshold, and the number of inputs per period are key parameters that determine the performance of a coincidence detector (Kempter et al. 1998)”
+On temporal info coded by phase-locked spikes processed in higher-order centers in the brain
+
+Precise firing sequence
+“Inappropriate surrogate” - high-order gamma dist great number of chance patterns due to generating quasiperiodic spike trains. Poissonian more unrelated periodic spike trains
+“Nonprecise time patterns” - interested in spike patterns (not one less precise peak in 3d corr M)
+
+% (Analysis and interpretation of interval and count variability in (single neuron) neural spike trains
+% Coefficient of variation (CV), trial-by trial count variability with the Fano factor (FF), estimation bias, …
+% Variability on tens to hundreds of ms
+% CV = SD(X)/E(X))
+
+Can we detect statistics relating to state in data using more sophisticated rate measures when compared to straightforward mean binned rates per state? Could this be used further?
+
+System. Spike train assumed to be distributed according to some distribution. Can invert and calculate probability and minimise. Fluctuation can for instance be regarded as due to “irregularity in time from a constant rate or regularly from a fluctuating rate”.
+Metric measuring ISI variability rescaled locally in time can suggest which is more plausible.
+When looking at more complex system this is less trivial..? MIght be used on higher-level such as neuron classes?
+
+Need to go beyond renewal processes to capture different neuronal modes of behaviour, and spike train adaptation - serial correlations in ISIs is one such step
+Hidden Markov processes, drawn from distribution relative to state
+“Memory” in nesting the probability such that it depends on N preceding ISIs
+
+Grün and Rotter, methods
+Characteristics that are stable in spite of different inputs
+
+Null hypothesis: Independence (spike trains)
+stochastic spike train models, posits probabilistic model for timing of spikes, based on the spike history. Simplest such; Poisson process.
+p(spike\_[t, t+dt]) ~~ Rdt, where R is the rate (for sufficiently small dt)
+Point processes for several spike trains (networks and not just neurons); papers (ignored here)
+% ---------------------
+
+
+% =======================================================
+\chapter{Work: The frontier of SNN inference}
+
+In order to study how to infer spiking neural network models (SNNs) one needs several ingredients: (1) a definition of the entire system, (2) an implementation of it, (3) an algorithm for model inference where (1) and (2) are compatible with the algorithm, and (4) a way to measure and assess model performance, ideally compared with existing methodologies and models.
+
+Research on SNNs using gradient-based optimisation is fairly limited, and includes approximate Bayesian computation for smaller models, conversion learning in which more traditional ANNs are transformed to simpler SNNs after training, or surrogate gradient descent, in which a surrogate signal over the model spikes, usually as a function over the membrane potential, is used in order to obtain a differentiable output that may be used to optimise the model's parameters over a given loss metric by backpropagating the error signal.
+% Currently, the state-of-the-art methods are only partly successful in training a subset of SNN model parameters for smaller models.
+With the goal of accelerating SNN inference research, I looked at the most prominent state-of-the-art methodologies for SNN inference, which may be divided into (1) gradient based optimisation (GBO), and (2) approximate Bayesian computation (ABC) \cite{Lueckmann2018, Rene2020, Cranmer2020a, Lueckmann2021}.
+GBO enables leveraging recent ML advances from deep learning, and albeit biologically implausible as a learning rule, allows for in-place model inference training and inference. The computational cost of doing gradient based computation is also exponentially less than that of doing ABC, as this involves doing a Monte-Carlo sampling step \cite{Rene2020}.
+
+Previously, Bayesian inference was intractable for SNN models due to their high-dimensional parameter-space, but recent advances in sequential neural estimation techniques, where a DNN is trained to estimate a prior using a relevant statistic, has allowed for much more efficient sampling using this amortised approach; sampling from the DNN to perform posterior parameter estimation.
+Note however that this procedure still has a high cost, which does not scale well with an increase in the network size.
+% references, brief summary and discussion of main references
+Using a Bayesian approach, we may however estimate the posterior over the model parameters, given our approximation of the prior. This also yields a type of uncertainty estimate around the posteriors. Note however that the posterior will be skewed by the prior approximation, in our case given by sequential neural ratio estimation (SNRE) \cite{Lueckmann2021}.
+ 
+Using a surrogate gradient approach, we may fit the parameters of the system by error minimisation using any differentiable loss function. Due to the constraint put forth by working with biological spike train data, which is a very widespread format in which there is a vast amount of data available, we cannot however make many assumptions about the input, unless the recording somehow also contains information about this signal. 
+Therefore, we have to include the input in the model, by making assumptions about the network input, as well as to consider how it may greatly affect network behaviour during learning. As a rule of thumb, we want to have a signal which allows for the network to perform the task at hand, or to replicate the observed data, whilst being as biologically reasonable as possible.
+We want to have input that puts the system in a realistic mode of behaviour, and allows us to optimise its parameters such that an informative signal is transformed in a meaningful way.
+% As it is limited what we may assume about the input, loss metrics that put a high emphasis on the precise timing of spiking may in fact obscure the gradient signal by incorporating too much of the noise stemming from this signal.
+% We therefore focus on metrics that are more rate-based, looking at intervals of spikes in order to include the temporal signatures to some extent.
+% Using a timing-oriented metric over larger time bins may even result in divergence, due to variability between the hidden target data input, and the inferred model input. 
+
+
+
+
+\section{My contribution: Implementing, differentiating and optimising different SNN models using different loss metrics}
+
+Goals and questions or hypotheses
+Novel method developed for advancing SNN inference by using gradient descent
+Binary in nature, by implementing surrogate subthreshold spike signals, we may facilitate optimisation, improving optimisation performance for gradient descent.
+We will retrieve a local minimum which is not approaching ground-truth in terms of model parameters, however, the model will capture the spike statistics to a greater extent than other models. As such, it may be used to evaluate the functional characteristics of the modeled nuclei.
+The input is unknown.
+% SBI approach for SNN inference; limitations. Test potential.
+% Better for true parameter estimation. However,  posteriors are probability densities, and do not have direct access to full model configurations as such, and may suffer from not capturing full specific model configurations that capture as many higher-order spike statistics.
+% GLMs as a baseline to have comparable results for NMF analysis
+% Input transformation (?, avg. relative spiking per population ?)
+% net(x\_forward)
+% Output transformation (avg. v per pop.)
+% Can transform spike-train to average population membrane potential
+% Synapses with dg/dt ?
+% self.g = torch.ones\_like(self.v)  for one conductance per neuron (for n synapses)
+
+\subsection{Contribution: PyTorch}
+
+... tricks, sequentiality etc
+
+\subsection{Contribution: Batching and SNNs}
+
+even though sequential constraint, each batch is parallelisable, effectively doing batch norm over batches in parallel.
+
+\subsection{Contribution: Loss metrics comparison}
+
+Tricky design, stochasticity, lots of considerations, as we shall see only frontier..
+
+
+\subsubsection{van Rossum distance}
+Hypothesis: Using the van rossum distance may guide search, allowing gradient-based methods to converge?
+
+Using the van-rossum distance as a loss function for the spike trains, we get something more continuous, since the discrete spike train is convolved with a time-based kernel. This should make the gradients more informed via the loss function in larger search areas.
+
+Main finding: 
+"\textit{wandering gradients}" for vRD.
+
+One thing is quantifying distances in terms of spike metrics.
+Another is designing a metric that is well-defined for gradient-descent.
+While the van Rossum metric describes the distance between two spike trains both in terms of rates and timing, due to its sensitivity to exact timing the gradient signal might be obscured for non-matching neurons, and more well-defined where the rates better match.
+
+\section{Leaky integrate-and-fire (LIF)}
+
+Currently, I’ve implemented a setup that fits an arbitrary model to spike train data. I have generated synthetic data using a LIF model, and am trying to fit a LIF population model to this (the simplest scenario I could think of).
+When fixing most parameters, only trying to fit the population connectivity weights, it does not currently always converge. I am currently working on this.
+
+Gradient-based methods prone to finding sub-optimal solutions, i.e. local minimas. This is an issue particularly for high-dimensional feature spaces. Thus, I am led to believe this will be an issue when trying to infer the model parameters of complex neural networks using spike trains.
+
+%--------------------
+LIF work log:
+More nuanced
+Very noisy gradients for unstable/chaotic generative model perturbation?
+Dynamic R\_I in conjunction with frd might result in better convergence, due to constraining search space.
+By using dynamic R\_I (linear constraint), this makes behaviour more stable, and so may allow for more calibration/optimisation of the other parameters.
+
+vRD suddenly seems viable for more stable network behaviour. When model behaviour was more chaotic, frd was better. This makes sense, as gradient will not be well-defined for vRD when model is chaotic. Not necessarily for frd either, but this is more robust to noise.
+
+Some artefacts LIF (more linear, easier to have whole-network spiking with too little inhibition / simpler neuron dynamics)
+
+Initial conditions large effect on convergence
+
+vRD performance OK with tau=100.0
+frd better
+In conjunction: still sometimes silent neurons. Potentially due to local minima of vRD for silent neurons, and obscured parameter-landscape due to noise and the nature of the vRD-metric. Not necessarily orthogonal to frd either, and as such may interfere with its gradient
+
+Will have to look at vRD vs frd vs frd+vRD vs adaptive(frd+vRD) quantitatively for setups.
+
+There seem to be many regions for which there is no “information gain” when moving along gradients, such as for silent neurons. Some parameters might not have their effect obscured or less pronounced due to the change of other parameters in parallel, too. This is the reason other authors have performed sequential parameter optimisation.
+
+When constructing generative target models, we aimed for hand-engineering models entraining higher-order ensemble dynamics that were stable across different random seeds of model perturbation, such that we could test how well model inference would capture these statistics. To this end, we designed three populations of neurons, where each population had different neuron parameters, normally distributed around set means, with a standard deviation of 25 % around the population values for each neuron. 
+In order to not generate spurious data, such as if the generative model is driven primarily by its input perturbation, or where it behaves otherwise chaotically, we tested that the hand-engineered models’ higher order statistics indeed occurred across different random seeds.
+
+(To verify that the model would indeed be sensible for synthetic generation, we tested the stability of neuron rates across different random seeds. When a deviation lower than X was attained, we accepted the ensemble model as a generative model suitable for data generation in order to test our framework.)
+Note that this deviation test is only to determine that the model doesn’t behave chaotically, and does not fire spuriously, in which case optimisation would be like fitting to noise, which should not converge.
+
+
+
+\section{"Cortical microcolumn"-inspired stochastic population integrate-and-fire models}
+
+microGIF
+
+
+\subsection{Stochasticity and SNNs}
+
+\subsection{Contribution: microGIF work}
+
+\subsection{GLIF neurons}
+
+Can be highly parameter-sensitive and result in completely different mode of neuronal behaviour
+
+GD: 
+N=3
+LIF\_R, frd (SGD) looks good, albeit with mostly straight parameter trajectories
+LIF\_R, vrd (SGD) OK
+LIF\_R, rate+pcc (SGD) OK/good
+LIF\_R\_ASC, frd, good
+LIF\_R\_ASC, vrd, OK
+LIF\_R\_ASC, rate+pcc, good
+LIF (noisy target), frd, noisy OK
+LIF (noisy target), vrd, not satisfactory/OK-
+LIF (noisy target), rate+pcc, noisy OK
+LIF\_weights\_only, frd, noisy very low loss, somewhat trailing train/test
+LIF\_weight\_only, vrd, noisy higher loss, closely trailing train/test
+LIF\_weights\_only, rate+pcc, fairly low loss, somewhat more trailing train/test
+LIF\_fixed\_weights, frd, noisy medium/low loss
+GLIF, frd, somewhat noisy and trailing low loss, looks good, nonlinear param trajectories
+
+N=10/12: Breaks down(?), or wanders along frontiers (wandering gradients in SNNs)
+
+
+\subsection{Model input perturbation and formulation}
+
+Task: Model site from which spikes have been recorded and decoded. Issue: We don’t have the input to the site. Options: Auto-encode temporal evolution of spike train, or infer model to produce outputs when noise-driven. Question: Is this at all attainable?
+
+Learning methods:
+BP, BPTT, Surrogate gradient (what we’re doing), soft-threshold (very similar to what we’re doing, but not in-place), STDP (has similarities, but not what we’re doing - more suitable to local and temporal learning?)
+
+One finding is that we can infer a LIF SNN capturing higher-order statistics with a noise-driven setup (during inference). Using more temporally oriented loss functions quickly becomes problematic due to the input-noise, however. Can we show this analytically or empirically somehow for more complex models?
+Another scheme: Predict next input given previous - (learn patterns from the information we have) then predict when perturbing with noise. Would also allow for hand-engineering input with different qualities (inspired by vigilance/sleep state), and test whether functional ensembles resemble those observed during these states in vivo.
+
+Given the learning algorithms that we have available, how detailed spiking models may we infer by using common data sets? More specifically, can we increase the level of detail and level of higher-order statistics captured in a model by also inferring internal neuron variables by using gradient-based optimization? Is this possible by only using a one-dimensional target signal, such as spike trains? Does more detailed neuron models than LIF models enable capturing a higher level of detail and statistics, through allowing a wider array of model behaviour? Can we fit these models in a noise-driven scheme, such that the approach may be used on real-world data? If not, what are our alternative approaches? Could we for instance fit to output data given previous output data, i.e. similar to auto-regression? If so, would this enable us to predict output under different brain states?
+Model inference should be compared to common statistical models, including GLMs, Gaussian mixture models, and Poisson models.
+
+
+Method assumes access to observed neural activities and external input.
+René et al. (2019/20) paper:
+“The method we present assumes that the model to be inferred can be expressed as a
+set of stochastic equations and that we have access to time series for both the observed (and possibly aggregated) neural activities and external input”
+
+
+\subsubsection{Poisson input}
+
+\subsubsection{Cyclic input}
+
+\subsubsection{Cyclic input and white noise}
+
+\subsection{Multi-layer versus single-layer SNNs}
+
+Multi-layer net crucial for non-linear function approximation! We have not had this. If we only wish to capture the spike statistics, then a multi-layer version training on the next spike given the previous could perform better than the current single-layer noise-input to spike output?
+What we have tried is instantaneous reactivity given noise-input. Is this not largely spatially oriented? To include a more temporal orientation, we may need to redesign the setup.
+
+Auto-encoding task of own readout would make sense. However, we only have the binary spike output, and not continuous membrane potential
+
+
+
+% =======================================================
+\chapter{Gradient-descent based LIF SNN inference}
+\section{Poster: \textit{Spiking Network Inference Using Gradient Based Optimisation}}
+\includepdf[pages=-]{files/FENS-virtual-2020-e-Poster-W-P-Berg-and-A-Onken-Spiking-Network-Inference-Using-Gradient-Based-Optimisation-PORTRAIT-5.pdf}
+
+\section{Report/paper draft: \textit{Parallel spiking neural network parameter inference using gradient based optimization}}
+\includepdf[pages=-]{files/icml2021_draft_snn_inference.pdf}
+
+
+% =======================================================
+\chapter{Exact models with continuous spike signals}
+
+Non-leaky integrate-and-fire (NLIF) model with subthreshold continuous spike signals defined to sum to 1 inside of an active zone \cite{Huh2017}.
+% With NIF neurons, one could analytically show/solve the systems and show where noise would render the loss function useless. However, unsure how to test this for spike output task. Could we use (Mostafa, 2018) combined with (Huh \& Sejnowski, 2017)? Or at least the latter?
+
+\subsection{Gated sub-threshold spike-signal model}
+
+\subsection{Contribution: NLIF work}
+
+analog output - discrete pulses, and internal states
+research has been impeded by lack of supervised learning algorithms
+they present differentiable formulation of SNNs, with exact gradient calculation
+simple tasks
+rate-based models fail to describe fast dynamics of spike-based computation
+difficult to optimise discrete, binary all-or-none signals
+other methods circumvent non-differentiability
+
+"Note that the gradient calculation procedure involves multiplication between the presynaptic input source and the postsynaptic adjoint state pv, which is driven by the g ˙ps term: i.e. the product of postsynaptic spike activity and temporal difference of error. This is analogous to reward-modulated spike-time dependent plasticity (STDP) [17]."
+
+
+% =======================================================
 \chapter{Sleep regulation in the rodent brainstem}
 
 My initial research proposal outlines a research project where the goal is to meet research needs within the field of sleep regulation through computational modelling.
@@ -457,7 +505,8 @@ Further, an overarching research goal was to be able to capture the emergence of
 Computational modelling and spiking neural network (SNN) inference covers several research needs within the field of sleep research and the synthesis of neuroscience and its computational counterpart in that it addresses model scarcity, as well as a methodology for accelerating modelling by inference through gradient-based optimisation \cite{Herice2019c, Huh2017, Taherkhani2020}.
 This was the foundation for sparking my interest in a methodological project in which we seek to automate biologically relevant neural network model inference, and more specifically to research both (1) the current state-of-the-art on SNN inference, and (2) leveraging ML based methods of gradient descent and optimisation for SNN inference \cite{Huh2017, Mostafa2020, Tavanaei2019b, Lee2016}.
 
-\section{Contribution: Sleep regulation project}
+
+\section{Modelling sleep regulation in the brainstem}
 
 Sleep is widespread across different animal species, crucial to mental functioning. However, why we sleep, and how we sleep, remains to be understood. Some models exist that seek to capture the phasic nature of sleep, but mostly at an abstract level. There is as such a need for detailed models in the field, with no current models encompassing direct biological parallels. Addressing the need for modelling in the field, and seeking to illuminate how we sleep, we propose to use a set of recently combined methodologies that allow us to infer the most probable neuron-level spiking models based on only partial information, and partial neuronal recording data. In other words, the methodology allows for incorporating both existing knowledge, and to use spike sorted LFP recordings to infer the most statistically probable distributions of model parameters.
 
@@ -478,6 +527,7 @@ Statistically, model soundness may be considered in terms of comparison to a val
 
 % Currently, the project is a work in progress, with implementation of the model and a corresponding gradient descent (GD) as well as HMC being in focus. GD may be partially implemented using the Theano library, as well as open-sourced modules, and HMC using the PyMC3 library.
 % In order to finalise the implementation, there is a substantial amount of programming required, followed by an ever greater extent of testing, debugging, verification. Finally, when satisfied with the aforementioned, we may proceed to run experiments, analysing the results, and depending on the outcomes pursue further work.
+
 
 
 \section{Neuroscience background}
@@ -518,6 +568,7 @@ Idea: Cell types and model parameters that may be used in type classification fr
 \subsection{ABC}
 
 \subsection{Comparison and conclusion}
+
 
 \chapter{Why the brain does not do backpropagation}
 
