@@ -114,10 +114,14 @@ Lastly, I would like to sincerely thank the head of our collaborative lab at the
 % One who strives towards a goal to prove themselves, may suffer along the way.
 % One who strives towards a goal as a means of self-expression, may enjoy the way.
 
+\subsection{A synthesis from the brain to deep learning and back again?}
 
-Spiking neural networks (SNNs) contain variables that represent biological properties such as membrane potential, temporal signature, and potentially ion channel dynamics. Their definition results in membrane voltage dynamics resembling that of biological neurons, including the release of action potentials upon reaching a certain membrane potential.
-Due largely to the biological plausibility of this class of neural network models, they are appealing to study in computational neuroscience, as they may trail biology to a greater extent than the feed-forward networks as often seen in the machine learning domain.
-However, training SNNs is yet of limited success, and model inference also faces a number of challenges due to the temporal constraints introduced by SNNs, as well as the increased complexity of this model class.
+Spiking neural networks (SNNs) contain variables that represent biological properties such as the membrane potential, cell membrane time constant relating to the type of cell and ion channels, and potentially other neurotransmitter dynamics. Their definition results in dynamics resembling that of biological neurons, including the release of action potentials upon reaching a certain membrane potential.
+Due largely to the biological plausibility of this class of neural network models, they are appealing to study in computational neuroscience, as they maintain these biological parallels, which feed-forward networks  do not.
+However, SNN inference research is highly limited and faces a number of challenges due to the temporal nature of SNNs and the associated increased complexity, stemming from both state-dependence, temporal stochasticity, and parameter dimensionality.
+Machine learning, with the recent surge of interest due to the large success of employing gradient based optimisation for deep neural networks, in part unlocked by the increase in available computational power and data, was originally loosely inspired by neuroscience in that we are dealing with networks of coupled nodes, thought to represent neurons.
+Some of the ongoing research in computational neuroscience is now in fact focussed on whether deep learning may inspire model inference within a domain closer to its origin; namely for biologically plausible neural network models.
+% This work is focussed mainly on 
 We here revisit the state-of-the art for inferring SNN models using both surrogate gradient based optimisation and some of the most prominent spike metrics, as well as deep neural network amortized learning and approximate Bayesian computation (ABC), and compare how these approaches may be employed for SNN inference. Further, we hypothesise that recent ML techniques may be leveraged for successful and efficient model inference using surrogate gradient descent.
 We find that while ABC may be successful for population-level models, as has been shown recently in the literature, its algorithmic and computational complexity and cost thereof limits the methodology to a low number of nodes, particularly for more high-dimensional leaky integrate-and-fire (LIF) model extensions.
 However, using a surrogate gradient approach, we find that model inference for larger networks is made possible. 
@@ -160,7 +164,7 @@ However, it quickly becomes intractable due to the high complexity of models.
 Surrogate or exact gradient approaches are difficult due to aforementioned issues, and most likely do not settle into a stable configuration, as well as stay in planes of local minima.
 These findings suggest that the best we can currently do is using approximate Bayesian approaches, which not only lets us infer a posterior over all of the parameters, but also provides a measure of certainty around the parameters.
 
-Temmporary conclusion:
+\subsection{Temmporary conclusion}
 If this approach is intractable for the case we’re looking at, the best we may do is either to use other information theoretic approaches to assess whichever aspect it is that we are interested in, including potentially to hand-engineer and rigorously test a proposed model.
 
 % =======================================================
@@ -179,8 +183,39 @@ Search using micro-model directly? Data set requirements? Spike trains - rate pe
 
 \section{Fundamental differences between SNNs and spike train PDF models}
 
+A spike train can be modeled by drawing from a probability distribution $P(X; \lambda)$.
+This is perhaps the simplest baseline model one may construct, also assuming complete independence between neurons in a data set.
+However, this type of model may quickly break down when not assuming dependence between neurons.
+It may also be updated assuming independence, resulting in a more complex PDF.
+A more robust baseline model would be a generalised linear model, in which ... Poisson PDF and coupled nodes.
+This may capture spike correlations and rates better, but not exert different modes of behaviour.
+I.e. it is a spatiotemporal model with fixed temporal signatures which may be slightly affected by input, but not fundamentally change its dynamics and behaviour, as opposed to in SNNs.
+The golden goal should as such be to infer models that capture the different modes of behaviour, thus also the dynamics that are at play and may be exerted under different input conditions.
+This may be extremely hard to capture using current inference methodologies, and has to the best of my knowledge not been successfully attained by the research community.
+(...)
+It is something that may be tested by designing different input conditions for a model synthetically - and also tested in vitro or vivo by stimulation e.g. optogenetically or using more traditional patch-clamp tissue stimulation.
 
 \section{The link to recurrent neural networks (RNNs)}
+
+As mentioned previously, SNNs are systems in which each node is a set of ODEs, where each variable or parameter may have a more or less direct biological parallel, such as representing the rest potential $E_L$, the spike threshold $V$, and other properties.
+Together, these result in a model whose membrane potential $v_t$ has a temporal trajectory similar to that of biological neurons.
+The main idea is that under the right conditions, these models may mimic biology so closely, that we can in fact use them to study what might be going on in a brain area, where the model is the hypothesis.
+The stronger the link between the model and the brain area, the stronger the hypothesis, and predictions based upon probing model dynamics under various conditions.
+
+In RNNs, however, the criterion of each node or neuron being a system of ODEs that maintain biological parallels is relaxed. Each node may simply be one value that is some sum over synaptic input that has been transformed by a transfer function, or it is more commonly some slightly more complex units such as gated recurrent units (GRUs) \cite{Bengio2013b, Chung2015a} or long short-term memory units (LSTMs) in machine learning \cite{Hochreiter1997, Schmidhuber2014}.
+If dealing with nodes as common in machine learning, the temporal dependence is more limited than in more complex SNNs and neuronal ODE systems.
+Further, RNNs are usually trained on tasks in which the input is known, and is some static "spatial" transformation of inputs to outputs, which forms the data set.
+In other words, the data to be modeled is usually non-noisy, and of a more straightforward nature than (decoded) brain recordings such as spike trains.
+These aspects make the models far more suitable for chaining the error gradients backwards in time, which may be done over each time-step for each error gradient by a modification to the backprop-algorithm, known as back-propagation through time (BPTT).
+Note also that RNNs typically deal with continuous, smooth signals in each node, whereas SNNs traditionally and usually function more as perceptrons in that their activity is binary, which also complicates training, let alone inference of model parameters other than the weights.
+Typically, only the weights are inferred in ML using some gradient based optimisation algorithm.
+There exists, however, work in which SNNs are transformed such that they are more compatible with BPTT, including probabilistic models in which each node projects a probability of spiking for each time step or interval, and models in which synaptic signals are made continuous and smooth, either by constructing a surrogate over the membrane potential, or by modeling the signals as a function over the subthreshold membrane potential, such as for instance when it is above zero, or within a given interval, resulting in a synaptic current.
+% The former approach has been studied in works such as \cite{}
+\cite{Neftci2019} describe the connection between RNNs and SNNs well, including the efforts that have been made to employ (surrogate) gradient descent for spiking neural networks.
+% Should talk about points relating to where rate-based metrics is the best one can do wrt spikes
+
+In my work I have studied employing gradient based optimisation as well as approximate Bayesian computation using amortised learning for both a probabilistic class of stochastic spiking neural networks \cite{Rene2020}, for leaky types of integrate-and-fire SNNs \cite{allen_glif_white_paper}, and for closed-form (still with multiple solutions?) exact-gradient types of non-leaky integrate-and-fire SNNs \cite{Huh2017}.
+I have also replicated and analysed Izhikevich SNNs, but chosen not to apply GBO to this model class due to planes of chaos in the parameter landscape, simply resulting in that the Izhikevich neuron ODEs are a lower-dimensional projection of the Hodgkin-Huxley ODEs - resulting in that while they are of lower complexity simulation-wise, the collapse of several variables into fewer results in variable intervals for which model behaviour is unrealistic and/or chaotic, making GBO impossible.
 
 
 \section{Bayesian approaches}
@@ -202,9 +237,9 @@ They also made a quasi-renewal approximation, and assumed independence between n
 
 
 \subsection{Amortised learning with DNNs}
-\cite{Lueckmann2018} amortised learning and ABC using DNNs.
 
-SNPE
+% SNPE
+\cite{Lueckmann2018} amortised learning and ABC using DNNs.
 
 \section{Evolutionary algorithms}
 % I recall back to conferences talking about inferring complex, deep networks, which is a field where evolutionary algorithms (EAs) still are competitive and fruitful.
@@ -225,6 +260,7 @@ Even so, the computational cost is comparable, or even worse, than for ABC.
 
 Not straightforward how to analyse... 
 % Should this be in background or later?
+Refer reader to report or poster in which these are explained, and only provide "glue"-text here, explaining usage and placing them in the context?
 
 \subsection{NMF}
 
@@ -237,9 +273,15 @@ Not straightforward how to analyse...
 
 \subsection{LIF}
 
+Write out definition, discuss a bit..? Refer to paper.
+
 \subsection{Generalised leaky integrate-and-fire (GLIF)}
 
+Write out equations (?)
+
 \subsection{Non-leaky integrate-and-fire (NLIF)}
+
+Refer to \cite{Huh2017}, mention impact, refer to synapse chapter.
 
 \subsection{Izhikevich}
 
@@ -252,6 +294,37 @@ Parallels to SNN inference etc
 
 
 \section{Loss metrics}
+
+\subsection{firing rate}
+
+simple, rate-based metric. does not capture correlations, or only very vaguely if done over smaller time bins. 
+can be combined with correlation metric.
+
+\subsection{van Rossum distance}
+
+precise timing emphasis. breaks down for smoothed and stochastic signals, only works well for NLIF, or when it approaches rate-based - even then FRD might outperform this metric for surrogate GD.
+
+\subsection{KL-divergence}
+
+"different prob dists"
+
+\subsection{log-likelihood}
+
+Negative log-likelihood (Bernoulli, and Poisson PDF assumptions) for probability-based models.
+
+\subsection{Relaxing the constraint of differentiability}
+
+non GBO, but still ABC.
+
+permutations
+
+...
+
+high-cost, not necessarily better due to stochasticity. 
+
+unknown input.
+
+should be studied further.
 
 % ---------------------
 \textbf{Something you can learn about network, but also should be specific to a spiking net
