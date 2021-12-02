@@ -214,11 +214,28 @@ There exists, however, work in which SNNs are transformed such that they are mor
 \cite{Neftci2019} describe the connection between RNNs and SNNs well, including the efforts that have been made to employ (surrogate) gradient descent for spiking neural networks.
 % Should talk about points relating to where rate-based metrics is the best one can do wrt spikes
 
+When working with spike probability based SNNs there is model stochasticity that render precise spike timing based metrics worse than rate based metrics, as the timing is no longer meaningful, and only obscures the gradient.
+
+The same often holds for SNNs in which surrogates are constructed, due to elements such as the initial model configuration, initial conditions, or model perturbation.
+Works such as \cite{Jin2018} employ a rate-based error metric for readouts pertaining to image classification tasks, whereas work such as \cite{Wu2018} employ a population code and rate based combination.
+By considering how these complex systems behave differently under different conditions, and that they may be heavily affected by their current and thus past state, approaches pertaining to rate codes seem to be the extent to which many works are able to incorporate temporal precision and successfully optimise the models.
+While these works are valuable in studying how one might combine optimisation and spiking models, they often are limited to not only rate-based encodings and/or loss metrics, but also to non-noisy ML domain types of data.
+However, the sole basis for studying SNNs in computational neuriscience is to maintain the biological parallel, such that the model may be used as an interpretable system and hypothesis of recorded site dynamics, and studied as such.
+Therefore, it is important to study how the precise timing of spiking may be made relevant in the models, as that is arguably not only a relevant source of information, but a rich encoding scheme employed by the neural circuitry in the biological brain.
+While this was initially debated, it has been argued both by information theorists, neuroscientists and computer scientists alike recently that the precise timing of spiking is not only relevant, but is in fact necessary in order to encode all of the information that has shown to be processed by the brain, i.e. a rate-coding is not enough to represent a task which is solved by a neural network.
+% references
+
 In my work I have studied employing gradient based optimisation as well as approximate Bayesian computation using amortised learning for both a probabilistic class of stochastic spiking neural networks \cite{Rene2020}, for leaky types of integrate-and-fire SNNs \cite{allen_glif_white_paper}, and for closed-form (still with multiple solutions?) exact-gradient types of non-leaky integrate-and-fire SNNs \cite{Huh2017}.
 I have also replicated and analysed Izhikevich SNNs, but chosen not to apply GBO to this model class due to planes of chaos in the parameter landscape, simply resulting in that the Izhikevich neuron ODEs are a lower-dimensional projection of the Hodgkin-Huxley ODEs - resulting in that while they are of lower complexity simulation-wise, the collapse of several variables into fewer results in variable intervals for which model behaviour is unrealistic and/or chaotic, making GBO impossible.
 
 
 \section{Bayesian approaches}
+
+Sample of observations O given priors p, Bayes rule; posterior over parameters given observation, i.e. data.
+One way of going about this is to generate observations with a simulator, for which we may generate samples over priors, enabling us to estimate a full posterior over the parameters for a given observation.
+Note that this does not omit the difficulty of model conditions, including model perturbation and external input.
+Further, the computational cost requires sampling a great number of samples in order to estimate the posterior over the parameters, thus increasing drastically with the model dimensionality and number of parameters.
+The approach does, however, come with the benefit of being able to assess and directly measure the certainty by usual statistical metrics around the centres of the posterior distributions, as well as that the full posterior distribution contains samples across all parameters, dependently, which may capture dependencies not so easily captured when estimating using GBO.
 
 \subsection{MCMC sampling}
 \cite{Rene2020} "special case" i.e. mesoscopic-microscopic inference using first ABC (or GD?) on pop. level and then MCMC sampling for full approx. posterior?
@@ -240,6 +257,20 @@ They also made a quasi-renewal approximation, and assumed independence between n
 
 % SNPE
 \cite{Lueckmann2018} amortised learning and ABC using DNNs.
+
+Since DNNs are universal function approximators, they may be used to approximate the function of the posterior distribution over the parameters given observations for a given model system.
+It seems that DL is an excellent candidate for this type of function approximation, and that in this regard GBO works just as well as it does in ML, depending on how well-defined the posterior distribution in fact is in the data.
+We find in our work that particularly when working with models that have larger spaces which I like to think of as "frontiers" in the parameter landscape for which the loss is approximately equal, the posterior is similarly not condensed around fixed points.
+\cite{Lueckmann2021} (double check ref.) however find that the posterior approximation still contains the relationship, i.e. dependence, over the parameters. 
+In other words, while they cannot be sampled independently for marginals, sampling over the full posterior still generates realistic data.
+
+\begin{equation}
+    P(\theta|X_o) = \frac{P(x_o|\theta)P(x_o)}{P(x_o \cap \theta}
+\end{equation}
+
+There usually is a larger space for which performance given by the loss metric is fairly equal, just requiring a different combination of parameters - i.e. there is no single fixed point or trajectory leading to it in the parameter landscape leading to a global minimum.
+My interpretation of this is that what we identify with learning algorithms for SNNs is not a specific configuration which captures the data set at hand, but a configuration which reaches a mode of behaviour that would allow it do produce the data.
+This may indicate that there are other principles underlying the learning of these networks.
 
 \section{Evolutionary algorithms}
 % I recall back to conferences talking about inferring complex, deep networks, which is a field where evolutionary algorithms (EAs) still are competitive and fruitful.
