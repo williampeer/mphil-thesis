@@ -177,15 +177,29 @@ If this approach is intractable for the case we’re looking at, the best we may
 % =======================================================
 \chapter{Background: Biologically plausible computational modeling}
 
-Various SNN models
+% Mainly surrogate gradient descent, but also some conversion approaches.
+Learning in SNNs; multiple model definitions and topologies, affecting the way in which learning may be performed - from perceptron to HH, from single-neuron to multilayer.
+HH complex enough that fitting the parameters of a single node using electrophysiological data requires a significant amount of computational resources.
+% The \cite{HH1952} 1952 paper more or less hand designing the ODE system in a way that generalises well to describe neuronal and cellular electrophysiology.
+Perceptrons highly implausible.
 
+Supervised, semi-supervised - different tasks.
+
+There are different approaches for tackling the different nature of SNNs. 
+On the one hand the temporal unfolding of the internal state and their significantly exerted effect on activity requires loss metrics that are adopted to also measure this effect, and on the other limited information when modeling biological data poses a constraint on the extent to which timing may be emphasised.
+Further, the explicit encoding scheme adapted in SNNs is traditionally a type of rate-based encoding - but this does not make use of the rich information available in the timing of spiking.
+Population-encoding is another type of approach which may make readouts and learning more stable in a network, but also imposes a significant information bottleneck on the amount of information that may be processed and encoded by the network.
+It is likely that the brain employs an encoding scheme in which the rich information contained in the timing of spikes is relevant - however, principles in which these may be learned are non-trivial to devise, or are non-applicable to noisy data with unkown input.
+% TODO: Update. Also make scope and goal of modeling bio. data much clearer! (gjennomsyre tekst)
+
+% Various SNN models
 \cite{Taherkhani2020} learning in SNNs
 
-Mackelab meso paper: Only rate based at first.
-NN 2020 review: Loses out on temporal information.
-NMF: Spatiotemporal decomposition - thus rate based should not be able to infer spatial activation coefficients. However, encode populations into SGD, and rate based may? 
-Topological averaging.
-Search using micro-model directly? Data set requirements? Spike trains - rate per node and binom dist.?
+% Mackelab meso paper: Only rate based at first.
+% NN 2020 review: Loses out on temporal information.
+% NMF: Spatiotemporal decomposition - thus rate based should not be able to infer spatial activation coefficients. However, encode populations into SGD, and rate based may? 
+% Topological averaging.
+% Search using micro-model directly? Data set requirements? Spike trains - rate per node and binom dist.?
 
 
 \section{Fundamental differences between SNNs and spike train PDF models}
@@ -299,7 +313,7 @@ Even so, the computational cost is comparable, or even worse, than for ABC.
 
 \section{Evaluating SNN models}
 
-Not straightforward how to analyse... 
+% Not straightforward how to analyse... 
 % Should this be in background or later?
 Refer reader to report or poster in which these are explained, and only provide "glue"-text here, explaining usage and placing them in the context?
 
@@ -610,6 +624,37 @@ Auto-encoding task of own readout would make sense. However, we only have the bi
 
 
 
+\section{Discussion}
+
+\subsection{Negative results}
+
+Optimisers, parameter landscapes, hyperparameters, (linear) parameter constraints, input-output data, model topology and recurrence.
+
+Preliminary conclusion: The spatiotemporal nature of SNNs, with the main measured effect being a function over a highly composite variable that has a high temporal dependency and thus variability, makes optimisation largely unsuitable with the current common definitions of optimisation algorithmics, including the loss metrics mentioned in this thesis.
+In addition to being highly sensitive to initial conditions and other factors potentially both skewing the times of spiking, as well as the very mode of behaviour and spiking, input-output transformations, and the spatiotemporal signature of spike trains, need to be handled in a way that is more robust to these perturbations. 
+Currently, there seems to be no defined loss metric that may capture the distance and resulting parameter landscape when going from one mode of behaviour to another in network nodes in a way that is exploitable by means of gradient based optimisation.
+
+\subsection{Future work}
+
+So how, then, can we ameliorate, or solve automatic model inference for accelerating (computational) neuroscience research?
+
+Below is a list of points summarising observations that I made during my research that may be useful to have in mind for future research in the area.
+
+\begin{itemize}
+    \item Measure input activity, or model this in a meaningful way.
+    \item Work with well-defined input-output transformations.
+    \item Work with multi-layer networks - although these are then non-linear and less straightforward, they may constrain state space (hypothesis?)
+    \item Constrain parameter intervals as much as possible using sensible intervals (such as when looking at probable cell type mixtures using the Allen Brain DB)
+    \item Perform early population level or average comparisons to determine whether setup is indeed suitable for GBO model inference
+    \item Preliminary model results can be verified using approximate Bayesian approaches
+    \item Consider using non-leaky models to greatly constrain model behaviour and thus facilitate GBO
+    \item Using a subthreshold synapse model enables subthreshold continuously differentiable signals over the synaptic currents, allowing for optimisation for instance in "silent" models with subthreshold synaptic currents, and potentially improving optimisation
+    \item There needs to be a transformation of the IO which brings the model into a stable regime suitable for GBO
+        Linear transformations are good alternatives for this, and can save one for a lot of hand-calibration in order to attain a regime in which GBO is well-defined/does not diverge
+\end{itemize}
+
+
+
 % =======================================================
 \chapter{Gradient-descent based LIF SNN inference}
 \section{Poster: \textit{Spiking Network Inference Using Gradient Based Optimisation}}
@@ -627,7 +672,15 @@ Non-leaky integrate-and-fire (NLIF) model with subthreshold continuous spike sig
 
 \section{Gated sub-threshold spike-signal model}
 
-\section{Contribution: NLIF work}
+\section{Study: \textit{NLIF for exact gradient based model inference}}
+
+\subsection{NLIF definition}
+
+\subsection{Tasks}
+
+\subsection{Synapse types}
+
+\subsection{Discussion}
 
 analog output versus discrete pulses and latent internal states (??)
 research has been impeded by lack of supervised learning algorithms
@@ -701,9 +754,18 @@ Simple state-driven input as on/off per state to the ensembles should tell us so
 Data from PPT/LDT area/brainstem. Evaluation and assessment through (rigorous) analysis and classification/prediction of brain state. Shows four well-qualified experiments for further analysis and bridging using the mesoscopic modelling approach.
 Provides a solid bridge from the domain of experimental data to generating data using a simulated model that is derived from a good data foundation that we know is well-aligned with brain state.
 
-Idea: “ultradian” process for synchronous/asynchronous activity -> nREM/REM, also should give rise to qualities during wakefulness (such as better brainstorming/creativity, or some types of productivity in “phases”/stages)
+% Idea: “ultradian” process for synchronous/asynchronous activity -> nREM/REM, also should give rise to qualities during wakefulness (such as better brainstorming/creativity, or some types of productivity in “phases”/stages)
 
-Idea: Cell types and model parameters that may be used in type classification from fitting data to GLIF models is lacking for the mouse brainstem in the Allen Brain project database.
+% Idea: Cell types and model parameters that may be used in type classification from fitting data to GLIF models is lacking for the mouse brainstem in the Allen Brain project database.
+
+Replicated results of \cite{Tsunematsu2019}, finding that NMF ACs were more indicative of future brain state than HPC signals, which was a novel finding presented in the original work.
+This also means that the data should contain information that if captured in a model may illuminate the functional dynamics associated with sleep regulation in the area (PPT/LDT).
+
+In order to test whether ...
+% See first year(?) review
+Two-sided LDA - no improved results.
+However, single-neuron signals slightly better predictors - suggesting both that there was some information lost in factorisation, but also that the ensembles were very good representations of functional units, as argued in the original paper.
+
 
 \section{Inference}
 
@@ -711,10 +773,12 @@ Idea: Cell types and model parameters that may be used in type classification fr
 
 \subsection{ABC}
 
-\subsection{Comparison and conclusion}
+\section{Conclusion}
 
 
-\chapter{Why the brain does not do backpropagation}
+
+% =====================================================
+\chapter{(Discussion) Working title: Why the brain does not do backpropagation}
 
 Receptive fields very robust, but continuous perturbation results in changes, also in higher visual areas
 Individual differences
