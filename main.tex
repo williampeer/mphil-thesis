@@ -115,7 +115,7 @@ Lastly, I would like to sincerely thank the head of our collaborative lab at the
 % One who strives towards a goal to prove themselves, may suffer along the way.
 % One who strives towards a goal as a means of self-expression, may enjoy the way.
 
-\subsection{A synthesis from the brain to deep learning and back again?}
+\section{A synthesis from the brain to deep learning and back again?}
 
 Spiking neural networks (SNNs) contain variables that represent biological properties such as the membrane potential, cell membrane time constant relating to the type of cell and ion channels, and potentially other neurotransmitter dynamics. Their definition results in dynamics resembling that of biological neurons, including the release of action potentials upon reaching a certain membrane potential.
 Due largely to the biological plausibility of this class of neural network models, they are appealing to study in computational neuroscience, as they maintain these biological parallels, which feed-forward networks  do not.
@@ -143,7 +143,7 @@ Even though we are not there yet, I believe the search for a connection here may
 % My main findings, although included throughout in the rest of my thesis, may be summarised as following:
 Although SNN inference certainly would be of great value to the field, there are some key issues that I have identified and tried to address in my work, some of which are included in the subsections below.
 
-\subsection{SNNs are hard to optimise}
+\section{SNNs are hard to optimise}
 % I am starting to believe that they’re in fact not possible to optimise, due to the parameter landscape, which results from the temporal nature of the target signal.
 In DNNs, we only consider approximating a spatial transformation over the input data. Not only does this allow for higher parallelisation of the training algorithm, but it may also greatly constrain the parameter landscape in the sense that it does not depend on the past activity of the network itself, which vastly increases both the complexity and stochasticity of parameter inference. 
 One way to ameliorate this is to eliminate some of the stochasticity by making the neurons non-leaky. Since we may computationally set the system’s initial conditions and random seed, the following deterministic computations have little to no fluctuations, and with no leakage, gradient propagation may be computed exactly according to the error signal.
@@ -152,18 +152,18 @@ However, there should exist solutions to the set of coupled ODEs that maximise a
 Nevertheless, since BPTT and optimisation for DNNs within DL has been shown to be able to be able to infer highly complex data sets, it is our goal to study the extent to which a similar methodology may be applied in SNNs, to evaluate the performance of this novel algorithmic design, and to illuminate where work that bears potential may lie.
 
 
-\subsection{The binary nature of spiking}
+\section{The binary nature of spiking}
 One way of addressing this issue is by incorporating the signal below spike-threshold, i.e. the membrane potential, and have this generate a signal inside of an active zone, such as when the potential is above 0. This is not entirely biologically unrealistic, …, and it offers the advantage of a continuous signal centred around potential (no pun intended) spike pulses, or action potentials. Note that it also provides a gradient signal for spike generation even when the potential may be below threshold, still making the excitation visible to the optimiser.
 This bears some resemblance to loss metrics such as the van Rossum distance, in which each spike pulse is convolved with an exponentially decaying kernel, such that we may operate over a smoother signal. However, this signal transformation transforms each spike pulse the same, rendering the sub-threshold gating synapse model a more fine-grained candidate, since it contains richer differentiable information, and not just spike-time information.
 
 Temporal kernel no new information - but transforms signal such that it contains a trace which may be more easily optimised. Think about aligning two waveforms, rather than two short pulses, where the information gain is only visible in the step which matches them.
 
 
-\subsection{The parameter landscape contains a frontier with local minima}
+\section{The parameter landscape contains a frontier with local minima}
 Even when addressing the issues above with the proposed approaches, and even if fixing all model parameters but the weight matrices, there are multiple weight configurations that may result in very similar behaviour and outputs.
 As noted by other researchers in the DNN as well as SNN literature (...) the initial configuration has a large effect on the resulting inferred weights and/or model. This holds particularly true for SNNs, where the previous model state also has an effect on the future state, and the model neurons may be brought to exert different modes of behaviour, depending on the previous and current input and state.
 
-\subsection{Hand-engineered models may be qualitatively similar to local minima}
+\section{Hand-engineered models may be qualitatively similar to local minima}
 By hand-engineering models it is possible to attain qualitative patterns and behaviour, which has been a common practice in the field of comp neuro - however, this may not be satisfactory for attaining higher-order statistics, and requires a large amount of resources. Therefore, model inference may likely be a better option. 
 The above however indicates that GLMs may be the best we can do in this regard (wrt spike trains), and demonstrates a need for advancing SNN inference.
 The way going forward?
@@ -172,7 +172,7 @@ However, it quickly becomes intractable due to the high complexity of models.
 Surrogate or exact gradient approaches are difficult due to aforementioned issues, and most likely do not settle into a stable configuration, as well as stay in planes of local minima.
 These findings suggest that the best we can currently do is using approximate Bayesian approaches, which not only lets us infer a posterior over all of the parameters, but also provides a measure of certainty around the parameters.
 
-\subsection{Temmporary conclusion}
+\section{Temmporary conclusion}
 If this approach is intractable for the case we’re looking at, the best we may do is either to use other information theoretic approaches to assess whichever aspect it is that we are interested in, including potentially to hand-engineer and rigorously test a proposed model.
 
 
@@ -344,7 +344,9 @@ There usually is a larger space for which performance given by the loss metric i
 My interpretation of this is that what we identify with learning algorithms for SNNs is not a specific configuration which captures the data set at hand, but a configuration which reaches a mode of behaviour that would allow it do produce the data.
 This may indicate that there are other principles underlying the learning of these networks.
 
-\section{(Evolutionary algorithms)}
+% \section{(Evolutionary algorithms)}
+\section{Gradient free optimisation with evolutionary algorithms}
+
 % I recall back to conferences talking about inferring complex, deep networks, which is a field where evolutionary algorithms (EAs) still are competitive and fruitful.
 In short, when EAs are fruitful, this often means the search space is so vast that gradient-based approaches will not converge.
 Even so, the computational cost is comparable, or even worse, than for ABC.
@@ -359,6 +361,27 @@ Even so, the computational cost is comparable, or even worse, than for ABC.
 % and g(s) = D\^interval[q, k]
 % assume same labels?
 % --> However, does not converge well.
+
+% nevergrad + brian2
+% for efficiency purposes..?
+Evolutionary algorithms may be used to traverse high-dimensional parameter-spaces in search for optimal solutions to complex problems such as fitting complex network models.
+This is made possible by by using objective functions to evaluate solution candidates, essentially provided as heuristics guiding the search. Note that finding the global optimum cannot be guaranteed when using evolutionary algorithms.
+In our case, due to the nature of the GLIF model, we may both constrain the parameter search space to meaningful parameter intervals, and employ search strategies that are more suited for the system.
+
+Two such evolutionary algorithm strategies are differential evolution (DE), and covariance matrix adaptation (CMA). 
+
+By using differential evolution (DE), a strategy where a set of best performing candidates are combined and mutated, we may continuously improve parts of the candidate solution, whilst potentially naturally constraining the search as a result.
+% revise the above
+While DE may be used to cross over and generate candidate solutions more broadly, it may also be skewed towards local optima. Another approach that we selected that might be better suited for very high-dimensional problems, is covariance matrix adaptation (CMA) evolution \cite{Igel2007}. CMA will naturally utilise correlated parameters in the model system as is the case in the GLIF model, and incorporates this by updating a covariance matrix during search path traversal, which is in turn used to maximise the probability for finding successful candidate solutions.
+Effectively, CMA does principal components analysis over its evolution path, which allows for variance and step size adjustment.
+CMA evolutionary strategies have been shown to perform well for difficult functions with larger budgets \cite{Hansen2010}.
+% revise the above
+
+% PSO, NGO?
+Initial testing with particle-swarm optimisation (PSO), which can be said to search more widely before converging towards the best performing candidate in the fitness landscape.
+However, divergence or non-converging bad fits, likely due to the vast complexity of the parameter-space and the nature of PSO.
+Failure to converge to results of comparable loss to the other optimisers was also the case with neighbourhood and genetic operator (NGO) search.
+
 
 
 \section{Evaluating SNN models}
@@ -691,11 +714,24 @@ It also required maintaining a neuronal state throughout simulation, for which I
 With this simple trick, intervals of input mutate the state with each input corresponding to some desired time-step constant, in my code set to $1 ms$ for simplicity. % TODO: SI unit
 However, it does result in that intervals of simulation need to be performed for each backward pass, i.e. updating the model parameters given error gradients.
 
+I implemented a GLIF SNN optimisation framework on top of Pytorch \cite{Paszke2017} and utilised Pytorch's autograd-feature for backpropagation of error gradients.
+Key to enabling backpropagation is defining spiking using a differentiable function, such as the sigmoid function, i.e.
+
+\begin{equation}
+    s_t(v) = \frac{1}{1+e^{-(v_t-(\theta_v + \theta_s)}}
+\end{equation}
+
+where $s_t$ denotes whether a neuron spikes at time $t$ with a membrane potential $v_t$. Or by considering the spiking to be a readout of a continuous parameter/variable such as the post-synaptic current from each neuron, as is done in the case of the continuous sub-threshold synaptic model in \cite{Huh2017}.
+
+% ref. Adam
+% synthetic data generation with pseudo-random Poisson input, data driven experiments in vivo data set.
+To perform optimisation, an initial model parametrisation is drawn uniformly from parameter intervals that are constrained to meaningful parameter values, and then perturbed with input drawn from some input generator function. Note that the parameters of this function may also be fitted.
+The model output is then compared with the output of a target data set, and the specified loss metric and distance is calculated between the produced model output and target spike train.
+
 \subsection{The framework}
 
 Modular Python-based framework written in Pytorch that allows for automatic differentiation of the computational graphs defined with Pytorch-code.
 
-% Example?
 
 
 
