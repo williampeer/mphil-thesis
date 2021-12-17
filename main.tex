@@ -106,15 +106,15 @@
     % may be fruitful to use synapse model in conjunction with the above, but overall the results suggest that under the current formulation
     
 \abstract{
-    Computational models have been used to illuminate and unravel neural functioning, with seminal works including models such as the Hodgkin-Huxley model.
-    Models are themselves hypotheses of the system we wish to study, and may both explain functional aspects about recorded areas, and be used to generate hypotheses that may be tested in vivo or vitro.
+    Computational models have long been used as hypotheses to illuminate and unravel aspects of neural functioning, with seminal works including models such as the Hodgkin-Huxley model,
+    % Models are themselves hypotheses of the system we wish to study, and may both explain functional aspects about recorded areas, and 
+    which also exemplifies that model hypotheses may be tested with in vivo or vitro experiments.
     However, designing high-dimensional biologically realistic models can be an arduous endeavour, and may require hand-engineering for each setting.
-    Automating this arduous construction of biologically realistic or plausible models could potentially greatly accelerate computational research within neuroscience.
-    Therefore, various statistical approaches have been used to try and aid in such modelling, with the current state-of-the-art being based on Bayesian approximation.
+    Automating this arduous process could potentially greatly accelerate computational research within neuroscience.
+    Therefore, statistical approaches have been used to try and aid in such modelling, with the current state-of-the-art being based on Bayesian approximation.
     However, this approach does not scale well with growing resolution, i.e. a growing number of neurons.
-    Thus, in the era of machine learning, where modeling is shifted towards the data driven using optimisation, it is only natural to ask whether the time may be ripe for us to look at a synthesis where we may leverage a similar approach in computational neuroscience.
-    To this end we implement a modular gradient based optimisation framework on top of PyTorch, a modern ML Python library, and investigate to what extent gradient based optimisation (GBO) may be used for spiking neural network (SNN) model inference.
-    GBO is of particular interest because the procedure scales well with the network size, due to an "in-place" parameter inference by error gradient signal propagation.
+    In the current data driven era, where deep learning is the prevalent state-of-the-art within machine learning, we investigate whether its key ingredient; gradient based optimisation (GBO) may be leveraged for spiking neural network (SNN) model inference.
+    To this end we implement a modular gradient based optimisation framework on top of PyTorch, a modern ML Python library, and test to what extent GBO may be used for SNN inference, particularly because this approach scales well with network size.
     GBO is tested for a rate based loss metric, as well as for the van Rossum distance, which also emphasised the timing of spiking, over different classes of SNNs, including generalised versions of leaky integrate-and-fire, non-leaky integrate-and-fire, and probabilistic spiking models, with some extensions to subthreshold synaptic current models, which may enable for more continuous signals.
     The results show that due to the temporal nature of SNNs, the van Rossum distance metric and emphasis on the precise timing of spiking obscures the gradient signal due to the spike train stochasticity and resulting variability.
     Further, the parameter landscapes formed by the rate-based metric contains no saddle point, and at best a frontier as the global minima.
