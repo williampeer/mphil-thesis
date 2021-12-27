@@ -194,7 +194,7 @@ While this makes the model biologically interpretable with direct parallels betw
 The system now has activity inedpendently of input perturbation. The transformation of an input signal is no longer deterministic in the sense that it will result in one given output given a set of initial model parameters - it now depends on the current system's state, which again depends on the previous state.
 As such, gradients calculated in a manner similar to that of for DNNs in ML will also depend on the system's and neurons' state, greatly increasing complexity.
 In a way, one may still maintain the parallel to backpropagation through time for DNNs - however, there is a crucial difference in that a neuron's output is now of a much more binary nature; a spike or no spike, and in that the time series evolution of spikes, whilst potentially encoding much more information, now is a series of spike evolving over time, and thus the target signal cannot be regarded in the same way as in DNNs.
-This being said, I believe like noted by other authors such as \cite{Sindaci2018StatisticalFunction} that researchers are looking for a connection between the field of machine learning and computational neuroscience, the former having had its subfield of DNNs created based on inspiration from the brain, but now in a reverse way in which we may leverage the advances from the domain of ML in model construction.
+This being said, I believe like noted by other authors such as \cite{Sindaci2018} that researchers are looking for a connection between the field of machine learning and computational neuroscience, the former having had its subfield of DNNs created based on inspiration from the brain, but now in a reverse way in which we may leverage the advances from the domain of ML in model construction.
 Even though we are not there yet, I believe the search for a connection here may both be highly beneficial for the community, and spawn a new sub-field of dynamical systems modelling using inference in computational neuroscience.
 
 % My main findings, although included throughout in the rest of my thesis, may be summarised as following:
@@ -509,11 +509,11 @@ For more details, please see the references included above, or the sample code g
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.33\columnwidth]{figures/samples/membrane_potentials/GLIF/export_sample_LIF_white_noise.eps}
-    \includegraphics[width=0.33\columnwidth]{figures/samples/membrane_potentials/GLIF/export_sample_GLIF_white_noise.eps}
-    \includegraphics[width=0.33\columnwidth]{figures/samples/membrane_potentials/GLIF/export_sample_mesoGIF_white_noise.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/samples/membrane_potentials/export_sample_LIF_white_noise.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/samples/membrane_potentials/export_sample_GLIF_white_noise.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/samples/membrane_potentials/export_sample_mesoGIF_white_noise.eps}
     \vskip -0.1in
-    \caption{membrane_potential_samples}
+    \caption{membrane potential samples}
     \label{fig:membrane_potential_samples}
     \vskip -0.2in
 \end{figure}
@@ -665,9 +665,9 @@ with $t$ being the current time, $t_{i,spike}$ the most recent time of spiking f
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/samples/van_rossum_convolution_example.eps}
+    \includegraphics[width=0.9\columnwidth]{figures/samples/neur_vr_conv_sample.eps}
     \vskip -0.1in
-    \caption{placeholder: van_rossum_convolution_example}
+    \caption{placeholder: van rossum convolution example}
     \label{fig:vrd_conv_sample}
     \vskip -0.2in
 \end{figure}
@@ -702,6 +702,8 @@ Assuming a Poisson distribution,
 \end{equation}
 
 These let us estimate the ML for $\theta$.
+
+
 
 
 % -----------------------
@@ -875,20 +877,18 @@ The results which are included below illuminate how optimisation traverses the g
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/parameters/param_landscape_heatmaps/GLIF/test_export_2d_heatmap_N_4_loss_tau_s_tau_m.eps}
+    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/GLIF/test_export_2d_heatmap_N_4_loss_tau_s_tau_m.eps}
     \vskip -0.1in
-    \caption{p_landscape_GLIF_tau_s_tau_m}
-    \label{fig:p_landscape_GLIF_tau_s_tau_m}
+    \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
 \end{figure}
 
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/parameters/param_landscape_heatmaps/GLIF/test_export_2d_heatmap_N_4_loss_b_s_a_v.eps}
+    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/GLIF/test_export_2d_heatmap_N_4_loss_b_s_a_v.eps}
     \vskip -0.1in
-    \caption{p_landscape_GLIF_tau_s_tau_m}
-    \label{fig:p_landscape_GLIF_tau_s_tau_m}
+    \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
 \end{figure}
 
@@ -896,20 +896,18 @@ The results which are included below illuminate how optimisation traverses the g
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/parameters/param_landscape_heatmaps/LIF/test_export_2d_heatmap_N_4_loss_E_L_tau_m.eps}
+    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/LIF/test_export_2d_heatmap_N_4_loss_E_L_tau_m.eps}
     \vskip -0.1in
-    \caption{p_landscape_GLIF_tau_s_tau_m}
-    \label{fig:p_landscape_GLIF_tau_s_tau_m}
+    \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
 \end{figure}
 
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/parameters/param_landscape_heatmaps/LIF/test_export_2d_heatmap_N_4_loss_tau_m_tau_s.eps}
+    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/LIF/test_export_2d_heatmap_N_4_loss_tau_m_tau_s.eps}
     \vskip -0.1in
-    \caption{p_landscape_GLIF_tau_s_tau_m}
-    \label{fig:p_landscape_GLIF_tau_s_tau_m}
+    \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
 \end{figure}
 
@@ -917,42 +915,38 @@ The results which are included below illuminate how optimisation traverses the g
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/parameters/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_c_Delta_u.eps}
-    \includegraphics[width=0.9\columnwidth]{figures/parameters/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_E_L_tau_m.eps}
+    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_c_Delta_u.eps}
+    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_E_L_tau_m.eps}
     \vskip -0.1in
-    \caption{p_landscape_GLIF_tau_s_tau_m}
-    \label{fig:p_landscape_GLIF_tau_s_tau_m}
+    \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
 \end{figure}
 
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/parameters/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_tau_m_tau_s.eps}
-    \includegraphics[width=0.9\columnwidth]{figures/parameters/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_tau_theta_J_theta.eps}
+    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_tau_m_tau_s.eps}
+    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_tau_theta_J_theta.eps}
     \vskip -0.1in
-    \caption{p_landscape_GLIF_tau_s_tau_m}
-    \label{fig:p_landscape_GLIF_tau_s_tau_m}
+    \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
 \end{figure}
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/parameters/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_c_Delta_u.eps}
-    \includegraphics[width=0.9\columnwidth]{figures/parameters/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_E_L_tau_m.eps}
+    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_c_Delta_u.eps}
+    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_E_L_tau_m.eps}
     \vskip -0.1in
-    \caption{p_landscape_GLIF_tau_s_tau_m}
-    \label{fig:p_landscape_GLIF_tau_s_tau_m}
+    \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
 \end{figure}
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/parameters/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_tau_m_tau_s.eps}
-    \includegraphics[width=0.9\columnwidth]{figures/parameters/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_tau_theta_J_theta.eps}
+    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_tau_m_tau_s.eps}
+    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_tau_theta_J_theta.eps}
     \vskip -0.1in
-    \caption{p_landscape_GLIF_tau_s_tau_m}
-    \label{fig:p_landscape_GLIF_tau_s_tau_m}
+    \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
 \end{figure}
 
@@ -996,7 +990,7 @@ This data was generated by a hand-engineered ...
 
 \section{Simulation-based inference}
 
-Using the best performing loss-metric as found in the GBO experiments, and also revealed by the parameter landscape plots, i.e. the firing rate loss metric, we performed SBI by using the Python-framework of the Macke-lab \href{}.
+Using the best performing loss-metric as found in the GBO experiments, and also revealed by the parameter landscape plots, i.e. the firing rate loss metric, we performed SBI by using the Python-framework of the Macke-lab \href{https://github.com/mackelab/sbi}{SBI}.
 
 % sbi_p_avgs_pairplot_SNPE_GLIF_12-15_14-22-38-919.eps
 % sbi_p_avgs_pairplot_SNPE_LIF_12-15_04-56-19-338.eps
@@ -1180,36 +1174,6 @@ Below is a list of points summarising observations that I made during my researc
 \section{Report/paper draft: \textit{Parallel spiking neural network parameter inference using gradient based optimization}}
 \includepdf[pages=-]{files/icml2021_draft_snn_inference.pdf}
 
-
-% =======================================================
-\chapter{Exact models with continuous spike signals}
-
-Non-leaky integrate-and-fire (NLIF) model with subthreshold continuous spike signals defined to sum to 1 inside of an active zone \cite{Huh2017}.
-% With NIF neurons, one could analytically show/solve the systems and show where noise would render the loss function useless. However, unsure how to test this for spike output task. Could we use (Mostafa, 2018) combined with (Huh \& Sejnowski, 2017)? Or at least the latter?
-
-\section{Gated sub-threshold spike-signal model}
-
-\section{Study: \textit{NLIF for exact gradient based model inference}}
-
-\subsection{NLIF definition}
-
-\subsection{Tasks}
-
-\subsection{Synapse types}
-
-\subsection{Discussion}
-
-analog output versus discrete pulses and latent internal states (??)
-research has been impeded by lack of supervised learning algorithms
-they present differentiable formulation of SNNs, with exact gradient calculation
-simple tasks
-rate-based models fail to describe fast dynamics of spike-based computation
-difficult to optimise discrete, binary all-or-none signals
-other methods circumvent non-differentiability
-
-"Note that the gradient calculation procedure involves multiplication between the presynaptic input source and the postsynaptic adjoint state pv, which is driven by the g ˙ps term: i.e. the product of postsynaptic spike activity and temporal difference of error. This is analogous to reward-modulated spike-time dependent plasticity (STDP) [17]."
-
-
 % =======================================================
 \chapter{Sleep regulation in the rodent brainstem}
 
@@ -1291,6 +1255,34 @@ However, single-neuron signals slightly better predictors - suggesting both that
 \subsection{ABC}
 
 \section{Conclusion}
+
+% =======================================================
+\chapter{BONUS: Exact models with continuous spike signals}
+
+Non-leaky integrate-and-fire (NLIF) model with subthreshold continuous spike signals defined to sum to 1 inside of an active zone \cite{Huh2017}.
+% With NIF neurons, one could analytically show/solve the systems and show where noise would render the loss function useless. However, unsure how to test this for spike output task. Could we use (Mostafa, 2018) combined with (Huh \& Sejnowski, 2017)? Or at least the latter?
+
+\section{Gated sub-threshold spike-signal model}
+
+\section{Study: \textit{NLIF for exact gradient based model inference}}
+
+\subsection{NLIF definition}
+
+\subsection{Tasks}
+
+\subsection{Synapse types}
+
+\subsection{Discussion}
+
+analog output versus discrete pulses and latent internal states (??)
+research has been impeded by lack of supervised learning algorithms
+they present differentiable formulation of SNNs, with exact gradient calculation
+simple tasks
+rate-based models fail to describe fast dynamics of spike-based computation
+difficult to optimise discrete, binary all-or-none signals
+other methods circumvent non-differentiability
+
+"Note that the gradient calculation procedure involves multiplication between the presynaptic input source and the postsynaptic adjoint state pv, which is driven by the g ˙ps term: i.e. the product of postsynaptic spike activity and temporal difference of error. This is analogous to reward-modulated spike-time dependent plasticity (STDP) [17]."
 
 
 
