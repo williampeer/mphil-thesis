@@ -19,7 +19,7 @@
 % \documentclass[msc,deptreport,inf]{infthesis}     % Informatics
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-\documentclass[mphil,deptreport,ai]{infthesis} % Do not change except to add your degree (see above).
+\documentclass[mphil,deptreport,ianc]{infthesis} % Do not change except to add your degree (see above).
 \usepackage[final]{pdfpages}
 \usepackage{siunitx}
 \usepackage{hyperref}
@@ -614,6 +614,26 @@ where the synaptic input current to a neuron $j$ is modelled as $I_{syn,j} = \su
 
 Refer to \cite{Huh2017}, mention impact, refer to synapse chapter.
 
+\subsection{Stochastic integrate-and-fire models (SIF)}
+% \subsection{Contribution: microGIF work}
+\label{microGIF}
+
+Cortical microcolumn-inspired population- or neuron-level SIF models.
+
+Based on the work of \cite{Rene2020}, which is based on \cite{Schwalger2017}.
+Spike probability, rather than membrane potential and spikes.
+--> Minimise negative log-likelihood under a Bernoulli or Poisson assumption.
+
+ALlows for a direct comparison.
+
+
+% TODO: check: "frontier" found using frd - vrd obscures gradient and diverges more.
+BNLL \& PNLL "frontier"
+
+% \subsection{GLIF neurons}
+% Can be highly parameter-sensitive and result in completely different mode of neuronal behaviour
+
+
 \subsection{Izhikevich}
 
 Replicated \cite{Oliveira2019} merely to show that the resulting rates could be formulated more or less as a linear function, resulting from subthreshold oscillations, and that the model is highly sensitive to its initial parameter values.
@@ -630,6 +650,10 @@ Parallels to SNN inference etc
 % simple, rate-based metric. does not capture correlations, or only very vaguely if done over smaller time bins. 
 % can be combined with correlation metric.
 
+% Tricky design, stochasticity, lots of considerations, as we shall see only frontier..
+When it comes to designing suitable loss metrics, this is one of the main challenges for applying gradient based optimisation to SNNs, as it is what defines the gradients, and thus the parameter space that we traverse during optimisation.
+
+
 We performed optimization using (1)~the firing rate distance, (2)~the van Rossum distance, (3)~an additive combination of the van Rossum and firing rate distance, (4)~a Pearson correlation metric distance, (5)~the Fano Factor, (6) the mean squared error, and (7) the negative log-likelihood assuming either a Bernoulli or Poisson PDF for the probabilistic models.
 % emphasising mainly the firing rate in earlier training iterations, and conversely mainly the van Rossum distance in later training iterations. 
 
@@ -645,6 +669,30 @@ where $s^i$ is the number of spikes for neuron $i$ in a given interval $\Delta t
 
 \subsection{van Rossum distance}
 
+\begin{figure}
+    \centering
+    \vskip -0.1in
+    \includegraphics[width=0.9\columnwidth]{figures/samples/neur_vr_conv_sample.eps}
+    \vskip -0.1in
+    \caption{placeholder: van rossum convolution example}
+    \label{fig:vrd_conv_sample}
+    \vskip -0.2in
+\end{figure}
+
+One thing is quantifying distances in terms of spike metrics.
+Another is designing a metric that is well-defined for gradient-descent.
+While the van Rossum metric describes the distance between two spike trains both in terms of rates and timing, due to its sensitivity to exact timing the gradient signal might be obscured for non-matching neurons, and more well-defined where the rates better match.
+
+% \subsubsection{van Rossum distance}
+Hypothesis: Using the van rossum distance may guide search, allowing gradient-based methods to converge?
+Using the van-rossum distance as a loss function for the spike trains, we get something more continuous, since the discrete spike train is convolved with a time-based kernel. 
+This should make the gradients more informed via the loss function in larger search areas.
+
+% figures of a convolved spike train, reference to LIF poster
+
+% for probabilistic SNNs, as well as GLIF(?) SNNs:
+Main finding: 
+"\textit{wandering gradients}" for vRD.
 precise timing emphasis. breaks down for smoothed and stochastic signals, only works well for NLIF, or when it approaches rate-based - even then FRD might outperform this metric for surrogate GD.
 
 The van Rossum distance \cite{VanRossum2001} may be defined as the Euclidean distance between two spike trains where each spike is convolved with an exponential kernel forward in time,
@@ -661,16 +709,6 @@ with $t$ being the current time, $t_{i,spike}$ the most recent time of spiking f
 \begin{equation}
     d_v = E(S_1, S_2) = \sum_{t=0}^{t=N} \sqrt{(f_{conv}(S_1)-f_{conv}(S_2))^2}
 \end{equation}
-
-\begin{figure}
-    \centering
-    \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/samples/neur_vr_conv_sample.eps}
-    \vskip -0.1in
-    \caption{placeholder: van rossum convolution example}
-    \label{fig:vrd_conv_sample}
-    \vskip -0.2in
-\end{figure}
 
 
 % \subsection{KL-divergence}
@@ -765,6 +803,14 @@ These let us estimate the ML for $\theta$.
 % Point processes for several spike trains (networks and not just neurons); papers (ignored here)
 % ---------------------
 
+% =======================================================
+\chapter{Gradient-descent based LIF SNN inference}
+\section{Poster: \textit{Spiking Network Inference Using Gradient Based Optimisation}}
+\includepdf[pages=-]{files/FENS-virtual-2020-e-Poster-W-P-Berg-and-A-Onken-Spiking-Network-Inference-Using-Gradient-Based-Optimisation-PORTRAIT-5.pdf}
+
+\section{Report/paper draft: \textit{Parallel spiking neural network parameter inference using gradient based optimization}}
+\includepdf[pages=-]{files/icml2021_draft_snn_inference.pdf}
+
 
 % =======================================================
 \chapter{Work: The frontier of SNN inference}
@@ -787,8 +833,6 @@ We want to have input that puts the system in a realistic mode of behaviour, and
 % As it is limited what we may assume about the input, loss metrics that put a high emphasis on the precise timing of spiking may in fact obscure the gradient signal by incorporating too much of the noise stemming from this signal.
 % We therefore focus on metrics that are more rate-based, looking at intervals of spikes in order to include the temporal signatures to some extent.
 % Using a timing-oriented metric over larger time bins may even result in divergence, due to variability between the hidden target data input, and the inferred model input. 
-
-
 
 
 % \section{My contribution: Implementing, differentiating and optimising different SNN models using different loss metrics}
@@ -868,7 +912,7 @@ Since some model parameters are more sensitive than others, I defined linear con
 % SBI is also different from what René et al. did in their paper. So these are two methods to compare with their findings. 
 
 
-\subsection{Results}
+\section{Results}
 
 Prior to the main experimental setup above, I simulated each model class for realistic intervals of parameters, whilst fixing the other parameters to values that I had empirically or analytically determined to be able to produce meaningful output, and plotted the loss and rate when compared to the target model of the same model class, essentially performing a grid search over parameters allowing to plot the marginals of the parameter landscape formed by the loss metric and target model signal.
 The results which are included below illuminate how optimisation traverses the gradients formed by the parameter landscape, and gives an idea about the extent to which the procedure is applicable to the model class.
@@ -957,6 +1001,13 @@ For Izhikevich: <inser description>
 Therefore not included in GBO experiments.
 
 % Experiments:
+
+\subsection{Stochastic integrate-and-fire GBO}
+
+Bernoulli and Poisson NLL
+
+results spike correlations and RMSE, report comparatively too.
+
 % SameModelClassTarget
 \subsection{Known ground-truth synthetic data}
 Fitting to synthetic data generated by the same model class, such that we may compare the retrieved parameters with the ground truth.
@@ -988,7 +1039,7 @@ This data was generated by a hand-engineered ...
 % 	\includegraphics{figures/}
 % \end{figure}
 
-\section{Simulation-based inference}
+\subsection{Simulation-based inference}
 
 Using the best performing loss-metric as found in the GBO experiments, and also revealed by the parameter landscape plots, i.e. the firing rate loss metric, we performed SBI by using the Python-framework of the Macke-lab \href{https://github.com/mackelab/sbi}{SBI}.
 
@@ -998,7 +1049,7 @@ Using the best performing loss-metric as found in the GBO experiments, and also 
 
 % General description across p-dists, and mostly rates (implicitly loss).
 
-\section{NMF analysis}
+\subsection{NMF analysis}
 
 % \begin{figure}
 % 	\includegraphics{figures/export_rates_only_GT_all.eps}
@@ -1014,6 +1065,41 @@ Using the best performing loss-metric as found in the GBO experiments, and also 
 % geodesic_distances_Synthetic_GLIF.eps
 % geodesic_distances_Synthetic_LIF.eps
 
+Custom coupled GLM fitted to target spike trains.
+% citecite
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\columnwidth]{figures/matlab/export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_mesoGIF_N_4.eps}
+    \caption{GLM mesoGIF}
+    \label{fig:GLM_mesoGIF}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\columnwidth]{figures/matlab/export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_microGIF_N_21.eps}
+    \caption{GLM microGIF}
+    \label{fig:GLM_microGIF}
+\end{figure}
+
+
+all models GBO
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\columnwidth]{figures/matlab/geodesic_distances_Synthetic_GLIF.eps}
+    \caption{placeholder geodesic GBO}
+    \label{fig:geodesic_distances}
+\end{figure}
+
+SBI
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\columnwidth]{figures/matlab/bugged_microGIF_21.eps}
+    \caption{placeholder geodesic SBI}
+    \label{fig:geodesic_distances}
+\end{figure}
 
 % \subsection{Leaky integrate-and-fire (LIF)}
 
@@ -1046,50 +1132,6 @@ Using the best performing loss-metric as found in the GBO experiments, and also 
 % (To verify that the model would indeed be sensible for synthetic generation, we tested the stability of neuron rates across different random seeds. When a deviation lower than X was attained, we accepted the ensemble model as a generative model suitable for data generation in order to test our framework.)
 % Note that this deviation test is only to determine that the model doesn’t behave chaotically, and does not fire spuriously, in which case optimisation would be like fitting to noise, which should not converge.
 
-
-
-\section{"Cortical microcolumn"-inspired stochastic population integrate-and-fire models}
-% \subsection{Contribution: microGIF work}
-\label{microGIF}
-
-Based on the work of \cite{Rene2020}, which is based on \cite{Schwalger2017}.
-Spike probability, rather than membrane potential and spikes.
---> Minimise negative log-likelihood under a Bernoulli or Poisson assumption.
-
-
-% TODO: check: "frontier" found using frd - vrd obscures gradient and diverges more.
-BNLL \& PNLL "frontier"
-
-% \subsection{GLIF neurons}
-% Can be highly parameter-sensitive and result in completely different mode of neuronal behaviour
-
-
-\subsection{Loss metrics}
-
-% Tricky design, stochasticity, lots of considerations, as we shall see only frontier..
-When it comes to designing suitable loss metrics, this is one of the main challenges for applying gradient based optimisation to SNNs, as it is what defines the gradients, and thus the parameter space that we traverse during optimisation.
-
-% figures of parameter landscapes
-
-
-% \subsubsection{van Rossum distance}
-Hypothesis: Using the van rossum distance may guide search, allowing gradient-based methods to converge?
-
-Using the van-rossum distance as a loss function for the spike trains, we get something more continuous, since the discrete spike train is convolved with a time-based kernel. 
-This should make the gradients more informed via the loss function in larger search areas.
-
-% figures of a convolved spike train, reference to LIF poster
-
-% for probabilistic SNNs, as well as GLIF(?) SNNs:
-Main finding: 
-"\textit{wandering gradients}" for vRD.
-
-One thing is quantifying distances in terms of spike metrics.
-Another is designing a metric that is well-defined for gradient-descent.
-While the van Rossum metric describes the distance between two spike trains both in terms of rates and timing, due to its sensitivity to exact timing the gradient signal might be obscured for non-matching neurons, and more well-defined where the rates better match.
-
-
-\subsection{\textit{Best-effort GBO with input-specific parameter regime(?)}}
 
 
 \section{Discussion}
@@ -1164,15 +1206,6 @@ Below is a list of points summarising observations that I made during my researc
         Linear transformations are good alternatives for this, and can save one for a lot of hand-calibration in order to attain a regime in which GBO is well-defined/does not diverge
 \end{itemize}
 
-
-
-% =======================================================
-\chapter{Gradient-descent based LIF SNN inference}
-\section{Poster: \textit{Spiking Network Inference Using Gradient Based Optimisation}}
-\includepdf[pages=-]{files/FENS-virtual-2020-e-Poster-W-P-Berg-and-A-Onken-Spiking-Network-Inference-Using-Gradient-Based-Optimisation-PORTRAIT-5.pdf}
-
-\section{Report/paper draft: \textit{Parallel spiking neural network parameter inference using gradient based optimization}}
-\includepdf[pages=-]{files/icml2021_draft_snn_inference.pdf}
 
 % =======================================================
 \chapter{Sleep regulation in the rodent brainstem}
