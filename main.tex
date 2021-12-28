@@ -172,35 +172,48 @@ Lastly, I would like to sincerely thank the head of our collaborative lab at the
 % One who strives towards a goal to prove themselves, may suffer along the way.
 % One who strives towards a goal as a means of self-expression, may enjoy the way.
 
-\section{A synthesis from the brain to deep learning and back again?}
+% \section{A synthesis from the brain to deep learning and back again?}
 
-Spiking neural networks (SNNs) contain variables that represent biological properties such as the membrane potential, cell membrane time constant relating to the type of cell and ion channels, and potentially other neurotransmitter dynamics. Their definition results in dynamics resembling that of biological neurons, including the release of action potentials upon reaching a certain membrane potential.
-Due largely to the biological plausibility of this class of neural network models, they are appealing to study in computational neuroscience, as they maintain these biological parallels, which feed-forward networks  do not.
-However, SNN inference research is highly limited and faces a number of challenges due to the temporal nature of SNNs and the associated increased complexity, stemming from both state-dependence, temporal stochasticity, and parameter dimensionality.
-Machine learning, with the recent surge of interest due to the large success of employing gradient based optimisation for deep neural networks, in part unlocked by the increase in available computational power and data, was originally loosely inspired by neuroscience in that we are dealing with networks of coupled nodes, thought to represent neurons.
+Spiking neural networks (SNNs) contain variables that represent biological properties such as the membrane potential, cell membrane time constant relating to the type of cell and ion channels, and potentially other neurotransmitter dynamics. 
+Their definition results in dynamics resembling that of biological neurons, including the release of action potentials upon reaching a certain membrane potential.
+Due largely to the biological plausibility of this class of neural network models, they are appealing to study in computational neuroscience, as they maintain these biological parallels to an extent which the feed-forward networks in deep learning do not.
+However, SNN inference research is highly limited and faces a number of challenges due to the temporal nature of SNNs and the associated increased complexity, stemming both from state-dependence, resulting temporal stochasticity, and the (high) parameter dimensionality.
+On the other hand, machine learning has seen a recent surge of interest due to the large success of employing gradient based optimisation for deep neural networks (DNNs), in part unlocked by the increase in available computational power and data. 
+Numerous fields have replaced their state-of-the-art models with surrogate deep neural network models that capture the structure in the data.
+Thus, it is only natural to ask whether the foundational methodology of gradient descent may be applied in other fields.
+I find this particularly interesting for neuroscience, which is after all the origin of deep neural networks in machine learning, loosely inspired in the networks of coupled nodes, thought to represent neurons.
 Some of the ongoing research in computational neuroscience is now in fact focussed on whether deep learning may inspire model inference within a domain closer to its origin; namely for biologically plausible neural network models.
-% This work is focussed mainly on 
+However, these approaches either greatly constrain model fitting by making statistical assumptions and inferring models with a low number of nodes, or use DNNs to try and learn the relation between SNN parameters and spike outputs.
+This work is focussed mainly on inference of SNN models using gradient based optimisation, with the aim of accelerating research towards a scalable inference algorithm for this model class of biologically plausible and interpretable neural networks.
+As more and more data, and data of a higher resolution, is becoming available from neural brain recordings, the potential benefits of developing a scalable approach for model inference only grows.
 We here revisit the state-of-the art for inferring SNN models using both surrogate gradient based optimisation and some of the most prominent spike metrics, as well as deep neural network amortized learning and approximate Bayesian computation (ABC), and compare how these approaches may be employed for SNN inference. Further, we hypothesise that recent ML techniques may be leveraged for successful and efficient model inference using surrogate gradient descent.
-We find that while ABC may be successful for population-level models, as has been shown recently in the literature, its algorithmic and computational complexity and cost thereof limits the methodology to a low number of nodes, particularly for more high-dimensional leaky integrate-and-fire (LIF) model extensions.
-However, using a surrogate gradient approach, we find that model inference for larger networks is made possible. 
-Since it would greatly help with SNN model construction if automatic inference based on various data became possible and available to the research community, this has been one of my primary research goals.
-Further, as usual, more and more data, and data of a higher resolution, is becoming available from neural brain recordings, only increasing the potential benefits of developing a scalable approach for model inference.
-We perform model inference using a set of LIF-extensions, leading up to the GLIF model using (both) synthetic (and biological) data, and demonstrate that higher order statistics may be captured (to some extent) even when performing neuron-level model inference over a mixed neuron-type network.
+We find that while ABC may be successful for population-level models, as has been shown recently in the literature, but that its algorithmic and computational complexity and cost thereof limits the methodology to models with a low number of nodes.
+However, using a surrogate gradient approach, we find that model inference for larger networks is made possible, albeit for local minima, and not for consistently retrieving the ground-truth values as tested with synthetic data generation. 
+% Since it would greatly help with SNN model construction if automatic inference based on various data became possible and available to the research community, this has been one of my primary research goals.
+We perform model inference using leaky integrate-and-fire (LIF) models, generalised leaky integrate-and-fire (GLIF) models, and stochastic general integrate-and-fire models (SGIF) using (both) synthetic (and biological) target data, and demonstrate that higher order statistics may be captured (to some extent) even when performing neuron-level model inference over a mixed neuron-type network. The results are verified by comparing geodesic similarities of inferred model spike train outputs with predicted spike trains produced by fitting generalised linear models (GLMs) to the target data.
+Our findings there illuminate that the inference procedure is in fact capable of capturing the higher-order statistics to the same extent as a coupled Poisson GLM.
 % This may advance research on SNN inference, and also demonstrates how modern ML frameworks as well as techniques may be leveraged to this end.
-However, we observe that it is highly problematic to aim for retrieving ground-truth parameters in SNN models. A large part of the work presented in this thesis will revolve around why SNNs do not lend themselves as well as feedforward neural networks as within deep learning, even though they also implement a type of recurrence using recurrent units with memory, in addition to potential recurrent connectedness.
-To try and give an intuition about why this is; if we think about deep neural networks (DNNs) in the machine learning (ML) domain - these may approximate arbitrary data well, given that they are universal function approximators. However, this requires that the data is of such a format that it may be represented and captured by a function which the network learns by spatial representation and transformation.
+However, we observe that it is highly problematic to aim for retrieving ground-truth parameters in SNN models when using gradient based optimisation. 
+This is largely due to the issue of constructing a well-defined loss metric.
+As our best results were produced when using a binned rate-based metric, the resulting error landscape for the parameters often does not contain a single point, or even a basin, for the global minima.
+Instead, this is a region or space in which the gradient may wander arbitrarily when performing GBO. As such, we will likely only end up within this space, but the global minimum is not retrievable, or well-defined, when considering this through the lens of the rate-based metric.
+% A large part of the work presented in this thesis will revolve around why SNNs do not lend themselves as well as feedforward neural networks as within deep learning, even though they also implement a type of recurrence using recurrent units with memory, in addition to potential recurrent connectedness.
+To try and give a more general an intuition about why this is; if we think about deep neural networks (DNNs) in the machine learning (ML) domain - these may approximate arbitrary data well, given that they are universal function approximators. 
+However, this requires that the data is of such a structure that it may be represented and captured by a function which the network learns by spatial representation and transformation.
 However, in the domain of SNNs, we introduce several new crucial properties, which results in distinct model dynamics. Each neuron now has a state, which depends on its previous state, and the behaviour is modelled typically as a system of ordinary differential equations (ODEs), containing parameters representing the membrane potential, membrane time constant relating to a refractory period, transmitter interaction, and other biological properties. 
 While this makes the model biologically interpretable with direct parallels between parameters and biological and cellular counterparts, it also changes the entire system's behaviour.
-The system now has activity inedpendently of input perturbation. The transformation of an input signal is no longer deterministic in the sense that it will result in one given output given a set of initial model parameters - it now depends on the current system's state, which again depends on the previous state.
+The system now has activity inedpendently of input perturbation. 
+The transformation of an input signal is no longer deterministic in the sense that it will result in one given output given a set of initial model parameters - it now depends on the current system's state, which again depends on the previous state.
 As such, gradients calculated in a manner similar to that of for DNNs in ML will also depend on the system's and neurons' state, greatly increasing complexity.
-In a way, one may still maintain the parallel to backpropagation through time for DNNs - however, there is a crucial difference in that a neuron's output is now of a much more binary nature; a spike or no spike, and in that the time series evolution of spikes, whilst potentially encoding much more information, now is a series of spike evolving over time, and thus the target signal cannot be regarded in the same way as in DNNs.
+In a way, one may still maintain the parallel to backpropagation through time for DNNs. 
+However, there is a crucial difference in that a neuron's output is now of a much more binary nature; a spike or no spike, and in that the time series evolution of spikes, whilst potentially encoding much more information, now is a series of spike evolving over time, and thus the target signal cannot be regarded in the same way as in DNNs.
 This being said, I believe like noted by other authors such as \cite{Sindaci2018} that researchers are looking for a connection between the field of machine learning and computational neuroscience, the former having had its subfield of DNNs created based on inspiration from the brain, but now in a reverse way in which we may leverage the advances from the domain of ML in model construction.
 Even though we are not there yet, I believe the search for a connection here may both be highly beneficial for the community, and spawn a new sub-field of dynamical systems modelling using inference in computational neuroscience.
 
 % My main findings, although included throughout in the rest of my thesis, may be summarised as following:
 Although SNN inference certainly would be of great value to the field, there are some key issues that I have identified and tried to address in my work, some of which are included in the subsections below.
 
-\section{SNNs are hard to optimise}
+\subsection*{SNNs are hard to optimise}
 % I am starting to believe that they’re in fact not possible to optimise, due to the parameter landscape, which results from the temporal nature of the target signal.
 In DNNs, we only consider approximating a spatial transformation over the input data. Not only does this allow for higher parallelisation of the training algorithm, but it may also greatly constrain the parameter landscape in the sense that it does not depend on the past activity of the network itself, which vastly increases both the complexity and stochasticity of parameter inference. 
 One way to ameliorate this is to eliminate some of the stochasticity by making the neurons non-leaky. Since we may computationally set the system’s initial conditions and random seed, the following deterministic computations have little to no fluctuations, and with no leakage, gradient propagation may be computed exactly according to the error signal.
@@ -209,18 +222,18 @@ However, there should exist solutions to the set of coupled ODEs that maximise a
 Nevertheless, since BPTT and optimisation for DNNs within DL has been shown to be able to be able to infer highly complex data sets, it is our goal to study the extent to which a similar methodology may be applied in SNNs, to evaluate the performance of this novel algorithmic design, and to illuminate where work that bears potential may lie.
 
 
-\section{The binary nature of spiking}
+\subsection*{The binary nature of spiking}
 One way of addressing this issue is by incorporating the signal below spike-threshold, i.e. the membrane potential, and have this generate a signal inside of an active zone, such as when the potential is above 0. This is not entirely biologically unrealistic, …, and it offers the advantage of a continuous signal centred around potential (no pun intended) spike pulses, or action potentials. Note that it also provides a gradient signal for spike generation even when the potential may be below threshold, still making the excitation visible to the optimiser.
 This bears some resemblance to loss metrics such as the van Rossum distance, in which each spike pulse is convolved with an exponentially decaying kernel, such that we may operate over a smoother signal. However, this signal transformation transforms each spike pulse the same, rendering the sub-threshold gating synapse model a more fine-grained candidate, since it contains richer differentiable information, and not just spike-time information.
 
 Temporal kernel no new information - but transforms signal such that it contains a trace which may be more easily optimised. Think about aligning two waveforms, rather than two short pulses, where the information gain is only visible in the step which matches them.
 
 
-\section{The parameter landscape contains a frontier with local minima}
+\subsection*{The parameter landscape contains a frontier of local minima (at best)}
 Even when addressing the issues above with the proposed approaches, and even if fixing all model parameters but the weight matrices, there are multiple weight configurations that may result in very similar behaviour and outputs.
 As noted by other researchers in the DNN as well as SNN literature (...) the initial configuration has a large effect on the resulting inferred weights and/or model. This holds particularly true for SNNs, where the previous model state also has an effect on the future state, and the model neurons may be brought to exert different modes of behaviour, depending on the previous and current input and state.
 
-\section{Hand-engineered models may be qualitatively similar to local minima}
+\subsection*{Hand-engineered models may be qualitatively similar to local minima}
 By hand-engineering models it is possible to attain qualitative patterns and behaviour, which has been a common practice in the field of comp neuro - however, this may not be satisfactory for attaining higher-order statistics, and requires a large amount of resources. Therefore, model inference may likely be a better option. 
 The above however indicates that GLMs may be the best we can do in this regard (wrt spike trains), and demonstrates a need for advancing SNN inference.
 The way going forward?
@@ -229,8 +242,23 @@ However, it quickly becomes intractable due to the high complexity of models.
 Surrogate or exact gradient approaches are difficult due to aforementioned issues, and most likely do not settle into a stable configuration, as well as stay in planes of local minima.
 These findings suggest that the best we can currently do is using approximate Bayesian approaches, which not only lets us infer a posterior over all of the parameters, but also provides a measure of certainty around the parameters.
 
-\section{Temmporary conclusion}
-If this approach is intractable for the case we’re looking at, the best we may do is either to use other information theoretic approaches to assess whichever aspect it is that we are interested in, including potentially to hand-engineer and rigorously test a proposed model.
+\subsection*{Temporary conclusion}
+
+GBO may be leveraged for a more scalable inference procedure.
+However, "true" parameters are not well-defined when considering spike trains as the target signal, with unknown inputs, and using LIF-type of models.
+When considering either a more low-dimensional target signal, such as a linear combination of sine-modulated noise, or when making stronger assumptions about the input (as made be done in vitro by stimulation), we may obtain better model fits.
+However, it is crucial to be able to incorporate information about the timing of spiking in the loss metric in order to traverse a more well-defined parameter-landscape.
+The error becomes more trivial to calculate for a lower-dimensional target signal, as correspondingly considerably constrains the parameter landscape.
+
+When it comes to more large-scale networks with spike trains as the target signal, networks of a single layer are seemingly too "free" in their parameter landscapes and stochastic nature in order to be able to form a well-defined optimisation problem.
+However, we may infer models that yet capture higher-order statistics.
+These may thus be used to probe functional characteristics and dynamics of the site which the spike data stems from, or as a starting point for model construction.
+In fact, the geodesic similarity of NMF ensembles is higher for some inferred models than for our baseline coupled Poisson GLM, suggesting either that the GBO inference procedure may capture more of the spike statistics, or potentially that we have done so by the inductive bias induced by optimising a model as the same class as the target data.
+
+When testing this hypothesis on biological data, however, we find that ...
+indeed we may...
+
+This work surveys the literature on GBO related to SNNs, demonstrates a way in which GBO may be implemented and performed scalably for the SNN model class in-place, and tests the limitations of the procedure, as well as connects it with and compares it with the state-of-the-art for a specific stochastic model type, and for a prominent simulation-based inference by approximate Bayesian computation approach.
 
 
 % =======================================================
@@ -1008,6 +1036,12 @@ Bernoulli and Poisson NLL
 
 results spike correlations and RMSE, report comparatively too.
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\columnwidth]{figures/matlab/bugged_microGIF_21.eps}
+    \caption{Bugged microGIF N=21. direct GD with Adam}
+\end{figure}
+
 % SameModelClassTarget
 \subsection{Known ground-truth synthetic data}
 Fitting to synthetic data generated by the same model class, such that we may compare the retrieved parameters with the ground truth.
@@ -1096,9 +1130,8 @@ SBI
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\columnwidth]{figures/matlab/bugged_microGIF_21.eps}
-    \caption{placeholder geodesic SBI}
-    \label{fig:geodesic_distances}
+    \includegraphics[width=0.9\columnwidth]{figures/matlab/bugged_mesoGIF_4.eps}
+    \caption{bugged pop. level SIF. GBO Adam}
 \end{figure}
 
 % \subsection{Leaky integrate-and-fire (LIF)}
@@ -1240,6 +1273,38 @@ Statistically, model soundness may be considered in terms of comparison to a val
 % In order to finalise the implementation, there is a substantial amount of programming required, followed by an ever greater extent of testing, debugging, verification. Finally, when satisfied with the aforementioned, we may proceed to run experiments, analysing the results, and depending on the outcomes pursue further work.
 
 
+% Notes meeting 15032019:
+% Probes hit several locations, and vague
+ 
+% Grace (14)
+% Temporal structure ow cholin. Neur.s. can affect downstream
+% Chemogenetic could not induce REMS
+ 
+% Initiated in ACh PPT/LDT
+ 
+% Denise originally architect. Costa et al. (16)
+% - Main difference is time const. of synn. Response; shorter in orig. paper. Can mimic more rhodent-like state shift
+% Funding bbsc
+ 
+% Might apply for only neuro.
+% Where is probe inserted – dyeing
+ 
+% Phase-locked activities for delta-waves, too
+% P-waves might occur during UP-state
+% Phase-locked
+% Principle of “computation”?
+ 
+% (Principle derivation?)
+% Cell paper information contents between cortex and amygdala in humans and monkey
+% “A Tradeoff in the neural code across regions and species” January 2004
+% Pryluk et al.
+ 
+% Specific q could be: Role of cholin. Neurons. Temporal structure may be important for REMSG
+ 
+% Izhikevich instead of LIF for Grace
+% Once they get REMS – state dependence from cholin. Circuitry too
+% Temporal structure might be important
+
 
 \section{Neuroscience background}
 
@@ -1280,14 +1345,54 @@ In order to test whether ...
 Two-sided LDA - no improved results.
 However, single-neuron signals slightly better predictors - suggesting both that there was some information lost in factorisation, but also that the ensembles were very good representations of functional units, as argued in the original paper.
 
+% Insert 1st years' work here.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/LDA/lda_temporal_shifting_and_prediction_bins_4_lda_acs_temporal_windows_4_exp_6.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/LDA/lda_temporal_shifting_and_prediction_bins_4_lda_acs_temporal_windows_4_exp_4.eps}
+    \caption{Best exps: 4 and 6}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/LDA/bars_LDA_per_signal_t_3.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/LDA/bars_RF_per_signal_t_3.eps}
+    \caption{LDA \& RF over exps}
+\end{figure}
+
+Replicated from \cite{Tsunematsu2019} % double-check ref.
+Suggests spike statistics well captured in factorised modules, as ACs sufficient to predict brain state.
+Thus, functional ensembles should be well represented by modules, and be a correspondingly suitable methodology to assess capturing these by calculating the similarity of the factorised modules for fitted SNN models.
+As the similarity metric, we simply calculate the geodesic similarity between modules, as previously in the synthetic SNN inference work.
+
+% Sample NMF modules and ACs?
 
 \section{Inference}
+% ABC too costly.
 
-\subsection{GBO}
+% \subsection{GBO}
+Differentiable SIF-model adapted from \cite{Rene2020}, using GD for direct neuron-level (microscopic) SNN inference, by negative log-likelihood minimisation, assuming either a Bernoulli or Poisson distribution of the spike train.
 
-\subsection{ABC}
+GLM baseline
 
-\section{Conclusion}
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{figures/sleep/plot1_cell5_pdf.eps}
+    \caption{response filters GLM exp 5}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\columnwidth]{figures/sleep/GLM_multi_cell5_5sec_bin_white_noise.eps}
+    \caption{GLM sample cell 5 exp 5}
+\end{figure}
+
+\section{Discussion}
+
+Direct microscopic model inference tractable for non-dales law compliant models by using GD and Adam over a rate-based metric for (G)LIF models, and over the negative log-likelihood for stochastic models.
+Local minima wrt parameters as shown previously with known GT, however, when considering the NMF ensembles captured through the two approaches,
+
 
 % =======================================================
 \chapter{BONUS: Exact models with continuous spike signals}
