@@ -313,28 +313,28 @@ For further reading on different learning procedures currently studied in the co
 A spike train can be modeled by drawing from a probability distribution $P(X; \lambda)$.
 This is perhaps the simplest baseline model one may construct, also assuming complete independence between neurons in a data set.
 However, this type of model may quickly break down when not assuming dependence between neurons.
-It may also be updated assuming independence, resulting in a more complex PDF.
-A more robust baseline model would be a generalised linear model, in which ... Poisson PDF and coupled nodes.
-This may capture spike correlations and rates better, but not exert different modes of behaviour.
-I.e. it is a spatiotemporal model with fixed temporal signatures which may be slightly affected by input, but not fundamentally change its dynamics and behaviour, as opposed to in SNNs.
-The golden goal should as such be to infer models that capture the different modes of behaviour, thus also the dynamics that are at play and may be exerted under different input conditions.
+It may also be updated assuming independence, resulting in a more complex probability distribution function (PDF).
+A more robust baseline model would be a generalised linear model, in which a spike train may be modelled by assuming a Poisson distribution as the spike response model for each neuron (as spike trains are of a Poissonian nature), with dependence between nodes, coupling them over either the spikes or modeled spike responses - we fit GLMs of both natures in this work as baseline models for comparison with inferred SNN models.
+GLMs may capture spike correlations and rates well, but not exert different modes of behaviour.
+I.e. it is a spatio-temporal model with the temporal signatures being limited to static functions over spike-responses, which may be somewhat affected by input, but not fundamentally change its dynamics and behaviour, as opposed to in SNNs, which may exert distinct modes of behaviour \cite{Izhikevich2004}.
+The golden standard should as such be to infer models that also capture different modes of behaviour, thus also the dynamics that are at play and may be exerted under different input conditions.
 This may be extremely hard to capture using current inference methodologies, and has to the best of my knowledge not been successfully attained by the research community.
-(...)
-It is something that may be tested by designing different input conditions for a model synthetically - and also tested in vitro or vivo by stimulation e.g. optogenetically or using more traditional patch-clamp tissue stimulation.
+In this work, we use non-negative matrix factorisation (NMF), described in more detail later in this chapter, to assess the functional ensembles captured by models, as it has shown to be able to capture ensembles sufficient for predicting future brain state almost as well as the raw neuron-signals themselves, suggesting that the factorised modules indeed as a suitable representation of potentially functional ensembles, and may well pertain to the dynamics observed in the data.
+Further, different input and stimulus conditions is in fact something that may be tested both synthetically and in vitro or vivo by stimulation e.g. patch-clamp tissue stimulation or optogenetically.
 
-Typical leaky integrate-and-fire SNN neuron model definition:
+% Typical leaky integrate-and-fire SNN neuron model definition:
 
-\begin{equation}
-    \tau_m \frac{dv}{dt} = E_L - v(t) + I(t)
-\end{equation}
+% \begin{equation}
+%     \tau_m \frac{dv}{dt} = E_L - v(t) + I(t)
+% \end{equation}
 
-where $v(t)$ is the membrane potential, and $I(t)$ is the synaptic current, usually summing over some stimulus as well as neuronal synaptic inputs and associated weights, potentially summed through a transfer function that bounds the current,
+% where $v(t)$ is the membrane potential, and $I(t)$ is the synaptic current, usually summing over some stimulus as well as neuronal synaptic inputs and associated weights, potentially summed through a transfer function that bounds the current,
 
-\begin{equation}
-    I = \sum_{i,j}^{N} W_{i,j} s_i + I_{ext}
-\end{equation}
+% \begin{equation}
+%     I = \sum_{i,j}^{N} W_{i,j} s_i + I_{ext}
+% \end{equation}
 
-where $W_{i,j}$ is the synaptic weight from neuron $i$ to neuron $j$, and $s_i$ is the pre-synaptic current from neuron $i$.
+% where $W_{i,j}$ is the synaptic weight from neuron $i$ to neuron $j$, and $s_i$ is the pre-synaptic current from neuron $i$.
 
 \section{The link to recurrent neural networks (RNNs)}
 
