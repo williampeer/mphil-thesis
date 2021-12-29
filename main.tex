@@ -267,22 +267,39 @@ This work surveys the literature on GBO related to SNNs, demonstrates a way in w
 
 % Mainly surrogate gradient descent, but also some conversion approaches.
 % Spiking neural networks
-Learning in SNNs; multiple model definitions and topologies, affecting the way in which learning may be performed - from perceptron to HH, from single-neuron to multilayer.
-HH complex enough that fitting the parameters of a single node using electrophysiological data requires a significant amount of computational resources.
+In disciplines pertaining to biology, maintaining a more direct link in hypothesised models by incorporating a greater level of detail, may allow for correspondingly more illuminating findings.
+However, this comes at the cost of increased complexity, often resulting in that construction of such models by sheer hand-engineering is too time-consuming, as the combinatorial expansion of possible solutions to model parametrisations quickly rises to one above where manual search is out of the question.
+Of course, hand-engineering often involves both expert system and domain knowledge for constraining the semi-manual parameter search, and model proposals, and some type of programmatic model search.
+However, inference of spiking neural networks remains a largely unsolved task.
+With the recent advent of widespread success of deep learning models for arbitrary data sets, we here revisit applying a similar inference procedure for automating inference of biologically plausible models, too - namely spiking neural networks.
+
+There are multiple model definitions and topologies one may consider when studying neural network architectures, which in turn affects network behaviour and inference.
+From the original perceptron \cite{Rosenblatt1956} to the Hodgkin-Huxley (HH) model \cite{HH1952}, and from single-neuron to multi-layer networks.
+On the one hand, the HH model is complex enough that fitting the parameters of a single node using electrophysiological data requires a significant amount of computational resources, which in turn allows the model to accurately replicate biological membrane potentials and spikes.
 % The \cite{HH1952} 1952 paper more or less hand designing the ODE system in a way that generalises well to describe neuronal and cellular electrophysiology.
-Perceptrons highly implausible.
+Perceptrons, on the other hand, are far less costly to train and fit, requiring only straightforward matrix multiplications for weight inference, with the nodes' values being either 0 or 1 - however, the behaviour these networks may exert is highly limited and implausible.
+A common mentioned example to illustrate this is that a two-layer network consisting of perceptrons cannot learn or perform the XOR-task, as hidden layers are required to perform this non-linear separation.
+More complex models, however, may incorporate non-linearities also in single nodes.
 
-Supervised, semi-supervised - different tasks.
+% Supervised, semi-supervised - different tasks.
 
-There are different approaches for tackling the different nature of SNNs. 
-On the one hand the temporal unfolding of the internal state and their significantly exerted effect on activity requires loss metrics that are adopted to also measure this effect, and on the other limited information when modeling biological data poses a constraint on the extent to which timing may be emphasised.
-Further, the explicit encoding scheme adapted in SNNs is traditionally a type of rate-based encoding - but this does not make use of the rich information available in the timing of spiking.
+So we've established that we are interested in inference of the more complex class of spiking neural networks, which maintain a level of biological plausibility.
+There are different approaches for tackling the associated increased complexity, as well as binary nature of spiking itself, resulting in non-linear changes of the internal neuronal variables.
+On the one hand the temporal unfolding of the internal state and their significantly exerted effect on activity requires loss metrics that are adapted to also measure this effect, and on the other hand the limited information when modeling using biological data poses a constraint on the extent to which timing may be emphasised in metrics.
+Further, the explicit encoding scheme adapted in SNNs is traditionally a type of rate-based encoding, but this does not make use of the rich information available in the timing of spiking.
 Population-encoding is another type of approach which may make readouts and learning more stable in a network, but also imposes a significant information bottleneck on the amount of information that may be processed and encoded by the network.
-It is likely that the brain employs an encoding scheme in which the rich information contained in the timing of spikes is relevant - however, principles in which these may be learned are non-trivial to devise, or are non-applicable to noisy data with unkown input.
+It is likely that the brain employs an encoding scheme in which the rich information contained in the timing of spikes is relevant. 
+However, as we shall see throughout the work studied in this thesis, it is not possible to do so simply by means of a global gradient descent procedure, which seems to be neither sufficient for precise timing emphasis, nor is biologically plausible.
+This being said, the scenarios we have tested only include conditions where the input is unknown, and only the probabilistic nature of it is incorporated.
+We also only study using error back-propagation by using rate based loss metrics, which was found to be the best-performing procedure when doing gradient descent when fitting to spike train data.
+Surprisingly, when fitting to a lower-dimensional signal, such as a linear combination of a sum of sine-modulated white noise inputs, we may retrieve a model configuration that almost perfectly learns the input to output mapping, by extending the work of \cite{Huh2017}.
+There are a number of key aspects for why this works, including greatly constraining the parameter landscape by using a lower-dimensional target signal, by using a well-defined, non-noisy signal, and by using a means of gradient-descent that in fact may be said to approximate a type of STDP, as we are using sub-threshold synapse currents instead of a surrogate over the spike signals - which allows for distinct sub-threshold signals instead of a uniform signal surrounding each spike.
+
+% However, principles in which these may be learned are non-trivial to devise, or are non-applicable to noisy data with unkown input.
 % TODO: Update. Also make scope and goal of modeling bio. data much clearer! (gjennomsyre tekst)
 
 % Various SNN models
-\cite{Taherkhani2020} learning in SNNs
+For further reading on different learning procedures currently studied in the context of SNNs, we refer the reader to \cite{Taherkhani2020}.
 
 % Mackelab meso paper: Only rate based at first.
 % NN 2020 review: Loses out on temporal information.
