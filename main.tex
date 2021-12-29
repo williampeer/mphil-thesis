@@ -349,34 +349,20 @@ When dealing with nodes that are commonly used in machine learning, the temporal
 Further, RNNs are usually trained on tasks in which the input is known, and is some static spatial transformation of inputs to outputs, which forms the data set.
 In other words, the data modeled is usually non-noisy, and of a more straightforward nature than (decoded) brain recordings such as spike trains.
 These aspects make RNNs far more suitable for chaining the error gradients backwards in time, which may be done over each time-step for each error gradient by a modification to the backprop-algorithm by chaining the error gradients, known as back-propagation through time (BPTT) \cite{Rumelhart1986}.
-Note also that RNNs typically deal with continuous, smooth signals in each node, whereas SNNs traditionally and usually function more as perceptrons in that their activity is binary, which also complicates training, let alone inference of model parameters other than the weights.
-Typically, only the weights are inferred in ML using some gradient based optimisation algorithm.
-There exists, however, work in which SNNs are transformed such that they are more compatible with BPTT, including probabilistic models in which each node projects a probability of spiking for each time step or interval, and models in which synaptic signals are made continuous and smooth, either by constructing a surrogate over the membrane potential, or by modeling the signals as a function over the subthreshold membrane potential, such as for instance when it is above zero, or within a given interval, resulting in a synaptic current.
-% The former approach has been studied in works such as \cite{}
+Note also that RNNs typically deal with continuous, smooth signals in each node, whereas SNNs incorporate non-linear value-changes upon binary spike-events, which also greatly complicates training, let alone inference of model parameters.
 \cite{Neftci2019} describe the connection between RNNs and SNNs well, including the efforts that have been made to employ (surrogate) gradient descent for spiking neural networks.
-% Should talk about points relating to where rate-based metrics is the best one can do wrt spikes
-
-When working with spike probability based SNNs there is model stochasticity that render precise spike timing based metrics worse than rate based metrics, as the timing is no longer meaningful, and only obscures the gradient.
-
-The same often holds for SNNs in which surrogates are constructed, due to elements such as the initial model configuration, initial conditions, or model perturbation.
-Works such as \cite{Jin2018} employ a rate-based error metric for data and readouts pertaining to image classification tasks.
-By considering how these complex systems behave differently under different conditions, and that they may be heavily affected by their current and thus past state, approaches pertaining to rate codes seem to be the extent to which many works are able to incorporate temporal precision and successfully optimise the models.
-While these works are valuable in studying how one might combine optimisation and spiking models, they often are limited to not only rate-based encodings and/or loss metrics, but also to non-noisy ML domain types of data.
-However, the sole basis for studying SNNs in computational neuriscience is to maintain the biological parallel, such that the model may be used as an interpretable system and hypothesis of recorded site dynamics, and studied as such.
-Therefore, it is important to study how the precise timing of spiking may be made relevant in the models, as that is arguably not only a relevant source of information, but a rich encoding scheme employed by the neural circuitry in the biological brain.
-While this was initially debated, it has been argued both by information theorists, neuroscientists and computer scientists alike recently that the precise timing of spiking is not only relevant, but is in fact necessary in order to encode all of the information that has shown to be processed by the brain, i.e. a rate-coding is not enough to represent a task which is solved by a neural network.
-% references
+In order to give an intuition about the differences, between SNNs and RNNs, the definition of the GRU unit is included below, and may be written as,
 
 % RNN transfer function, unit as GRU versus dv/dt etc.
-\begin{math}
+\begin{equation}
     \textbf{h}_t^j = \textit{f}(W^{i,j}\textbf{h}_t^i) + \sum_{i=1}^L g^{i,j} U^{i,j}\textbf{h}_{t-1}^i
-\end{math}
+\end{equation}
 
-in essence
+where $h$ is the hidden units, $W$ the weights, and $g$ a gating function,
 
-\begin{math}
+\begin{equation}
     g^{i,j} = \sigma ( \textbf{w}_g^{i,j}\textbf{h}_t^{i} + \textbf{u}_g^{i,j}\textbf{h}_{t-1}^{*})
-\end{math}
+\end{equation}
 
 basically treating the network instead of a conventional RNN which may be regarded as a POMDP process as a process in which each hidden layer has gated recurrent connections determined by a reset gate function, which allows the ignoring of previous hidden states by transition through the reset gate function, whose weights may also be updated by the same methodology;
 estimating a probability distribution over sequences, factorising the probability of the sequences, and training an RNN by means of negative log-likelihood minimisation of the training sequences:
@@ -392,6 +378,19 @@ However, connections are there optimised in a more straightforward manner, with 
 
 In my work I have studied employing gradient based optimisation as well as approximate Bayesian computation using amortised learning for both a probabilistic class of stochastic spiking neural networks \cite{Rene2020}, for leaky types of integrate-and-fire SNNs \cite{allen_glif_white_paper}, and for closed-form (still with multiple solutions?) exact-gradient types of non-leaky integrate-and-fire SNNs \cite{Huh2017}.
 I have also replicated and analysed Izhikevich SNNs, but chosen not to apply GBO to this model class due to planes of chaos in the parameter landscape, simply resulting in that the Izhikevich neuron ODEs are a lower-dimensional projection of the Hodgkin-Huxley ODEs - resulting in that while they are of lower complexity simulation-wise, the collapse of several variables into fewer results in variable intervals for which model behaviour is unrealistic and/or chaotic, making GBO impossible.
+
+Typically, only the weights are inferred in ML models using some gradient based optimisation algorithm.
+There exists, however, work in which SNNs are transformed such that they are more compatible with BPTT, including probabilistic models in which each node projects a probability of spiking for each time step or interval, and models in which synaptic signals are made continuous and smooth, either by constructing a surrogate gradient signal such as over the membrane potential, or by modeling the signals as a function over the sub-threshold membrane potential, such as for instance when it is above zero, or within a given interval, or by modeling sub-threshold synaptic currents.
+% The former approach has been studied in works such as \cite{}
+% Should talk about points relating to where rate-based metrics is the best one can do wrt spikes
+The same often holds for SNNs in which surrogates are constructed, due to elements such as the initial model configuration, initial conditions, or model perturbation.
+Works such as \cite{Jin2018} employ a rate-based error metric for data and readouts pertaining to image classification tasks.
+By considering how these complex systems behave differently under different conditions, and that they may be heavily affected by their current and thus past state, approaches pertaining to rate codes has seemed to be the extent to which it is possible to incorporate temporal precision whilst successfully optimising and inferring models.
+While these works are valuable in studying how one might combine optimisation and spiking models, they often are limited not only to rate-based encodings and/or loss metrics, but also to non-noisy ML domain types of data.
+However, the sole basis for studying SNNs in this work is to maintain the biological parallel, such that the model may be used as an interpretable system and hypothesis of recorded site dynamics, and studied as such.
+Therefore, it is important to study how the precise timing of spiking may be made relevant in the models, as that is arguably not only a relevant source of information, but a rich encoding scheme employed by the neural circuitry in the biological brain.
+While this was initially debated, it has been argued both by information theorists, neuroscientists and computer scientists alike recently that the precise timing of spiking is not only relevant, but is in fact necessary in order to encode all of the information that has shown to be processed by the brain, i.e. a rate-coding is not enough to represent a task which is solved by a neural network.
+% references
 
 
 \section{Bayesian approaches}
