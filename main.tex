@@ -242,7 +242,7 @@ However, it quickly becomes intractable due to the high complexity of models.
 Surrogate or exact gradient approaches are difficult due to aforementioned issues, and most likely do not settle into a stable configuration, as well as stay in planes of local minima.
 These findings suggest that the best we can currently do is using approximate Bayesian approaches, which not only lets us infer a posterior over all of the parameters, but also provides a measure of certainty around the parameters.
 
-\subsection*{Temporary conclusion}
+\subsection*{In sum}
 
 GBO may be leveraged for a more scalable inference procedure.
 However, "true" parameters are not well-defined when considering spike trains as the target signal, with unknown inputs, and using LIF-type of models.
@@ -283,7 +283,7 @@ More complex models, however, may incorporate non-linearities also in single nod
 
 % Supervised, semi-supervised - different tasks.
 
-So we've established that we are interested in inference of the more complex class of spiking neural networks, which maintain a level of biological plausibility.
+In this thesis, we are focussed on inference of the more complex class of spiking neural networks, which maintain a level of biological plausibility.
 There are different approaches for tackling the associated increased complexity, as well as binary nature of spiking itself, resulting in non-linear changes of the internal neuronal variables.
 On the one hand the temporal unfolding of the internal state and their significantly exerted effect on activity requires loss metrics that are adapted to also measure this effect, and on the other hand the limited information when modeling using biological data poses a constraint on the extent to which timing may be emphasised in metrics.
 Further, the explicit encoding scheme adapted in SNNs is traditionally a type of rate-based encoding, but this does not make use of the rich information available in the timing of spiking.
@@ -338,16 +338,17 @@ Further, different input and stimulus conditions is in fact something that may b
 
 \section{The link to recurrent neural networks (RNNs)}
 
-As mentioned previously, SNNs are systems in which each node is a set of ODEs, where each variable or parameter may have a more or less direct biological parallel, such as representing the rest potential $E_L$, the spike threshold $V$, and other properties.
+As mentioned previously, SNNs are systems in which each node is modeled by a set of ordinary differential equations (ODEs), where each variable or parameter may have a more or less direct biological parallel, such as representing the rest potential $E_L$, the spike threshold $V$, and other properties.
 Together, these result in a model whose membrane potential $v_t$ has a temporal trajectory similar to that of biological neurons.
-The main idea is that under the right conditions, these models may mimic biology so closely, that we can in fact use them to study what might be going on in a brain area, where the model is the hypothesis.
-The stronger the link between the model and the brain area, the stronger the hypothesis, and predictions based upon probing model dynamics under various conditions.
+The main idea is that under the right conditions, SNNs may mimic biology so closely, that we can in fact use them to study what might be going on in the modeled brain area; the model becomes the hypothesis.
+The stronger the link between the model and the brain area, the stronger the hypothesis, and associated predictions made by perturbing and probing the model under specific conditions.
 
-In RNNs, however, the criterion of each node or neuron being a system of ODEs that maintain biological parallels is relaxed. Each node may simply be one value that is some sum over synaptic input that has been transformed by a transfer function, or it is more commonly some slightly more complex units such as gated recurrent units (GRUs) \cite{Bengio2013b, Chung2015a} or long short-term memory units (LSTMs) in machine learning \cite{Hochreiter1997, Schmidhuber2014}.
-If dealing with nodes as common in machine learning, the temporal dependence is more limited than in more complex SNNs and neuronal ODE systems.
-Further, RNNs are usually trained on tasks in which the input is known, and is some static "spatial" transformation of inputs to outputs, which forms the data set.
-In other words, the data to be modeled is usually non-noisy, and of a more straightforward nature than (decoded) brain recordings such as spike trains.
-These aspects make the models far more suitable for chaining the error gradients backwards in time, which may be done over each time-step for each error gradient by a modification to the backprop-algorithm, known as back-propagation through time (BPTT).
+In RNNs, however, the criterion of each node or neuron being a system of ODEs that maintain biological parallels is relaxed or no longer valid. 
+Each node may simply be one value that is some sum over synaptic input that has been transformed by a transfer function, or it is more commonly some slightly more complex unit such as the gated recurrent unit (GRU) \cite{Bengio2013b, Chung2015a} or long short-term memory (LSTM) unit, engineered for application in the domain of machine learning \cite{Hochreiter1997, Schmidhuber2014}.
+When dealing with nodes that are commonly used in machine learning, the temporal dependence is more limited than in more complex SNNs and neuronal ODE systems.
+Further, RNNs are usually trained on tasks in which the input is known, and is some static spatial transformation of inputs to outputs, which forms the data set.
+In other words, the data modeled is usually non-noisy, and of a more straightforward nature than (decoded) brain recordings such as spike trains.
+These aspects make RNNs far more suitable for chaining the error gradients backwards in time, which may be done over each time-step for each error gradient by a modification to the backprop-algorithm by chaining the error gradients, known as back-propagation through time (BPTT) \cite{Rumelhart1986}.
 Note also that RNNs typically deal with continuous, smooth signals in each node, whereas SNNs traditionally and usually function more as perceptrons in that their activity is binary, which also complicates training, let alone inference of model parameters other than the weights.
 Typically, only the weights are inferred in ML using some gradient based optimisation algorithm.
 There exists, however, work in which SNNs are transformed such that they are more compatible with BPTT, including probabilistic models in which each node projects a probability of spiking for each time step or interval, and models in which synaptic signals are made continuous and smooth, either by constructing a surrogate over the membrane potential, or by modeling the signals as a function over the subthreshold membrane potential, such as for instance when it is above zero, or within a given interval, resulting in a synaptic current.
@@ -555,9 +556,9 @@ For more details, please see the references included above, or the sample code g
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.33\columnwidth]{figures/samples/membrane_potentials/export_sample_LIF_white_noise.eps}
-    \includegraphics[width=0.33\columnwidth]{figures/samples/membrane_potentials/export_sample_GLIF_white_noise.eps}
-    \includegraphics[width=0.33\columnwidth]{figures/samples/membrane_potentials/export_sample_mesoGIF_white_noise.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/samples/membrane_potentials/export_sample_LIF_white_noise.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/samples/membrane_potentials/export_sample_GLIF_white_noise.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/samples/membrane_potentials/export_sample_mesoGIF_white_noise.eps}
     \vskip -0.1in
     \caption{membrane potential samples}
     \label{fig:membrane_potential_samples}
