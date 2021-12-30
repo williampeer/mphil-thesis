@@ -1,3 +1,36 @@
+% =============== roughly chpt 4 ===============
+% \subsection{Leaky integrate-and-fire (LIF)}
+
+% Gradient-based methods prone to finding sub-optimal solutions, i.e. local minimas. This is an issue particularly for high-dimensional feature spaces. Thus, I am led to believe this will be an issue when trying to infer the model parameters of complex neural networks using spike trains.
+
+% %--------------------
+% LIF work log:
+% More nuanced
+% Very noisy gradients for unstable/chaotic generative model perturbation?
+% Dynamic R\_I in conjunction with frd might result in better convergence, due to constraining search space.
+% By using dynamic R\_I (linear constraint), this makes behaviour more stable, and so may allow for more calibration/optimisation of the other parameters.
+
+% % vRD suddenly seems viable for more stable network behaviour. When model behaviour was more chaotic, frd was better. This makes sense, as gradient will not be well-defined for vRD when model is chaotic. Not necessarily for frd either, but this is more robust to noise.
+
+% Some artefacts LIF (more linear, easier to have whole-network spiking with too little inhibition / simpler neuron dynamics)
+
+% Initial conditions large effect on convergence
+
+% vRD performance OK with tau=100.0
+% frd better
+% In conjunction: still sometimes silent neurons. Potentially due to local minima of vRD for silent neurons, and obscured parameter-landscape due to noise and the nature of the vRD-metric. Not necessarily orthogonal to frd either, and as such may interfere with its gradient
+
+% Will have to look at vRD vs frd vs frd+vRD vs adaptive(frd+vRD) quantitatively for setups.
+
+% There seem to be many regions for which there is no “information gain” when moving along gradients, such as for silent neurons. Some parameters might not have their effect obscured or less pronounced due to the change of other parameters in parallel, too. This is the reason other authors have performed sequential parameter optimisation.
+
+% When constructing generative target models, we aimed for hand-engineering models entraining higher-order ensemble dynamics that were stable across different random seeds of model perturbation, such that we could test how well model inference would capture these statistics. To this end, we designed three populations of neurons, where each population had different neuron parameters, normally distributed around set means, with a standard deviation of 25 % around the population values for each neuron. 
+% In order to not generate spurious data, such as if the generative model is driven primarily by its input perturbation, or where it behaves otherwise chaotically, we tested that the hand-engineered models’ higher order statistics indeed occurred across different random seeds.
+
+% (To verify that the model would indeed be sensible for synthetic generation, we tested the stability of neuron rates across different random seeds. When a deviation lower than X was attained, we accepted the ensemble model as a generative model suitable for data generation in order to test our framework.)
+% Note that this deviation test is only to determine that the model doesn’t behave chaotically, and does not fire spuriously, in which case optimisation would be like fitting to noise, which should not converge.
+
+
 % =============== roughly chpt 2 ===============
 % The good old Bayes' rule:
 % \begin{math}

@@ -770,19 +770,7 @@ In fact, we also instead minimise the negative log-likelihood, which remains equ
     \mathcal{L}(\theta | x) :\propto - \log \mathcal{L}(\theta | x) = - \log \prod_{n=1}^N pdf(\theta; X) = - \sum_{n=1}^N \log (pdf(\theta; X))
 \end{equation}
 
-Assuming a Bernoulli distribution,
-
-\begin{equation}
-    Bernoulli(\theta; x)
-\end{equation}
-
-Assuming a Poisson distribution,
-
-\begin{equation}
-    Poiss(\theta; x)
-\end{equation}
-
-These let us estimate the ML for $\theta$.
+Assuming a Bernoulli distribution, $pdf=Bernoulli(\theta; x)$, or assuming a Poisson distribution, $Poiss(\theta; x)$, these let us estimate the maximum likelihood over $\theta$.
 
 
 % =======================================================
@@ -795,9 +783,9 @@ These let us estimate the ML for $\theta$.
 
 
 % =======================================================
-\chapter{Work: The frontier of SNN inference}\label{chpt:frontier}
+\chapter{The frontier of SNN inference}\label{chpt:frontier}
 
-In order to study how to infer spiking neural network models (SNNs) one needs several ingredients: (1) a definition of the entire system, (2) an implementation of it, (3) an algorithm for model inference where (1) and (2) are compatible with the algorithm, and (4) a way to measure and assess model performance, ideally compared with existing methodologies and models.
+In order to study how to infer spiking neural network models (SNNs) we need several ingredients: (1) a definition of the entire system, (2) an implementation of it, (3) an algorithm for model inference where (1) and (2) are compatible with the algorithm, and (4) a way to measure and assess model performance, ideally compared with existing methodologies and models.
 
 Research on SNNs using gradient-based optimisation is fairly limited, and includes approximate Bayesian computation for smaller models, conversion learning in which more traditional ANNs are transformed to simpler SNNs after training, or surrogate gradient descent, in which a surrogate signal over the model spikes, usually as a function over the membrane potential, is used in order to obtain a differentiable output that may be used to optimise the model's parameters over a given loss metric by backpropagating the error signal.
 % Currently, the state-of-the-art methods are only partly successful in training a subset of SNN model parameters for smaller models.
@@ -807,7 +795,7 @@ GBO enables leveraging recent ML advances from deep learning, and albeit biologi
 Previously, Bayesian inference was intractable for SNN models due to their high-dimensional parameter-space, but recent advances in sequential neural estimation techniques, where a DNN is trained to estimate a prior using a relevant statistic, has allowed for much more efficient sampling using this amortised approach; sampling from the DNN to perform posterior parameter estimation.
 Note however that this procedure still has a high cost, which does not scale well with an increase in the network size.
 % references, brief summary and discussion of main references
-Using a Bayesian approach, we may however estimate the posterior over the model parameters, given our approximation of the prior. This also yields a type of uncertainty estimate around the posteriors. Note however that the posterior will be skewed by the prior approximation, in our case given by sequential neural ratio estimation (SNRE) \cite{Lueckmann2021}.
+Using a Bayesian approach, we may however estimate the posterior over the model parameters, given our approximation of the prior. This also yields a type of uncertainty estimate around the posteriors. Note however that the posterior will be skewed by the prior approximation, in our case given by sequential neural ratio estimation (SNPE) \cite{Lueckmann2021}.
  
 Using a surrogate gradient approach, we may fit the parameters of the system by error minimisation using any differentiable loss function. Due to the constraint put forth by working with biological spike train data, which is a very widespread format in which there is a vast amount of data available, we cannot however make many assumptions about the input, unless the recording somehow also contains information about this signal. 
 Therefore, we have to include the input in the model, by making assumptions about the network input, as well as to consider how it may greatly affect network behaviour during learning. As a rule of thumb, we want to have a signal which allows for the network to perform the task at hand, or to replicate the observed data, whilst being as biologically reasonable as possible.
@@ -820,6 +808,7 @@ We want to have input that puts the system in a realistic mode of behaviour, and
 % \section{My contribution: Implementing, differentiating and optimising different SNN models using different loss metrics}
 \section{GBO compatible SNN framework in Pytorch}
 
+% TODO
 Goals and questions or hypotheses
 Novel method developed for advancing SNN inference by using gradient descent
 Binary in nature, by implementing surrogate subthreshold spike signals, we may facilitate optimisation, improving optimisation performance for gradient descent.
@@ -838,7 +827,7 @@ GLMs as a baseline to have comparable results for NMF analysis
 % \subsection{Contribution: PyTorch}
 
 % ... tricks, sequentiality etc
-Current implementations of SNNs are commonly done in Brian 2 or Matlab. Upon commecing work on SNNs using LIF neurons, the only recent work we found that supported optimisation in a supervised or semi-supervised manner was in Theano, a legacy Python library.
+Current implementations of SNNs are commonly done in Brian 2 or Matlab. Upon commencing work on SNNs using LIF neurons, the only recent work we found that supported optimisation in a supervised or semi-supervised manner was in Theano, a legacy Python library.
 With recent advances in ML not only through increased computational resources and novel optimisation techniques, but also in programming libraries which may be run using the GPU, and in either case contains highly optimised library code implemented in a lower-level programming language (for Python typically C or Cuda), I wanted to make use of this aspect too, and after too many hours of fighting with at best poorly documented Theano-library code, I decided to set out to implement SNNs in Pytorch.
 This quickly led to the implementation of a modular pipeline and framework of SNN inference using GBO in Pytorch.
 It also required maintaining a neuronal state throughout simulation, for which I simply implemented sequential input forward-propagation thoughout the model, which would also mutate its state.
@@ -976,13 +965,11 @@ The results which are included below illuminate how optimisation traverses the g
     \vskip -0.2in
 \end{figure}
 
-Description parameter landscape plots. Spaces for which error gradient given by frd metric is amgbiguous, i.e. wanders arbitrarily, and is thus not satisfactory in terms of retrieving the ground-truth. 
+Description parameter landscape plots. 
+Spaces for which error gradient given by frd metric is amgbiguous, i.e. wanders arbitrarily, and is thus not satisfactory in terms of retrieving the ground-truth. 
 However, for the vrd, these are even more obscure and noisy... (plot generation if time)
 
-For Izhikevich: <inser description>
-Therefore not included in GBO experiments.
 
-% Experiments:
 
 \subsection{Stochastic integrate-and-fire GBO}
 
@@ -1088,38 +1075,6 @@ SBI
     \caption{bugged pop. level SIF. GBO Adam}
 \end{figure}
 
-% \subsection{Leaky integrate-and-fire (LIF)}
-
-% Gradient-based methods prone to finding sub-optimal solutions, i.e. local minimas. This is an issue particularly for high-dimensional feature spaces. Thus, I am led to believe this will be an issue when trying to infer the model parameters of complex neural networks using spike trains.
-
-% %--------------------
-% LIF work log:
-% More nuanced
-% Very noisy gradients for unstable/chaotic generative model perturbation?
-% Dynamic R\_I in conjunction with frd might result in better convergence, due to constraining search space.
-% By using dynamic R\_I (linear constraint), this makes behaviour more stable, and so may allow for more calibration/optimisation of the other parameters.
-
-% % vRD suddenly seems viable for more stable network behaviour. When model behaviour was more chaotic, frd was better. This makes sense, as gradient will not be well-defined for vRD when model is chaotic. Not necessarily for frd either, but this is more robust to noise.
-
-% Some artefacts LIF (more linear, easier to have whole-network spiking with too little inhibition / simpler neuron dynamics)
-
-% Initial conditions large effect on convergence
-
-% vRD performance OK with tau=100.0
-% frd better
-% In conjunction: still sometimes silent neurons. Potentially due to local minima of vRD for silent neurons, and obscured parameter-landscape due to noise and the nature of the vRD-metric. Not necessarily orthogonal to frd either, and as such may interfere with its gradient
-
-% Will have to look at vRD vs frd vs frd+vRD vs adaptive(frd+vRD) quantitatively for setups.
-
-% There seem to be many regions for which there is no “information gain” when moving along gradients, such as for silent neurons. Some parameters might not have their effect obscured or less pronounced due to the change of other parameters in parallel, too. This is the reason other authors have performed sequential parameter optimisation.
-
-% When constructing generative target models, we aimed for hand-engineering models entraining higher-order ensemble dynamics that were stable across different random seeds of model perturbation, such that we could test how well model inference would capture these statistics. To this end, we designed three populations of neurons, where each population had different neuron parameters, normally distributed around set means, with a standard deviation of 25 % around the population values for each neuron. 
-% In order to not generate spurious data, such as if the generative model is driven primarily by its input perturbation, or where it behaves otherwise chaotically, we tested that the hand-engineered models’ higher order statistics indeed occurred across different random seeds.
-
-% (To verify that the model would indeed be sensible for synthetic generation, we tested the stability of neuron rates across different random seeds. When a deviation lower than X was attained, we accepted the ensemble model as a generative model suitable for data generation in order to test our framework.)
-% Note that this deviation test is only to determine that the model doesn’t behave chaotically, and does not fire spuriously, in which case optimisation would be like fitting to noise, which should not converge.
-
-
 
 \section{Discussion}
 
@@ -1151,19 +1106,19 @@ My interpretation of this is that what we identify with learning algorithms for 
 This may indicate that there are other principles underlying the learning of these networks.
 
 
-\subsubsection{Sine modulated white noise input}
+\subsubsection*{Sine modulated white noise input}
 
 \begin{equation}
-    \sum^M sin(W(t))
+    \sum^M sin(W_n(t))
 \end{equation}
 
-\subsubsection{White noise input}
+\subsubsection*{White noise input}
 
 \begin{equation}
-    W(t) \sim \mathcal{U}(t, m)
+    W_n(t) \sim \mathcal{U}(t, m)
 \end{equation}
 
-\subsection{Multi-layer versus single-layer SNNs}
+\subsection*{Multi-layer versus single-layer SNNs}
 
 Multi-layer net crucial for non-linear function approximation! We have not had this. If we only wish to capture the spike statistics, then a multi-layer version training on the next spike given the previous could perform better than the current single-layer noise-input to spike output?
 What we have tried is instantaneous reactivity given noise-input. Is this not largely spatially oriented? To include a more temporal orientation, we may need to redesign the setup.
