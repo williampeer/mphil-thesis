@@ -632,23 +632,38 @@ where $s$ is the synaptic currents, and $g$ is the current gating function, and 
 \end{equation}
 
 Combined with a lower-dimensional target signal this enables perfectly learning to perform the task, albeit with the inferred model parameters depending largely on the initial configuration and random seed.
-We extend their work to also test their methodology on LIF SNNs, and find that although this results in non-exact gradient calculation, the setup is sufficient for inferring models with near-perfect performance in reproducing the target signal for LIF SNNs, too.
+We extend their work to also test their methodology on LIF SNNs (see chapter \ref{chpt:frontier}, and find that although this results in non-exact gradient calculation, the setup is sufficient for inferring models with near-perfect performance in reproducing the target signal for LIF SNNs, too.
 
-\subsection{Stochastic integrate-and-fire models (SIF)}
-% \subsection{Contribution: microGIF work}
-\label{microGIF}
+\subsection{Stochastic integrate-and-fire models (SGIF)}\label{microGIF}
 
-Cortical microcolumn-inspired population- or neuron-level SIF models.
+Lastly, to tie my work with a current state-of-the-art procedure, I have implemented the cortical microcolumn-inspired (based on \cite{Schwalger2017}, adapted to a lower set of neurons) stochastic integrate-and-fire (SGIF) population model of \cite{Rene2020}, and extended it such that it is compatible with in-place gradient based optimisation. 
+We compare the results on both population- and neuron-level model fits with previously reported results, and also propose that the GBO procedure may be used to directly infer heterogeneous neuron-level models, and test this by fitting models to a full-size SNN SGIF target model.
+We also test fitting SGIF models to biological data, and evaluate the goodness of fit using loss metrics and geodesic similarities between the NMF modules.
 
-Based on the work of \cite{Rene2020}, which is based on \cite{Schwalger2017}.
-Spike probability, rather than membrane potential and spikes.
---> Minimise negative log-likelihood under a Bernoulli or Poisson assumption.
+While we refer the reader to \cite{Rene2020} for the full model definition, we wish to outline the crucial parts to making the models in-place differentiable - not requiring using approximate Bayesian computation over model samples in order to estimate a posterior.
+The synapse model may be defined as,
 
-ALlows for a direct comparison.
+\begin{equation}
+    \tau_s I_{syn}(t) = W_{syn} \epsilon_s(t),
+\end{equation}
+
+\begin{equation}
+    \tau_s \epsilon_s(t) = (1 + \tanh(t_{s} - \Delta_s)) e^{-\frac{t_{s} - \Delta_s}{\tau_s}},
+\end{equation}
+
+where $t_s$ is the time since the previous spike, $\Delta_s$ is the delay before synaptic transmission after spiking, $W_{syn}$ are the synaptic weights, and $\epsilon_s$ is the synaptic kernel, or spike-transmission model.
+Note that the key difference between this formulation and the one in \cite{Rene2020} is using the $\tanh$-function to incorporate the transmission delay, rather than by using a Heaviside function $\Theta$, as this allows us to differentiate the function, and thus backpropagate error gradients to calculate parameter gradients.
+Thus, we may use negative log likelihood estimation over the spike probabilities, i.e. maximising the likelihood that a set of spike probabilities produce the target spike trains when drawing from a Bernoulli distribution with the probabilities, which is equivalent to minimising the negative log likelihood of the target spike train given simulated probabilities.
+
+% Based on the work of \cite{Rene2020}, which is based on \cite{Schwalger2017}.
+% Spike probability, rather than membrane potential and spikes.
+% --> Minimise negative log-likelihood under a Bernoulli or Poisson assumption.
+
+% ALlows for a direct comparison.
 
 
-% TODO: check: "frontier" found using frd - vrd obscures gradient and diverges more.
-BNLL \& PNLL "frontier"
+% % TODO: check: "frontier" found using frd - vrd obscures gradient and diverges more.
+% BNLL \& PNLL "frontier"
 
 % \subsection{GLIF neurons}
 % Can be highly parameter-sensitive and result in completely different mode of neuronal behaviour
@@ -656,10 +671,18 @@ BNLL \& PNLL "frontier"
 
 \subsection{Izhikevich}
 
-Replicated \cite{Oliveira2019} merely to show that the resulting rates could be formulated more or less as a linear function, resulting from subthreshold oscillations, and that the model is highly sensitive to its initial parameter values.
-All modes of behaviour as observed in biology, however something needed to shift mode(s) of behaviour..
-Parallels to SNN inference etc
-(2D ODE syst per neuron)
+In our initial SNN research, we replicated \cite{Oliveira2019} to show that the resulting rates could be formulated more or less as a linear function, resulting from sub-threshold oscillations, and that the model is highly sensitive to its initial parameter values.
+One of the motivations for doing this was that the model class may exert all neuronal modes of behaviour as observed in biology \cite{Izhikevich2006}.
+However, as hinted to above, this results in a highly irregular parameter landscape, only further complicated by the previously discussed stochasticity present in the model inference scheme that we are studying.
+To give an intuition about why this is, consider that the Izhikevich model is a 2-dimensional projection of a 4-dimensional ODE system - in fact based upon the original HH model \cite{HH1952}.
+As such, there are regions for which unstable, or even chaotic behaviour, may emerge - i.e. we end up with parameter regions for which the model is highly unrealistic, or not well-defined.
+Therefore, we limit our research to the previously outlined models, and only include parameter landscape plots illustrating the aforementioned, as well as our work on the effect of the recovery variables on resulting subthreshold oscillatory behaviour.
+
+% TODO: Include param landscape figures here??
+
+% All modes of behaviour as observed in biology, however something needed to shift mode(s) of behaviour..
+% Parallels to SNN inference etc
+% (2D ODE syst per neuron)
 
 \subsubsection{Poster: \textit{The effect of the recovery variable parameters on oscillating Izhikevich networks}}
 \includepdf[pages=-]{files/berg_and_onken_uk_neural_computation_2019_poster.pdf}
@@ -772,7 +795,7 @@ These let us estimate the ML for $\theta$.
 
 
 % =======================================================
-\chapter{Work: The frontier of SNN inference}
+\chapter{Work: The frontier of SNN inference}\label{chpt:frontier}
 
 In order to study how to infer spiking neural network models (SNNs) one needs several ingredients: (1) a definition of the entire system, (2) an implementation of it, (3) an algorithm for model inference where (1) and (2) are compatible with the algorithm, and (4) a way to measure and assess model performance, ideally compared with existing methodologies and models.
 
@@ -1331,16 +1354,16 @@ Local minima wrt parameters as shown previously with known GT, however, when con
 
 
 % =======================================================
-\chapter{BONUS: Exact models with continuous spike signals}
+\chapter{Gated subthreshold synaptic currents and continuous target signals}
 
 Non-leaky integrate-and-fire (NLIF) model with subthreshold continuous spike signals defined to sum to 1 inside of an active zone \cite{Huh2017}.
+Also tested for LIF models.
+We find that indeed exact gradient calculation is not a strictly necessary constraint for optimal autoencoding and general predictive encoding performance - thus, we hypothesise that it is the synapse model in combination with the lower-dimensional and continuous target signal that enables optimisation convergence due to greatly constraining the parameter space - and also in that the signal is far less noisy, also resulting in a more well-defined and traversable parameter landscape.
+
 % With NIF neurons, one could analytically show/solve the systems and show where noise would render the loss function useless. However, unsure how to test this for spike output task. Could we use (Mostafa, 2018) combined with (Huh \& Sejnowski, 2017)? Or at least the latter?
-
-\section{Gated sub-threshold spike-signal model}
-
-\section{Study: \textit{NLIF for exact gradient based model inference}}
-
-\subsection{NLIF definition}
+% \section{Gated sub-threshold spike-signal model}
+% \section{Study: \textit{NLIF for exact gradient based model inference}}
+% \subsection{NLIF definition}
 
 \subsection{Tasks}
 
@@ -1361,7 +1384,9 @@ other methods circumvent non-differentiability
 
 
 % =====================================================
-\chapter{(Discussion) Working title: Why the brain does not do backpropagation}
+\chapter{(Discussion) SNN optimisation requires a well-defined setting}
+
+Optimisation enables in-place inference, but convergence requires a well-defined setting
 
 Receptive fields very robust, but continuous perturbation results in changes, also in higher visual areas
 Individual differences
