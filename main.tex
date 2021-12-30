@@ -442,14 +442,16 @@ In other words, while they cannot be sampled independently for marginals, sampli
 
 % Not straightforward how to analyse... 
 % Should this be in background or later?
-Refer reader to report or poster in which these are explained, and only provide "glue"-text here, explaining usage and placing them in the context?
-\cite{Seung1999, Seung2001, Onken2016a}
+% Refer reader to report or poster in which these are explained, and only provide "glue"-text here, explaining usage and placing them in the context?
+
+While it is non-trivial to exactly evaluate the information processing of two networks, we may use statistical measures such as spike correlations, or dimensionality reduction methods to identify prominent features, or modules of co-active neurons.
+As mentioned previously in the introduction, we use non-negative matrix factorisation (NMF) \cite{Seung1999, Seung2001} in order to identify these sets of co-active neurons in a spike history, which have been found to be good low-dimensional abstractions of functional behaviour, further strengthened by the finding that factorised modules are as good state predictors as the raw neuron-signals when applying linear disctiminant analysis (LDA) or random-forest regression, as done in \cite{Onken2016a}, and replicated in \ref{chpt:sleep}.
 
 \subsection{NMF}
 
-In order to assess functional organization in the neural data we employ non-negative matrix factorization (NMF) \cite{Seung1999} to infer ensembles of coactive neurons. 
+% In order to assess functional organization in the neural data we employ non-negative matrix factorization (NMF) \cite{Seung1999} to infer ensembles of coactive neurons. 
 % NMF is a dimensionality reduction technique which has been shown to be particularly suitable and well-performing for neural data \cite{Onken2016a}.
-This factorization may be written as,
+The NMF factorization may be written as,
 
 \begin{equation}
     M \approx WH,
@@ -467,38 +469,41 @@ The geodesic distance $o$ between two matrices $A$ and $B$ of dimensionality $m 
 
 where $m$ is the number of modules, and $n$ is the number of nodes in the data set. 
 
-\subsection{LDA}
+% \subsection{LDA}
 
-% linreg for separating hyperplane with arbitrary kernel? or simply linear transformations?
-% \subsection{Random forest}
-\cite{Onken2016a}
+% % linreg for separating hyperplane with arbitrary kernel? or simply linear transformations?
+% % \subsection{Random forest}
+% \cite{Onken2016a}
 
 
-\subsection{Baseline: Generalised Linear Models}
+\subsection{Generalised Linear Models}
 
-\cite{Nelder1972, Fernandez2000}
+In order to assess the extent to which the spike statistics are encompassed by inferred models, a suitable baseline model is the generalised linear model (GLM) \cite{Nelder1972, Fernandez2000}, as this model is well-suited for capturing the statistics of spike trains.
 
-Spike counts assumed to be Poisson distributed, and may thus be approximated by a Poisson PDF,
+For binned spike trains, the spike counts may be assumed to be Poisson distributed, and may thus be approximated by a Poisson PDF.
+Correspondingly, we may model each neuron as a Poisson PDF, with the rate parameter $\lambda$ giving a probability for spiking, or an approximate number of spikes for an interval.
+In the GLM model, this is extended by linking the observed spike counts $\mu$ with the probability distribution's (here Poisson) corresponding density function - or rather the inverse of it, assuming that the observed variable is a linear combination of a set of parameters, which in turn lets us numerically fit the GLMs to a spike history.
+Further, we may also choose to couple each node's spike response with the other's activities, thus also assuming dependence on these. This may be written as,
 
 \begin{equation}
-    y_t|x_t, w \sim Poiss(y_t; f(x_t^T w)\Delta)
+    y_t|x_t, w \sim Poiss(y_t; f(X_t^T w)\Delta),
 \end{equation}
 
-this gives the log-likelihood of
+i.e. the predictor (via the Poisson PDF link function) given the observed activity and a set of weighted couplings between the other nodes gives models that may capture the spatiotemporal statistics that may be inferred by maximum likelihood estimation with linked Poisson PDFs given the observed spike histories, weighted also on the other nodes' estimations.
+This gives the log-likelihood of
 
 \begin{equation}
     log p(y|X, w) = \sum_{t=1}^T log p(y_t| x_t, w) = \sum_{t=1}^T(y_t log f(x_t^Tw) - f(x_t^Tw)\Delta)
 \end{equation}
 
 which may be approximated using MAP estimates by numerical methods.
-Further, coupled GLMs, in which spike histories depend on one another, may also be approximated. This allows to capture second-order and potentially higher-order spike correlations, depending on the link functions used.
 
-GLMs are a suitable basline model for spike train data, as spike trains are Poissonian in nature, and thus fitting parameters for a Poisson probability distribution for each node provides spike trains of similar nature.
-Further, to capture correlations between neurons in spike trains, this definition may be expanded over a set of probability distributions, where each is parameter is dependent on the others.
+% Coupled GLMs, in which spike histories depend on one another, may also be approximated. This allows to capture second-order and potentially higher-order spike correlations, depending on the link functions used.
 
-For more details, please see the references included above, or the sample code given in \ref{appendix:sample_GLM_code}.
+% GLMs are a suitable basline model for spike train data, as spike trains are Poissonian in nature, and thus fitting parameters for a Poisson probability distribution for each node provides spike trains of similar nature.
+% Further, to capture correlations between neurons in spike trains, this definition may be expanded over a set of probability distributions, where each is parameter is dependent on the others.
 
-% TODO: Consider expanding a bit wrt model definition and inference.
+% For more details, please see the references included above, or the sample code given in \ref{appendix:sample_GLM_code}.
 
 
 \section{Model definitions}
@@ -518,9 +523,10 @@ For more details, please see the references included above, or the sample code g
 \subsection{LIF}
 
 % Write out definition, discuss a bit..? Refer to paper.
-Included portion of paper:
+% Included portion of paper:
 
-The neuron model we employed in this work is the leaky integrate-and-fire (LIF) model, as described in among other works \cite{Rolls1998Book},
+The neuron model we employed in this work is the leaky integrate-and-fire (LIF) model, as described in among other works \cite{Rolls1998Book}, and also in 
+\ref{chpt:LIF}. For the sake of consistency, we include a brief description here in this chapter. The LIF model may be formally outlined as,
 
 \begin{equation}
     \frac{dv}{dt} = \frac{E_L - v_t + R_I I_t}{\tau_m},
@@ -563,7 +569,7 @@ All parameters were held as free parameters during optimization, resulting in 4 
 \subsection{Generalised leaky integrate-and-fire (GLIF)}
 
 % Write out equations (?)
-Our GLIF implementation is based on the whitepaper of \cite{allen_glif_white_paper}, and may be defined as
+My GLIF implementation is based on the whitepaper of \cite{allen_glif_white_paper}, and may be defined as
 
 \begin{equation}
     \frac{dv}{dt} = \frac{g (E_L - v) + R_I I_{syn}}{C_m},
@@ -575,8 +581,6 @@ While the neuron model differential equations are linear, spiking is highly non-
 \begin{equation}
     \frac{d\theta_v}{dt} = a_v (v - E_L) - b_v (\theta_v - \theta_{inf})
 \end{equation}
-
-% and
 
 \begin{equation}
     \frac{d\theta_s}{dt} = - b_s \theta_s
@@ -607,9 +611,28 @@ Each neuron is connected to every other neuron in the network, the weights being
 
 where the synaptic input current to a neuron $j$ is modelled as $I_{syn,j} = \sum_{i} w_{i,j} I_{i,j}$.
 
+GLIF neurons certainly allow for more biological realism in that they may exert most types of behaviour as outlined in the table in figure 2. in \cite{Izhikevich2006}.
+As such, their information processing is theoretically greater, and the types of spike patterns they may exert are richer than when compared to LIF SNNs.
+
+
 \subsection{Non-leaky integrate-and-fire (NLIF)}
 
-Refer to \cite{Huh2017}, mention impact, refer to synapse chapter.
+% Refer to \cite{Huh2017}, mention impact, refer to synapse chapter.
+Interestingly, using sub-threshold synaptic currents as the spike signal, rather than a surrogate function over the membrane potential, results in not only a continuous optimisation signal, but also one that has a specific temporal signature, depending on neuronal excitation.
+Extending the work of \cite{Huh2017}, we implement first their non-leaky integrate-and-fire (NLIF) neuron model, with the aforementioned sub-threshold synapse model, which is defined using a gating-function which essentially results in a synaptic current when the potential is inside of an active zone.
+
+\begin{equation}
+    \int s dt = \int g dv = 1,
+\end{equation}
+
+where $s$ is the synaptic currents, and $g$ is the current gating function, and the synapse model is,
+
+\begin{equation}
+    \tau_s \frac{ds}{dt} = -s + g \frac{dv}{dt}
+\end{equation}
+
+Combined with a lower-dimensional target signal this enables perfectly learning to perform the task, albeit with the inferred model parameters depending largely on the initial configuration and random seed.
+We extend their work to also test their methodology on LIF SNNs, and find that although this results in non-exact gradient calculation, the setup is sufficient for inferring models with near-perfect performance in reproducing the target signal for LIF SNNs, too.
 
 \subsection{Stochastic integrate-and-fire models (SIF)}
 % \subsection{Contribution: microGIF work}
@@ -739,69 +762,8 @@ Assuming a Poisson distribution,
 These let us estimate the ML for $\theta$.
 
 
-
-
-% -----------------------
-% \subsection{Relaxing the constraint of differentiability}
-
-% mostly if EAs??
-% non GBO, but still ABC.
-
-% permutations
-
-% ...
-
-% high-cost, not necessarily better due to stochasticity. 
-
-% unknown input.
-
-% may be studied further, but would require a large amount of computational resources, and it is currently unclear whether such endeavours would be fruitful. % ..?
-
-% ---------------------
-% \textbf{Something you can learn about network, but also should be specific to a spiking net
-% Want to find something only in SNN, but which is also identifiable
-% Don’t need to find exact same sync act., not same identities of neurons which participate, just general properties, in spite of unknown input activity}
-
-% Advantages of SNNs compared to rate based/mean field
-% Quantity
-% Model statistics exhibited regardless of configuration
-% Different inputs and generative model output variability
-
-% “Vector strength is the Fourier component of the spike sequence at the stimulus frequency normalized by the total number of spikes”
-
-% “It has been proposed that membrane time con- stant, spiking threshold, and the number of inputs per period are key parameters that determine the performance of a coincidence detector (Kempter et al. 1998)”
-% On temporal info coded by phase-locked spikes processed in higher-order centers in the brain
-
-% Precise firing sequence
-% “Inappropriate surrogate” - high-order gamma dist great number of chance patterns due to generating quasiperiodic spike trains. Poissonian more unrelated periodic spike trains
-% “Nonprecise time patterns” - interested in spike patterns (not one less precise peak in 3d corr M)
-
-% (Analysis and interpretation of interval and count variability in (single neuron) neural spike trains
-% Coefficient of variation (CV), trial-by trial count variability with the Fano factor (FF), estimation bias, …
-% Variability on tens to hundreds of ms
-% CV = SD(X)/E(X))
-
-% Can we detect statistics relating to state in data using more sophisticated rate measures when compared to straightforward mean binned rates per state? Could this be used further?
-
-% System. Spike train assumed to be distributed according to some distribution. Can invert and calculate probability and minimise. Fluctuation can for instance be regarded as due to “irregularity in time from a constant rate or regularly from a fluctuating rate”.
-% Metric measuring ISI variability rescaled locally in time can suggest which is more plausible.
-% When looking at more complex system this is less trivial..? MIght be used on higher-level such as neuron classes?
-
-% Need to go beyond renewal processes to capture different neuronal modes of behaviour, and spike train adaptation - serial correlations in ISIs is one such step
-% Hidden Markov processes, drawn from distribution relative to state
-% “Memory” in nesting the probability such that it depends on N preceding ISIs
-
-% Grün and Rotter, methods
-% Characteristics that are stable in spite of different inputs
-
-% Null hypothesis: Independence (spike trains)
-% stochastic spike train models, posits probabilistic model for timing of spikes, based on the spike history. Simplest such; Poisson process.
-% p(spike\_[t, t+dt]) ~~ Rdt, where R is the rate (for sufficiently small dt)
-% Point processes for several spike trains (networks and not just neurons); papers (ignored here)
-% ---------------------
-
 % =======================================================
-\chapter{Gradient-descent based LIF SNN inference}
+\chapter{Gradient-descent based LIF SNN inference}\label{chpt:LIF}
 \section{Poster: \textit{Spiking Network Inference Using Gradient Based Optimisation}}
 \includepdf[pages=-]{files/FENS-virtual-2020-e-Poster-W-P-Berg-and-A-Onken-Spiking-Network-Inference-Using-Gradient-Based-Optimisation-PORTRAIT-5.pdf}
 
@@ -1215,7 +1177,7 @@ Below is a list of points summarising observations that I made during my researc
 
 
 % =======================================================
-\chapter{Sleep regulation in the rodent brainstem}
+\chapter{Sleep regulation in the rodent brainstem}\label{chpt:sleep}
 
 My initial research proposal outlines a research project where the goal is to meet research needs within the field of sleep regulation through computational modelling.
 More specifically, the aspiration was to model neurons of the pedunculopontine and laterodorsal tegmental areas within the brainstem during different brain states, based on their neuroanatomy as described, even though scarcely, within the literature, and based on in vivo data from these brain areas \cite{Herice2019c, Tsunematsu2019, Pal2007, Martinez-Gonzalez2011, Fraigne2015}.
