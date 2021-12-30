@@ -838,6 +838,21 @@ It also required maintaining a neuronal state throughout simulation, for which I
 With this simple trick, intervals of input mutate the state with each input corresponding to some desired time-step constant, in my code set to $1 \si{ms}$ for simplicity.
 However, it does result in that intervals of simulation need to be performed for each backward pass, i.e. updating the model parameters given error gradients.
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/samples/SameModelClassTarget/export_spike_trains_euid_12-09_16-17-13-464.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/samples/SameModelClassTarget/export_GLIF_plot_loss_euid_12-09_16-17-13-464.eps}
+    \caption{Target and fitted GLIF SNN model spike trains, and loss per training epoch, membrane potentials in figure \ref{fig:sample_GLIF_vs}}
+    \label{fig:sample_GLIF_spikes_loss}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\columnwidth]{figures/samples/membrane_potentials/export_sample_GLIF_white_noise.eps}
+    \caption{membrane potentials for the fitted GLIF model in figure \ref{fig:sample_GLIF_spikes_loss}}
+    \label{fig:sample_GLIF_vs}
+\end{figure}
+
 We implemented a general SNN optimisation framework on top of PyTorch \cite{Paszke2017} and utilised PyTorch's autograd-feature for backpropagation of error gradients.
 Key to enabling backpropagation is defining spiking using a differentiable function, such as the sigmoid function, i.e.
 
@@ -896,77 +911,50 @@ The results which are included below illuminate how optimisation traverses the g
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/GLIF/test_export_2d_heatmap_N_4_loss_tau_s_tau_m.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/GLIF/test_export_2d_heatmap_N_4_loss_tau_s_tau_m.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/GLIF/test_export_2d_heatmap_N_4_loss_b_s_a_v.eps}
     \vskip -0.1in
-    \caption{p landscape GLIF tau s tau m}
-    \vskip -0.2in
+    \caption{p landscape GLIF $\tau_s, \tau_m$ (left), and $b_s, a_v$ (right)}
 \end{figure}
+
 
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/GLIF/test_export_2d_heatmap_N_4_loss_b_s_a_v.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/LIF/test_export_2d_heatmap_N_4_loss_tau_m_tau_s.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/LIF/test_export_2d_heatmap_N_4_loss_E_L_tau_m.eps}
     \vskip -0.1in
-    \caption{p landscape GLIF tau s tau m}
-    \vskip -0.2in
-\end{figure}
-
-% LIF
-\begin{figure}
-    \centering
-    \vskip -0.1in
-    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/LIF/test_export_2d_heatmap_N_4_loss_E_L_tau_m.eps}
-    \vskip -0.1in
-    \caption{p landscape GLIF tau s tau m}
-    \vskip -0.2in
-\end{figure}
-
-\begin{figure}
-    \centering
-    \vskip -0.1in
-    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/LIF/test_export_2d_heatmap_N_4_loss_tau_m_tau_s.eps}
-    \vskip -0.1in
-    \caption{p landscape GLIF tau s tau m}
-    \vskip -0.2in
+    \caption{p landscape LIF $\tau_s, \tau_m$, and $E_L, \tau_m$ (right)}
 \end{figure}
 
 % mesoGIF
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_c_Delta_u.eps}
-    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_E_L_tau_m.eps}
+    \includegraphics[width=0.32\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_c_Delta_u.eps}
+    \includegraphics[width=0.32\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_E_L_tau_m.eps}
+    \includegraphics[width=0.32\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_tau_m_tau_s.eps}
     \vskip -0.1in
-    \caption{p landscape GLIF tau s tau m}
-    \vskip -0.2in
+    \caption{p landscape SGIF 1}
 \end{figure}
 
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_tau_m_tau_s.eps}
-    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_tau_theta_J_theta.eps}
+    \includegraphics[width=0.32\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_tau_theta_J_theta.eps}
+    \includegraphics[width=0.32\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_c_Delta_u.eps}
+    \includegraphics[width=0.32\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_E_L_tau_m.eps}
     \vskip -0.1in
-    \caption{p landscape GLIF tau s tau m}
-    \vskip -0.2in
+    \caption{p landscape SGIF 2}
 \end{figure}
+
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_c_Delta_u.eps}
-    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_E_L_tau_m.eps}
+    \includegraphics[width=0.32\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_tau_m_tau_s.eps}
+    \includegraphics[width=0.32\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_tau_theta_J_theta.eps}
     \vskip -0.1in
-    \caption{p landscape GLIF tau s tau m}
-    \vskip -0.2in
-\end{figure}
-\begin{figure}
-    \centering
-    \vskip -0.1in
-    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_tau_m_tau_s.eps}
-    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_tau_theta_J_theta.eps}
-    \vskip -0.1in
-    \caption{p landscape GLIF tau s tau m}
-    \vskip -0.2in
+    \caption{p landscape SGIF 3}
 \end{figure}
 
 Description parameter landscape plots. 
@@ -993,10 +981,8 @@ Fitting to synthetic data generated by the same model class, such that we may co
 Data was generated by hand-engineered models of the same class as the model being fitted (i.e. LIF, GLIF, or microGIF).
 
 \begin{figure}
+    \centering
 	\includegraphics[width=0.49\columnwidth]{figures/export_rates_saved_all.eps}
-\end{figure}
-
-\begin{figure}
 	\includegraphics[width=0.49\columnwidth]{figures/export_p_dists_saved_all.eps}
 \end{figure}
 
@@ -1011,6 +997,7 @@ Fitting to the same synthetic data set, such that we may compare performance acr
 This data was generated by a hand-engineered ...
 
 \begin{figure}
+    \centering
 	\includegraphics[width=0.49\columnwidth]{figures/export_rates_only_GT_all.eps}
 \end{figure}
 
@@ -1049,14 +1036,14 @@ Custom coupled GLM fitted to target spike trains.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\columnwidth]{figures/matlab/export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_mesoGIF_N_4.eps}
+    \includegraphics[width=\columnwidth]{figures/matlab/export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_mesoGIF_N_4.eps}
     \caption{GLM mesoGIF}
     \label{fig:GLM_mesoGIF}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\columnwidth]{figures/matlab/export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_microGIF_N_21.eps}
+    \includegraphics[width=\columnwidth]{figures/matlab/export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_microGIF_N_21.eps}
     \caption{GLM microGIF}
     \label{fig:GLM_microGIF}
 \end{figure}
@@ -1113,7 +1100,7 @@ This may indicate that there are other principles underlying the learning of the
 \subsubsection*{Sine modulated white noise input}
 
 \begin{equation}
-    \sum^M sin(W_n(t))
+    \sum^M \sin(W_n(t))
 \end{equation}
 
 \subsubsection*{White noise input}
