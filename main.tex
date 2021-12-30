@@ -83,7 +83,7 @@
     % Now: ML -> Neuroscience?
     % SNNs hard. However, since DNNs work so well: SNNs as DL-case?
     % Tricks \& hacks to allow for GBO for SNNs, too!
-    % Modern Pytorch-implementation - much performance, such high-level library.
+    % Modern PyTorch-implementation - much performance, such high-level library.
     % Batching is nice.
     % Model classes. Performance over experiments with synthethic data \& GT, and on synthetic general data, and on sleep data.
     % Also probabilistic model, which lends itself better to optim by NLL, rather than frd or vrd.
@@ -806,17 +806,20 @@ We want to have input that puts the system in a realistic mode of behaviour, and
 
 
 % \section{My contribution: Implementing, differentiating and optimising different SNN models using different loss metrics}
-\section{GBO compatible SNN framework in Pytorch}
+\section{GBO compatible SNN framework in PyTorch}
 
 % TODO
-Goals and questions or hypotheses
-Novel method developed for advancing SNN inference by using gradient descent
-Binary in nature, by implementing surrogate subthreshold spike signals, we may facilitate optimisation, improving optimisation performance for gradient descent.
-We will retrieve a local minimum which is not approaching ground-truth in terms of model parameters, however, the model will capture the spike statistics to a greater extent than other models. As such, it may be used to evaluate the functional characteristics of the modeled nuclei.
-The input is unknown.
-SBI approach for SNN inference; limitations. Test potential.
-Better for true parameter estimation. However,  posteriors are probability densities, and do not have direct access to full model configurations as such, and may suffer from not capturing full specific model configurations that capture as many higher-order spike statistics.
-GLMs as a baseline to have comparable results for NMF analysis
+% Goals and questions or hypotheses
+
+Novel method developed for advancing SNN inference by using gradient descent over various signals, including a surrogate function over the membrane potential for LIF and GLIF neurons, and the negative log-likelihood for SGIF neurons.
+% As spikes are binary in nature, by implementing surrogate subthreshold spike signals, we may facilitate optimisation, improving optimisation performance for gradient descent.
+We hypothesise that we will retrieve a local minimum which is not close to the ground-truth values where this is accessible, but that the model will however capture the spike statistics to a large extent, potentially allowing for functional analysis and model probing for further hypothesising. 
+% As such, it may be used to evaluate the functional characteristics of the modeled nuclei.
+% The input is unknown.
+% SBI approach for SNN inference; limitations. Test potential.
+% Better for true parameter estimation. However,  posteriors are probability densities, and do not have direct access to full model configurations as such, and may suffer from not capturing full specific model configurations that capture as many higher-order spike statistics.
+As a baseline model comparison we use GLMs which are good candidates for capturing spike statistics in the NMF analysis, but hypothesise that GBO for SNNs may enable encompassing a higher geodesic NMF module similarity than when performing MLE for GLMs.
+If so, this could either be due to inductive bias (by model definition), or due to the richer range of behaviours available to the SNN models.
 % Input transformation (?, avg. relative spiking per population ?)
 % net(x\_forward)
 % Output transformation (avg. v per pop.)
@@ -827,14 +830,15 @@ GLMs as a baseline to have comparable results for NMF analysis
 % \subsection{Contribution: PyTorch}
 
 % ... tricks, sequentiality etc
-Current implementations of SNNs are commonly done in Brian 2 or Matlab. Upon commencing work on SNNs using LIF neurons, the only recent work we found that supported optimisation in a supervised or semi-supervised manner was in Theano, a legacy Python library.
-With recent advances in ML not only through increased computational resources and novel optimisation techniques, but also in programming libraries which may be run using the GPU, and in either case contains highly optimised library code implemented in a lower-level programming language (for Python typically C or Cuda), I wanted to make use of this aspect too, and after too many hours of fighting with at best poorly documented Theano-library code, I decided to set out to implement SNNs in Pytorch.
-This quickly led to the implementation of a modular pipeline and framework of SNN inference using GBO in Pytorch.
+Current implementations of SNNs in the field are commonly done in Brian 2 or Matlab. 
+Upon commencing work on SNNs using LIF neurons, the only recent work we found that supported optimisation in a supervised or semi-supervised manner was in Theano, a legacy Python library for symbolic programming.
+With recent advances in ML not only through increased computational resources and novel optimisation techniques, but also in programming libraries which may be run using the GPU, and in either case contains highly optimised library code implemented in a lower-level programming language (for Python typically C or Cuda), we wanted to make use of this aspect too, and after too many hours of fighting with at best poorly documented Theano-library code, we decided to set out to implement SNNs in PyTorch.
+This led to the implementation of a modular pipeline and framework of SNN inference using GBO in PyTorch.
 It also required maintaining a neuronal state throughout simulation, for which I simply implemented sequential input forward-propagation thoughout the model, which would also mutate its state.
-With this simple trick, intervals of input mutate the state with each input corresponding to some desired time-step constant, in my code set to $1 ms$ for simplicity. % TODO: SI unit
+With this simple trick, intervals of input mutate the state with each input corresponding to some desired time-step constant, in my code set to $1 \si{ms}$ for simplicity.
 However, it does result in that intervals of simulation need to be performed for each backward pass, i.e. updating the model parameters given error gradients.
 
-I implemented a general SNN optimisation framework on top of Pytorch \cite{Paszke2017} and utilised Pytorch's autograd-feature for backpropagation of error gradients.
+We implemented a general SNN optimisation framework on top of PyTorch \cite{Paszke2017} and utilised PyTorch's autograd-feature for backpropagation of error gradients.
 Key to enabling backpropagation is defining spiking using a differentiable function, such as the sigmoid function, i.e.
 
 \begin{equation}
@@ -850,9 +854,9 @@ The model output is then compared with the output of a target data set, and the 
 
 \subsection{The framework}
 
-% Modular Python-based framework written in Pytorch that allows for automatic differentiation of the computational graphs defined with Pytorch-code.
-I implemented a framework in Python/Pytorch, performing differentiation \& optimisation using the autograd-feature of Pytorch.
-Further, Pytorch allows for compactly defining the models by using the library code, which again is compiled into a computational graph, which in turn is able to be compiled into and run using the pre-compiled C++ or Cuda library-code.
+% Modular Python-based framework written in PyTorch that allows for automatic differentiation of the computational graphs defined with PyTorch-code.
+We implemented a framework in Python/PyTorch, performing differentiation \& optimisation using the autograd-feature of PyTorch.
+Further, PyTorch allows for compactly defining the models by using the library code, which again is compiled into a computational graph, which in turn is able to be compiled into and run using the pre-compiled C++ or Cuda library-code.
 Note that as such, this does not only allow for automatic differentiation using the computational graph constructed by defining nodes, edges, and leafs in the graph, but model simulation itself becomes fast when only running library-code, and not escaping to the Python interpreter.
 While a comparison of run-time speed is out of scope in this thesis, it is often possible to reach a level close to that of C/C++, or Cuda - but with a main bottleneck in this case being imposed by the temporal limitation of SNNs; namely that simulation must be done whilst maintaining the model state in time throughout each simulation interval.
 
@@ -878,12 +882,12 @@ For each experiment, the model is pseudo-randomly initialised by first setting a
 Then, each model is fitted until either the average gradient has decreased to a fraction ($\approx 1 \%$) of the initial average gradient, or for a set number of training iterations, $N_{exp}=200$.
 Each training iteration consists of model simulation for an interval of $t=1200 \si{ms}$, and then updating the parameter values according to the gradients.
 
-Since some model parameters are more sensitive than others, I defined linear constraints for each parameter, which Pytorch allows for incorporating into the computational graph in a simple manner by defining a hook for each backward pass over the parameters, i.e. for each gradient update, effectively clamping the gradients such that the parameters do not wander outside of realistic intervals. These intervals are naturally far wider than the initialisation intervals, but by considering what intervals are realistic, this is a simple and natural way to exclude unrealistic modes of model behaviour whilst constraining optimisation simultaneously.
+Since some model parameters are more sensitive than others, I defined linear constraints for each parameter, which PyTorch allows for incorporating into the computational graph in a simple manner by defining a hook for each backward pass over the parameters, i.e. for each gradient update, effectively clamping the gradients such that the parameters do not wander outside of realistic intervals. These intervals are naturally far wider than the initialisation intervals, but by considering what intervals are realistic, this is a simple and natural way to exclude unrealistic modes of model behaviour whilst constraining optimisation simultaneously.
 
 % SBI is also different from what René et al. did in their paper. So these are two methods to compare with their findings. 
 
 
-\section{Results}
+% \section{Results}
 
 Prior to the main experimental setup above, I simulated each model class for realistic intervals of parameters, whilst fixing the other parameters to values that I had empirically or analytically determined to be able to produce meaningful output, and plotted the loss and rate when compared to the target model of the same model class, essentially performing a grid search over parameters allowing to plot the marginals of the parameter landscape formed by the loss metric and target model signal.
 The results which are included below illuminate how optimisation traverses the gradients formed by the parameter landscape, and gives an idea about the extent to which the procedure is applicable to the model class.
@@ -892,7 +896,7 @@ The results which are included below illuminate how optimisation traverses the g
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/GLIF/test_export_2d_heatmap_N_4_loss_tau_s_tau_m.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/GLIF/test_export_2d_heatmap_N_4_loss_tau_s_tau_m.eps}
     \vskip -0.1in
     \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
@@ -901,7 +905,7 @@ The results which are included below illuminate how optimisation traverses the g
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/GLIF/test_export_2d_heatmap_N_4_loss_b_s_a_v.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/GLIF/test_export_2d_heatmap_N_4_loss_b_s_a_v.eps}
     \vskip -0.1in
     \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
@@ -911,7 +915,7 @@ The results which are included below illuminate how optimisation traverses the g
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/LIF/test_export_2d_heatmap_N_4_loss_E_L_tau_m.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/LIF/test_export_2d_heatmap_N_4_loss_E_L_tau_m.eps}
     \vskip -0.1in
     \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
@@ -920,7 +924,7 @@ The results which are included below illuminate how optimisation traverses the g
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/LIF/test_export_2d_heatmap_N_4_loss_tau_m_tau_s.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/LIF/test_export_2d_heatmap_N_4_loss_tau_m_tau_s.eps}
     \vskip -0.1in
     \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
@@ -930,8 +934,8 @@ The results which are included below illuminate how optimisation traverses the g
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_c_Delta_u.eps}
-    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_E_L_tau_m.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_c_Delta_u.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_E_L_tau_m.eps}
     \vskip -0.1in
     \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
@@ -940,8 +944,8 @@ The results which are included below illuminate how optimisation traverses the g
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_tau_m_tau_s.eps}
-    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_tau_theta_J_theta.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_tau_m_tau_s.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_tau_theta_J_theta.eps}
     \vskip -0.1in
     \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
@@ -949,8 +953,8 @@ The results which are included below illuminate how optimisation traverses the g
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_c_Delta_u.eps}
-    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_E_L_tau_m.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_c_Delta_u.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_E_L_tau_m.eps}
     \vskip -0.1in
     \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
@@ -958,8 +962,8 @@ The results which are included below illuminate how optimisation traverses the g
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_tau_m_tau_s.eps}
-    \includegraphics[width=0.9\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_tau_theta_J_theta.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_tau_m_tau_s.eps}
+    \includegraphics[width=0.33\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_tau_theta_J_theta.eps}
     \vskip -0.1in
     \caption{p landscape GLIF tau s tau m}
     \vskip -0.2in
@@ -979,7 +983,7 @@ results spike correlations and RMSE, report comparatively too.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\columnwidth]{figures/matlab/bugged_microGIF_21.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/matlab/bugged_microGIF_21.eps}
     \caption{Bugged microGIF N=21. direct GD with Adam}
 \end{figure}
 
@@ -989,11 +993,11 @@ Fitting to synthetic data generated by the same model class, such that we may co
 Data was generated by hand-engineered models of the same class as the model being fitted (i.e. LIF, GLIF, or microGIF).
 
 \begin{figure}
-	\includegraphics{figures/export_rates_saved_all.eps}
+	\includegraphics[width=0.49\columnwidth]{figures/export_rates_saved_all.eps}
 \end{figure}
 
 \begin{figure}
-	\includegraphics{figures/export_p_dists_saved_all.eps}
+	\includegraphics[width=0.49\columnwidth]{figures/export_p_dists_saved_all.eps}
 \end{figure}
 
 %sample microGIF poisson & bernoulli
@@ -1007,7 +1011,7 @@ Fitting to the same synthetic data set, such that we may compare performance acr
 This data was generated by a hand-engineered ...
 
 \begin{figure}
-	\includegraphics{figures/export_rates_only_GT_all.eps}
+	\includegraphics[width=0.49\columnwidth]{figures/export_rates_only_GT_all.eps}
 \end{figure}
 
 % \begin{figure}
@@ -1062,7 +1066,7 @@ all models GBO
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\columnwidth]{figures/matlab/geodesic_distances_Synthetic_GLIF.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/matlab/geodesic_distances_Synthetic_GLIF.eps}
     \caption{placeholder geodesic GBO}
     \label{fig:geodesic_distances}
 \end{figure}
@@ -1071,7 +1075,7 @@ SBI
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\columnwidth]{figures/matlab/bugged_mesoGIF_4.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/matlab/bugged_mesoGIF_4.eps}
     \caption{bugged pop. level SIF. GBO Adam}
 \end{figure}
 
