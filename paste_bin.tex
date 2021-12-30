@@ -1,0 +1,42 @@
+% The good old Bayes' rule:
+% \begin{math}
+%     P(\theta|X_o) = \frac{P(x_o|\theta)P(x_o)}{P(\theta)}
+% \end{math}
+
+% \section{(Evolutionary algorithms)}
+% \section{Gradient free optimisation with evolutionary algorithms}
+
+% I recall back to conferences talking about inferring complex, deep networks, which is a field where evolutionary algorithms (EAs) still are competitive and fruitful.
+% In short, when EAs are fruitful, this often means the search space is so vast that gradient-based approaches will not converge.
+% Even so, the computational cost is comparable, or even worse, than for ABC.
+
+% NGO
+
+% let's forget about casting the spike trains into a euclidean space, and propagating gradients. let's relax this to defined operations where there is a cost assigned to each operation, such that there is a minimal distance between two spike trains. this should let us define operations for moving single spikes, and shifting spikes. however, in my case there is uncertainty involved, so we should define operations for matching motifs instead. this makes it unclear for polynomial-time DP for calculating the distance. i can do pattern identification according to pre-defined rules, which will be exponential over a constant bound such that for longer time-intervals, a greedy comparison should be polynomial.
+% if we assume that parts cannot cross in graph-matching, however, it becomes polynomial for the full distance-calculation (for larger intervals)
+
+% sin (f(s)) + cos (g(s)) ?
+% where f(s) = D\^spike[q, k]
+% and g(s) = D\^interval[q, k]
+% assume same labels?
+% --> However, does not converge well.
+
+% nevergrad + brian2
+% for efficiency purposes..?
+% Evolutionary algorithms may be used to traverse high-dimensional parameter-spaces in search for optimal solutions to complex problems such as fitting complex network models.
+% This is made possible by by using objective functions to evaluate solution candidates, essentially provided as heuristics guiding the search. Note that finding the global optimum cannot be guaranteed when using evolutionary algorithms.
+% In our case, due to the nature of the GLIF model, we may both constrain the parameter search space to meaningful parameter intervals, and employ search strategies that are more suited for the system.
+
+% Two such evolutionary algorithm strategies are differential evolution (DE), and covariance matrix adaptation (CMA). 
+
+% By using differential evolution (DE), a strategy where a set of best performing candidates are combined and mutated, we may continuously improve parts of the candidate solution, whilst potentially naturally constraining the search as a result.
+% % revise the above
+% While DE may be used to cross over and generate candidate solutions more broadly, it may also be skewed towards local optima. Another approach that we selected that might be better suited for very high-dimensional problems, is covariance matrix adaptation (CMA) evolution \cite{Igel2007}. CMA will naturally utilise correlated parameters in the model system as is the case in the GLIF model, and incorporates this by updating a covariance matrix during search path traversal, which is in turn used to maximise the probability for finding successful candidate solutions.
+% Effectively, CMA does principal components analysis over its evolution path, which allows for variance and step size adjustment.
+% CMA evolutionary strategies have been shown to perform well for difficult functions with larger budgets \cite{Hansen2010}.
+% % revise the above
+
+% % PSO, NGO?
+% Initial testing with particle-swarm optimisation (PSO), which can be said to search more widely before converging towards the best performing candidate in the fitness landscape.
+% However, divergence or non-converging bad fits, likely due to the vast complexity of the parameter-space and the nature of PSO.
+% Failure to converge to results of comparable loss to the other optimisers was also the case with neighbourhood and genetic operator (NGO) search.

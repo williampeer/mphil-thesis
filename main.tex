@@ -364,23 +364,19 @@ where $h$ is the hidden units, $W$ the weights, and $g$ a gating function,
     g^{i,j} = \sigma ( \textbf{w}_g^{i,j}\textbf{h}_t^{i} + \textbf{u}_g^{i,j}\textbf{h}_{t-1}^{*})
 \end{equation}
 
-basically treating the network instead of a conventional RNN which may be regarded as a POMDP process as a process in which each hidden layer has gated recurrent connections determined by a reset gate function, which allows the ignoring of previous hidden states by transition through the reset gate function, whose weights may also be updated by the same methodology;
+basically treating the network instead of a conventional RNN which may be regarded as a (POMDP) process as a process in which each hidden layer has gated recurrent connections determined by a reset gate function, which allows the ignoring of previous hidden states by transition through the reset gate function, whose weights may also be updated by the same methodology;
 estimating a probability distribution over sequences, factorising the probability of the sequences, and training an RNN by means of negative log-likelihood minimisation of the training sequences:
 
-\begin{math}
+\begin{equation}
     p(x_1, ..., x_N) = p(x_1)p(x_2|x_1) ... p(x_N|x_1,...,x_{N-1}), \\
     p(x_N|x_1,...,x_{N-1}) = g(\textbf{h}_t)
-\end{math}
+\end{equation}
 
 Note that this bears resemblance to SNNs, and is bridged particularly by the probabilistic model version of \cite{Rene2020}, which we have based a spike time and gradient compatible model implementation on in section \ref{microGIF}.
-There, a spike train is assumed to be a Bernoulli distributed spike history, which may be estimated with the ODE system and its recurrent connections.
-However, connections are there optimised in a more straightforward manner, with the other parameters and internal dynamics instead being what decides on the "gating".
+There, a spike train is assumed to be a Bernoulli or Poisson distributed spike history, which may be estimated with the ODE system and its recurrent connections.
+However, connections in a GRU system are optimised in a more straightforward manner, with the other parameters and internal dynamics instead being what decides on the "gating".
 
-In my work I have studied employing gradient based optimisation as well as approximate Bayesian computation using amortised learning for both a probabilistic class of stochastic spiking neural networks \cite{Rene2020}, for leaky types of integrate-and-fire SNNs \cite{allen_glif_white_paper}, and for closed-form (still with multiple solutions?) exact-gradient types of non-leaky integrate-and-fire SNNs \cite{Huh2017}.
-I have also replicated and analysed Izhikevich SNNs, but chosen not to apply GBO to this model class due to planes of chaos in the parameter landscape, simply resulting in that the Izhikevich neuron ODEs are a lower-dimensional projection of the Hodgkin-Huxley ODEs - resulting in that while they are of lower complexity simulation-wise, the collapse of several variables into fewer results in variable intervals for which model behaviour is unrealistic and/or chaotic, making GBO impossible.
-
-Typically, only the weights are inferred in ML models using some gradient based optimisation algorithm.
-There exists, however, work in which SNNs are transformed such that they are more compatible with BPTT, including probabilistic models in which each node projects a probability of spiking for each time step or interval, and models in which synaptic signals are made continuous and smooth, either by constructing a surrogate gradient signal such as over the membrane potential, or by modeling the signals as a function over the sub-threshold membrane potential, such as for instance when it is above zero, or within a given interval, or by modeling sub-threshold synaptic currents.
+While typically only the weights are inferred in ML models using some gradient based optimisation algorithm, there exists work in which SNNs are transformed such that they are more compatible with BPTT, including probabilistic models in which each node projects a probability of spiking for each time step or interval, and models in which synaptic signals are made continuous and smooth, either by constructing a surrogate gradient signal such as over the membrane potential, or by modeling the signals as a function over the sub-threshold membrane potential, such as for instance when it is above zero, or within a given interval, or by modeling sub-threshold synaptic currents.
 % The former approach has been studied in works such as \cite{}
 % Should talk about points relating to where rate-based metrics is the best one can do wrt spikes
 The same often holds for SNNs in which surrogates are constructed, due to elements such as the initial model configuration, initial conditions, or model perturbation.
@@ -390,12 +386,14 @@ While these works are valuable in studying how one might combine optimisation an
 However, the sole basis for studying SNNs in this work is to maintain the biological parallel, such that the model may be used as an interpretable system and hypothesis of recorded site dynamics, and studied as such.
 Therefore, it is important to study how the precise timing of spiking may be made relevant in the models, as that is arguably not only a relevant source of information, but a rich encoding scheme employed by the neural circuitry in the biological brain.
 While this was initially debated, it has been argued both by information theorists, neuroscientists and computer scientists alike recently that the precise timing of spiking is not only relevant, but is in fact necessary in order to encode all of the information that has shown to be processed by the brain, i.e. a rate-coding is not enough to represent a task which is solved by a neural network.
-% references
+
+In my work I have studied employing gradient based optimisation as well as approximate Bayesian computation using amortised learning for both a probabilistic class of stochastic spiking neural networks \cite{Rene2020}, for leaky types of integrate-and-fire SNNs \cite{allen_glif_white_paper}, and for closed-form (still with multiple solutions?) exact-gradient types of non-leaky integrate-and-fire SNNs \cite{Huh2017}.
+I have also replicated and analysed Izhikevich SNNs, but chosen not to apply GBO to this model class due to planes of chaos in the parameter landscape, simply resulting in that the Izhikevich neuron ODEs are a lower-dimensional projection of the Hodgkin-Huxley ODEs - resulting in that while they are of lower complexity simulation-wise, the collapse of several variables into fewer results in variable intervals for which model behaviour is unrealistic and/or chaotic, making GBO impossible.
 
 
 \section{Bayesian approaches}
 
-Sample of observations O given priors p, Bayes rule; posterior over parameters given observation, i.e. data.
+We assume that the reader is familiar with Bayesian statistics. However, just to give an outline of our notation to the extent that we may also outline the SBI approach used, we may define a sample of observations $O$ given priors $p$, making the posterior over the parameters given an observation,
 
 \begin{equation}
     P(\theta|X_o) = \frac{P(x_o|\theta)P(x_o)}{P(\theta)}
@@ -406,85 +404,38 @@ Note that this does not omit the difficulty of model conditions, including model
 Further, the computational cost requires sampling a great number of samples in order to estimate the posterior over the parameters, thus increasing drastically with the model dimensionality and number of parameters.
 The approach does, however, come with the benefit of being able to assess and directly measure the certainty by usual statistical metrics around the centres of the posterior distributions, as well as that the full posterior distribution contains samples across all parameters, dependently, which may capture dependencies not so easily captured when estimating using GBO.
 
-\subsection{MCMC sampling}
-\cite{Rene2020} "special case" i.e. mesoscopic-microscopic inference using first ABC (or GD?) on pop. level and then MCMC sampling for full approx. posterior?
+% \subsection{MCMC sampling}
+% \cite{Rene2020} "special case" i.e. mesoscopic-microscopic inference using first ABC (or GD?) on pop. level and then MCMC sampling for full approx. posterior?
 
-“To understand how rich dynamics emerge in neural populations, we require models which exhibit a wide range of dynamics while remaining interpretable in terms of con- nectivity and single-neuron dynamics. However, it has been challenging to fit such mechanistic spiking networks at the single neuron scale to empirical population data. To close this gap, we propose to fit such data at a meso scale, using a mechanistic but low-dimensional and hence statistically tractable model.”
-Argue that instead of making the reduction to a population-level model, we may instead make the dimensionality reduction for the parameters.
-There exists work on fitting GLIF parameters to physiological data. 
-Also, inferring weights with fixed parameters is possible using GD, given data.
-This could mean that we could, given the correct neuron classes, infer a topology or the connectivity of a site recorded from!
-Parameters may be inferred prior to the weights using an appropriate procedure.
-However, in the Rene-paper they use aggregate population activity, or spike histories, and derive the likelihood for the parameters. Can be used to either optimise, or do Bayesian inference.
-They conclude that population inference impact and improve the accuracy in single-neuron parameter inference.
+% “To understand how rich dynamics emerge in neural populations, we require models which exhibit a wide range of dynamics while remaining interpretable in terms of connectivity and single-neuron dynamics. However, it has been challenging to fit such mechanistic spiking networks at the single neuron scale to empirical population data. To close this gap, we propose to fit such data at a meso scale, using a mechanistic but low-dimensional and hence statistically tractable model.”
+% Argue that instead of making the reduction to a population-level model, we may instead make the dimensionality reduction for the parameters.
+% There exists work on fitting GLIF parameters to physiological data. 
+% Also, inferring weights with fixed parameters is possible using GD, given data.
+% This could mean that we could, given the correct neuron classes, infer a topology or the connectivity of a site recorded from!
+% Parameters may be inferred prior to the weights using an appropriate procedure.
+% However, in the Rene-paper they use aggregate population activity, or spike histories, and derive the likelihood for the parameters. Can be used to either optimise, or do Bayesian inference.
+% They conclude that population inference impact and improve the accuracy in single-neuron parameter inference.
 
-The René paper assumed known input when inferring models. They also generated data with sine-modulated input.
-They also made a quasi-renewal approximation, and assumed independence between neurons in each time bin.
+% The René paper assumed known input when inferring models. They also generated data with sine-modulated input.
+% They also made a quasi-renewal approximation, and assumed independence between neurons in each time bin.
 
 
 \subsection{Amortised learning with DNNs}
 
 % SNPE
-\cite{Lueckmann2018} amortised learning and ABC using DNNs.
-
-Since DNNs are universal function approximators, they may be used to approximate the function of the posterior distribution over the parameters given observations for a given model system.
-It seems that DL is an excellent candidate for this type of function approximation, and that in this regard GBO works just as well as it does in ML, depending on how well-defined the posterior distribution in fact is in the data.
-We find in our work that particularly when working with models that have larger spaces which I like to think of as "frontiers" in the parameter landscape for which the loss is approximately equal, the posterior is similarly not condensed around fixed points.
-\cite{Lueckmann2021} (double check ref.) however find that the posterior approximation still contains the relationship, i.e. dependence, over the parameters. 
-In other words, while they cannot be sampled independently for marginals, sampling over the full posterior still generates realistic data.
-
-% The good old Bayes' rule:
-% \begin{math}
-%     P(\theta|X_o) = \frac{P(x_o|\theta)P(x_o)}{P(\theta)}
-% \end{math}
+\cite{Lueckmann2018} propose using sequential neural posterior estimation, in which a simulator network to generate samples, and a deep neural network to approximate the posterior over the parameters given the sampled observations.
+This can then be used to estimate the posterior given a target observation, which may be outlined as,
 
 \begin{math}
     O: \Phi(\theta) \sim X, \quad
     DNN = F_\Phi(\theta; X) \approx P(\theta|X)
 \end{math}
 
-There usually is a larger space for which performance given by the loss metric is fairly equal, just requiring a different combination of parameters - i.e. there is no single fixed point or trajectory leading to it in the parameter landscape leading to a global minimum.
-My interpretation of this is that what we identify with learning algorithms for SNNs is not a specific configuration which captures the data set at hand, but a configuration which reaches a mode of behaviour that would allow it do produce the data.
-This may indicate that there are other principles underlying the learning of these networks.
-
-% \section{(Evolutionary algorithms)}
-% \section{Gradient free optimisation with evolutionary algorithms}
-
-% I recall back to conferences talking about inferring complex, deep networks, which is a field where evolutionary algorithms (EAs) still are competitive and fruitful.
-% In short, when EAs are fruitful, this often means the search space is so vast that gradient-based approaches will not converge.
-% Even so, the computational cost is comparable, or even worse, than for ABC.
-
-% NGO
-
-% let's forget about casting the spike trains into a euclidean space, and propagating gradients. let's relax this to defined operations where there is a cost assigned to each operation, such that there is a minimal distance between two spike trains. this should let us define operations for moving single spikes, and shifting spikes. however, in my case there is uncertainty involved, so we should define operations for matching motifs instead. this makes it unclear for polynomial-time DP for calculating the distance. i can do pattern identification according to pre-defined rules, which will be exponential over a constant bound such that for longer time-intervals, a greedy comparison should be polynomial.
-% if we assume that parts cannot cross in graph-matching, however, it becomes polynomial for the full distance-calculation (for larger intervals)
-
-% sin (f(s)) + cos (g(s)) ?
-% where f(s) = D\^spike[q, k]
-% and g(s) = D\^interval[q, k]
-% assume same labels?
-% --> However, does not converge well.
-
-% nevergrad + brian2
-% for efficiency purposes..?
-% Evolutionary algorithms may be used to traverse high-dimensional parameter-spaces in search for optimal solutions to complex problems such as fitting complex network models.
-% This is made possible by by using objective functions to evaluate solution candidates, essentially provided as heuristics guiding the search. Note that finding the global optimum cannot be guaranteed when using evolutionary algorithms.
-% In our case, due to the nature of the GLIF model, we may both constrain the parameter search space to meaningful parameter intervals, and employ search strategies that are more suited for the system.
-
-% Two such evolutionary algorithm strategies are differential evolution (DE), and covariance matrix adaptation (CMA). 
-
-% By using differential evolution (DE), a strategy where a set of best performing candidates are combined and mutated, we may continuously improve parts of the candidate solution, whilst potentially naturally constraining the search as a result.
-% % revise the above
-% While DE may be used to cross over and generate candidate solutions more broadly, it may also be skewed towards local optima. Another approach that we selected that might be better suited for very high-dimensional problems, is covariance matrix adaptation (CMA) evolution \cite{Igel2007}. CMA will naturally utilise correlated parameters in the model system as is the case in the GLIF model, and incorporates this by updating a covariance matrix during search path traversal, which is in turn used to maximise the probability for finding successful candidate solutions.
-% Effectively, CMA does principal components analysis over its evolution path, which allows for variance and step size adjustment.
-% CMA evolutionary strategies have been shown to perform well for difficult functions with larger budgets \cite{Hansen2010}.
-% % revise the above
-
-% % PSO, NGO?
-% Initial testing with particle-swarm optimisation (PSO), which can be said to search more widely before converging towards the best performing candidate in the fitness landscape.
-% However, divergence or non-converging bad fits, likely due to the vast complexity of the parameter-space and the nature of PSO.
-% Failure to converge to results of comparable loss to the other optimisers was also the case with neighbourhood and genetic operator (NGO) search.
-
+% Since DNNs are universal function approximators, they may be used to approximate the function of the posterior distribution over the parameters given observations for a given model system.
+It seems that DL is an excellent candidate for this type of function approximation, and that in this regard GBO works just as well as it does in ML, depending on how well-defined the posterior distribution in fact is in the data.
+We find in our work that particularly when working with models that have larger spaces which I like to think of as "frontiers" in the parameter landscape for which the loss is approximately equal, the posterior is similarly not condensed around fixed points.
+\cite{Lueckmann2021}, however find that the posterior approximation still contains the relationship, i.e. dependence, over the parameters. % TODO: Check ref.
+In other words, while they cannot be sampled independently for marginals, sampling over the full posterior still generates realistic data, even if necessarily still suffering from the same local minima samples from the posterior, due to the input-output ambiguity.
 
 
 \section{Evaluating SNN models}
@@ -1208,6 +1159,11 @@ Method assumes access to observed neural activities and external input.
 René et al. (2019/20) paper:
 “The method we present assumes that the model to be inferred can be expressed as a
 set of stochastic equations and that we have access to time series for both the observed (and possibly aggregated) neural activities and external input”
+
+% ---
+There usually is a larger space for which performance given by the loss metric is fairly equal, just requiring a different combination of parameters - i.e. there is no single fixed point or trajectory leading to it in the parameter landscape leading to a global minimum.
+My interpretation of this is that what we identify with learning algorithms for SNNs is not a specific configuration which captures the data set at hand, but a configuration which reaches a mode of behaviour that would allow it do produce the data.
+This may indicate that there are other principles underlying the learning of these networks.
 
 
 \subsubsection{Sine modulated white noise input}
