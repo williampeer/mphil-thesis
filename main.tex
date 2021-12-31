@@ -263,7 +263,7 @@ This work surveys the literature on GBO related to SNNs, demonstrates a way in w
 
 % =======================================================
 % =======================================================
-\chapter{Background: Biologically plausible computational modeling}
+\chapter{Background: Biologically plausible computational modeling}\ref{chpt:background}
 
 % Mainly surrogate gradient descent, but also some conversion approaches.
 % Spiking neural networks
@@ -840,9 +840,9 @@ However, it does result in that intervals of simulation need to be performed for
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\columnwidth]{figures/samples/SameModelClassTarget/export_spike_trains_euid_12-09_16-17-13-464.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/samples/SameModelClassTarget/export_spike_trains_euid_12-10_09-45-02-423.eps}
     \includegraphics[width=0.49\columnwidth]{figures/samples/SameModelClassTarget/export_GLIF_plot_loss_euid_12-09_16-17-13-464.eps}
-    \caption{Target and fitted GLIF SNN model spike trains, and loss per training epoch, membrane potentials in figure \ref{fig:sample_GLIF_vs}}
+    \caption{Target and fitted GLIF model spike trains, and loss per training epoch, membrane potentials in figure \ref{fig:sample_GLIF_vs}}
     \label{fig:sample_GLIF_spikes_loss}
 \end{figure}
 
@@ -965,15 +965,27 @@ However, for the vrd, these are even more obscure and noisy... (plot generation 
 
 \subsection{Stochastic integrate-and-fire GBO}
 
-Bernoulli and Poisson NLL
+Bernoulli and Poisson NLL for optimisation.
+Definition outlined in \ref{chpt:background}.
 
-results spike correlations and RMSE, report comparatively too.
+Population-level GBO for comparison with \cite{Rene2020}.
+Results included below:
+% results spike correlations and RMSE, report comparatively too.
+
+Further, we performed direct neuron-level, i.e. full-scale, model inference of a heterogeneous mixture of neurons, and find that albeit converging to local minima, the stochastic formulation of the SGIF model and the optimisation over the NLL lends itself well to GBO.
+Some parameters are more prominent to the loss than others, particularly when considering the rate-based loss metric. 
+However, when considering the NLL, the parameter landscape plots reveal that ...
+Illuminating ...
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\columnwidth]{figures/matlab/bugged_microGIF_21.eps}
-    \caption{Bugged microGIF N=21. direct GD with Adam}
+    \includegraphics[width=0.49\columnwidth]{figures/samples/SameModelClassTarget/poisson/12-09_17-56-51-235/export_spike_trains_euid_12-09_17-56-51-235.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/samples/SameModelClassTarget/poisson/12-09_17-56-51-235/export_microGIF_plot_loss_euid_12-09_17-56-51-235.eps}
+    \caption{Target and fitted SGIF model spike trains, and loss per training epoch, with the Poisson negative log-likelihood as the loss metric.}
+    \label{fig:sample_SGIF_plots}
 \end{figure}
+
+These results show that GBO is possible for direct, scalable inference of neuron-level models when using a stochastic formulation of the LIF model and the Bernoulli or Poisson NLL by assuming spikes distributed in either of the corresponding probability densities, both being exponential family distributions with shared properties for the case of spike trains.
 
 % SameModelClassTarget
 \subsection{Known ground-truth synthetic data}
@@ -1032,6 +1044,12 @@ Using the best performing loss-metric as found in the GBO experiments, and also 
 % geodesic_distances_Synthetic_LIF.eps
 
 Custom coupled GLM fitted to target spike trains.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/matlab/bugged_microGIF_21.eps}
+    \caption{Bugged microGIF N=21. direct GD with Adam}
+\end{figure}
+
 % citecite
 
 \begin{figure}
@@ -1054,17 +1072,13 @@ all models GBO
 \begin{figure}
     \centering
     \includegraphics[width=0.49\columnwidth]{figures/matlab/geodesic_distances_Synthetic_GLIF.eps}
-    \caption{placeholder geodesic GBO}
+    \includegraphics[width=0.49\columnwidth]{figures/matlab/bugged_mesoGIF_4.eps}
+    \caption{placeholder geodesic GBO, and bugged pop. level SIF. GBO Adam}
     \label{fig:geodesic_distances}
 \end{figure}
 
 SBI
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.49\columnwidth]{figures/matlab/bugged_mesoGIF_4.eps}
-    \caption{bugged pop. level SIF. GBO Adam}
-\end{figure}
+% TODO
 
 
 \section{Discussion}
