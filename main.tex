@@ -263,7 +263,7 @@ This work surveys the literature on GBO related to SNNs, demonstrates a way in w
 
 % =======================================================
 % =======================================================
-\chapter{Background: Biologically plausible computational modeling}\ref{chpt:background}
+\chapter{Background: Biologically plausible computational modeling}\label{chpt:background}
 
 % Mainly surrogate gradient descent, but also some conversion approaches.
 % Spiking neural networks
@@ -997,13 +997,25 @@ These results show that GBO is possible for direct, scalable inference of neuron
 % SameModelClassTarget
 % \subsection{Known ground-truth synthetic data}
 
-
+% GBO
 \begin{figure}
     \centering
 	\includegraphics[width=0.49\columnwidth]{figures/export_rates_saved_all.eps}
 	\includegraphics[width=0.49\columnwidth]{figures/export_p_dists_saved_all.eps}
-	\caption{Fitted model rates across model types and loss metrics, and average parameter distance between the ground-truth model and both the initial and converged inferred models.}
+	\vspace{0.1in}
+	\includegraphics[width=0.49\columnwidth]{figures/sbi_plot_rates_all.eps}
+	\includegraphics[width=0.49\columnwidth]{figures/sbi_mean_p_dist_all.eps}
+	
+	\caption{Fitted model rates across model types and loss metrics, and average parameter distance between the ground-truth model and both the initial and converged inferred models  for GBO (top) and SBI (bottom).}
 \end{figure}
+
+% SBI
+% \begin{figure}
+%     \centering
+% 	\includegraphics[width=0.49\columnwidth]{figures/}
+% 	\includegraphics[width=0.49\columnwidth]{figures/}
+% 	\caption{Fitted model rates across model types and loss metrics, and average parameter distance between the ground-truth model and both the initial and converged inferred models for GBO (top) and SBI (bottom).}
+% \end{figure}
 
 %sample microGIF poisson & bernoulli
 % export_microGIF_plot_loss_euid_12-09_16-36-58-996.eps
@@ -1017,7 +1029,7 @@ Using the best performing loss-metric as found in the GBO experiments, and also 
 
 \begin{figure}
     \centering
-	\includegraphics[width=\columnwidth]{figures/sbi_p_avgs_pairplot_SNPE_LIF_12-15_04-56-19-338.eps}
+	\includegraphics[width=0.5\columnwidth]{figures/sbi_p_avgs_pairplot_SNPE_LIF_12-15_04-56-19-338.eps}
 	\caption{Mean posterior marginals between parameters for the LIF model class, fitted using the same ground-truth model and synthetic data as in the LIF GBO experiments.}
 \end{figure}
 
@@ -1033,6 +1045,27 @@ Using the best performing loss-metric as found in the GBO experiments, and also 
 	\caption{Mean posterior marginals between parameters for the SGIF model class.}
 \end{figure}
 
+% table
+% init_rmse_wn [array(15.597686, dtype=float32)]
+% rmse_wn [29.394892]
+% init_rmse_OU [array(3., dtype=float32)]
+% rmse_OU [29.588663]
+% n_init_rmse_wn tensor([1.])
+% n_rmse_wn tensor([1.8846])
+% n_init_rmse_OU tensor([1.])
+% n_rmse_OU tensor([9.8629])
+% init_corrs_wn [array(1.5, dtype=float32)]
+% correlations_wn [0.1]
+% init_corrs_OU [array(3., dtype=float32)]
+% correlations_OU [-0.19999999]
+
+\begin{tabular}{c|c}
+     &  \\
+     & 
+\end{tabular}
+
+In sum, SBI over a rate-based metric diverged for SGIF.
+SBI over a rate-based metric for LIF and GLIF; 
 
 % General description across p-dists, and mostly rates (implicitly loss).
 
@@ -1055,8 +1088,8 @@ Using the best performing loss-metric as found in the GBO experiments, and also 
 Custom coupled GLM fitted to target spike trains.
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\columnwidth]{figures/matlab/bugged_microGIF_21.eps}
-    \caption{Bugged microGIF N=21. direct GD with Adam}
+    \includegraphics[width=\columnwidth]{figures/matlab/NMF_geodesic_all_minus_microGIF_NLL_B.eps}
+    \caption{all NMF distances. some fits for SGIF not included (currently running)}
 \end{figure}
 
 % citecite
@@ -1074,20 +1107,6 @@ Custom coupled GLM fitted to target spike trains.
 %     \caption{GLM microGIF}
 %     \label{fig:GLM_microGIF}
 % \end{figure}
-
-
-all models GBO
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.49\columnwidth]{figures/matlab/geodesic_distances_Synthetic_GLIF.eps}
-    \includegraphics[width=0.49\columnwidth]{figures/matlab/bugged_mesoGIF_4.eps}
-    \caption{placeholder geodesic GBO, and bugged pop. level SIF. GBO Adam}
-    \label{fig:geodesic_distances}
-\end{figure}
-
-SBI
-% TODO
 
 
 \section{Discussion}
