@@ -1059,6 +1059,22 @@ Using the best performing loss-metric as found in the GBO experiments, and also 
 % init_corrs_OU [array(3., dtype=float32)]
 % correlations_OU [-0.19999999]
 
+% init_rmse_wn [array(12.2687, dtype=float32)]
+% rmse_wn [26.907501]
+% init_rmse_OU [array(0., dtype=float32)]
+% rmse_OU [26.815296]
+% n_init_rmse_wn tensor([1.])
+% n_rmse_wn tensor([2.1932])
+% n_init_rmse_OU tensor([nan])
+% n_rmse_OU tensor([inf])
+% init_corrs_wn [array(-0.5, dtype=float32)]
+% correlations_wn [0.16666667]
+% init_corrs_OU [array(0., dtype=float32)]
+% correlations_OU [1.1920929e-08]
+
+compare with figure 9. in \cite{Rene2020}
+
+
 \begin{tabular}{c|c}
      &  \\
      & 
@@ -1088,8 +1104,8 @@ SBI over a rate-based metric for LIF and GLIF;
 Custom coupled GLM fitted to target spike trains.
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{figures/matlab/NMF_geodesic_all_Synthetic.eps}
-    \caption{all NMF distances. some fits for SGIF not included (currently running)}
+    \includegraphics[width=\columnwidth]{figures/matlab/NMF_geodesic_all_Synthetic_v2.eps}
+    \caption{all NMF distances synthetic exps}
 \end{figure}
 
 % citecite
