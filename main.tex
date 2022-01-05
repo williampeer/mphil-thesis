@@ -1072,6 +1072,20 @@ Using the best performing loss-metric as found in the GBO experiments, and also 
 % init_corrs_OU [array(0., dtype=float32)]
 % correlations_OU [1.1920929e-08]
 
+% GBO
+% init_rmse_wn [array(14.968042, dtype=float32)]
+% rmse_wn [12.033964]
+% init_rmse_OU [array(2., dtype=float32)]
+% rmse_OU [11.603041]
+% n_init_rmse_wn tensor([1.])
+% n_rmse_wn tensor([0.8040])
+% n_init_rmse_OU tensor([1.])
+% n_rmse_OU tensor([5.8015])
+% init_corrs_wn [array(1., dtype=float32)]
+% correlations_wn [0.25]
+% init_corrs_OU [array(2., dtype=float32)]
+% correlations_OU [-0.125]
+
 compare with figure 9. in \cite{Rene2020}
 
 
@@ -1350,6 +1364,23 @@ GLM baseline
     \includegraphics[width=0.8\columnwidth]{figures/sleep/GLM_multi_cell5_5sec_bin_white_noise.eps}
     \caption{GLM sample cell 5 exp 5}
 \end{figure}
+
+% {'exp108_microGIF_bernoulli_nll': 11.975849, 'exp108_microGIF_poisson_nll': 11.67591, 'exp109_microGIF_bernoulli_nll': 10.515618, 'exp109_microGIF_poisson_nll': 10.103509, 'exp124_microGIF_bernoulli_nll': 10.443208, 'exp124_microGIF_poisson_nll': 13.823259, 'exp126_microGIF_bernoulli_nll': 11.697008, 'exp126_microGIF_poisson_nll': 13.574955, 'exp138_microGIF_bernoulli_nll': 16.86, 'exp138_microGIF_poisson_nll': 11.835349, 'exp146_microGIF_bernoulli_nll': 10.581168, 'exp146_microGIF_poisson_nll': 11.95316, 'exp147_microGIF_bernoulli_nll': 13.653505, 'exp147_microGIF_poisson_nll': 12.750887}
+% {'exp108_microGIF_bernoulli_nll': 6.3071237, 'exp108_microGIF_poisson_nll': 6.146446, 'exp109_microGIF_bernoulli_nll': 4.048536, 'exp109_microGIF_poisson_nll': 2.9935741, 'exp124_microGIF_bernoulli_nll': 4.172781, 'exp124_microGIF_poisson_nll': 12.03365, 'exp126_microGIF_bernoulli_nll': 6.742306, 'exp126_microGIF_poisson_nll': 8.469471, 'exp138_microGIF_bernoulli_nll': 14.084356, 'exp138_microGIF_poisson_nll': 6.122085, 'exp146_microGIF_bernoulli_nll': 3.8953998, 'exp146_microGIF_poisson_nll': 7.132417, 'exp147_microGIF_bernoulli_nll': 5.78849, 'exp147_microGIF_poisson_nll': 5.2616377}
+% {'exp108_microGIF_bernoulli_nll': 785.5906, 'exp108_microGIF_poisson_nll': 198.94684, 'exp109_microGIF_bernoulli_nll': 825.34186, 'exp109_microGIF_poisson_nll': 247.29172, 'exp124_microGIF_bernoulli_nll': 921.8936, 'exp124_microGIF_poisson_nll': 263.27893, 'exp126_microGIF_bernoulli_nll': 715.59863, 'exp126_microGIF_poisson_nll': 242.95949, 'exp138_microGIF_bernoulli_nll': 1284.1718, 'exp138_microGIF_poisson_nll': 283.38675, 'exp146_microGIF_bernoulli_nll': 787.7815, 'exp146_microGIF_poisson_nll': 233.002, 'exp147_microGIF_bernoulli_nll': 1030.3088, 'exp147_microGIF_poisson_nll': 251.07625}
+% {'exp108_microGIF_bernoulli_nll': 478.35587, 'exp108_microGIF_poisson_nll': 90.61257, 'exp109_microGIF_bernoulli_nll': 568.65466, 'exp109_microGIF_poisson_nll': 115.3953, 'exp124_microGIF_bernoulli_nll': 618.6944, 'exp124_microGIF_poisson_nll': 233.36815, 'exp126_microGIF_bernoulli_nll': 503.43787, 'exp126_microGIF_poisson_nll': 148.58171, 'exp138_microGIF_bernoulli_nll': 1448.3081, 'exp138_microGIF_poisson_nll': 186.98854, 'exp146_microGIF_bernoulli_nll': 537.0402, 'exp146_microGIF_poisson_nll': 136.35039, 'exp147_microGIF_bernoulli_nll': 561.5808, 'exp147_microGIF_poisson_nll': 134.77667}
+% {'microGIF': {'bernoulli_nll': [11.975849, 10.515618, 10.443208, 11.697008, 16.86, 10.581168, 13.653505], 'poisson_nll': [11.67591, 10.103509, 13.823259, 13.574955, 11.835349, 11.95316, 12.750887]}}
+% {'microGIF': {'bernoulli_nll': [6.3071237, 4.048536, 4.172781, 6.742306, 14.084356, 3.8953998, 5.78849], 'poisson_nll': [6.146446, 2.9935741, 12.03365, 8.469471, 6.122085, 7.132417, 5.2616377]}}
+% {'microGIF': {'bernoulli_nll': [785.5906, 825.34186, 921.8936, 715.59863, 1284.1718, 787.7815, 1030.3088], 'poisson_nll': [198.94684, 247.29172, 263.27893, 242.95949, 283.38675, 233.002, 251.07625]}}
+% {'microGIF': {'bernoulli_nll': [478.35587, 568.65466, 618.6944, 503.43787, 1448.3081, 537.0402, 561.5808], 'poisson_nll': [90.61257, 115.3953, 233.36815, 148.58171, 186.98854, 136.35039, 134.77667]}}
+
+% print('sleep_data_approx_rates', sleep_data_approx_rates)
+% sleep_data_approx_rates [4.5312505, 2.3666666, 6.6166663, 6.727778, 7.861111, 24.842594, 8.857842]
+% print('sleep_data_approx_rate_stds', sleep_data_approx_rate_stds)
+% sleep_data_approx_rate_stds [9.835535, 2.53673, 4.742714, 6.977707, 6.586351, 35.420063, 11.326365]
+
+Poisson significantly lower loss: Ttest\_relResult(statistic=9.871807340796684, pvalue=6.23389044753519e-05)
+
 
 \section{Discussion}
 
