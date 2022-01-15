@@ -1086,6 +1086,45 @@ Using the best performing loss-metric as found in the GBO experiments, and also 
 % init_corrs_OU [array(2., dtype=float32)]
 % correlations_OU [-0.125]
 
+% np.mean(correlations_OU_per_model_type_per_pop['microGIF'], axis=0)
+% Out[9]: 
+% array([[ 0.04449298,  0.53082549],
+%       [ 0.03504001,  0.50368762],
+%       [-0.04568029,  0.53626128],
+%       [-0.01166335,  0.52908753]])
+% np.mean(correlations_wn_per_model_type_per_pop['microGIF'], axis=0)
+% Out[10]: 
+% array([[ 0.06472507,  0.56145749],
+%       [ 0.12279707,  0.41758472],
+%       [-0.01644223,  0.46314913],
+%       [ 0.20302207,  0.40018902]])
+
+% np.mean(activity_rmse_wn_per_model_type_per_pop['microGIF'], axis=0)
+% Out[11]: array([29.468164, 38.342987, 58.59618 , 79.747246], dtype=float32)
+% np.mean(activity_rmse_OU_per_model_type_per_pop['microGIF'], axis=0)
+% Out[12]: array([28.68748 , 35.648613, 49.524837, 80.788055], dtype=float32)
+
+% correlations_OU_per_model_type_per_pop BNLL [[ 0.03672772  0.54079383]
+%  [ 0.03348813  0.56219029]
+%  [-0.07295515  0.48390601]
+%  [ 0.02472201  0.62395228]]
+% activity_rmse_OU_per_model_type_per_pop BNLL [24.281664 31.598572 48.442345 85.50205 ]
+% correlations_wn_per_model_type_per_pop BNLL [[ 0.06963954  0.54004642]
+%  [-0.15062001  0.37560239]
+%  [ 0.32837038  0.56875123]
+%  [ 0.28102542  0.41184876]]
+% activity_rmse_wn_per_model_type_per_pop BNLL [25.138638 33.444435 58.565758 85.78223 ]
+% correlations_OU_per_model_type_per_pop PNLL [[ 0.05225825  0.52085716]
+%  [ 0.03659189  0.44518495]
+%  [-0.01840543  0.58861656]
+%  [-0.04804871  0.43422278]]
+% activity_rmse_OU_per_model_type_per_pop PNLL [33.0933   39.69866  50.607323 76.07405 ]
+% correlations_wn_per_model_type_per_pop PNLL [[ 0.05981061  0.58286855]
+%  [ 0.39621414  0.45956705]
+%  [-0.36125484  0.35754704]
+%  [ 0.12501872  0.38852927]]
+% activity_rmse_wn_per_model_type_per_pop PNLL [33.797703 43.241554 58.6266   73.71228 ]
+
 compare with figure 9. in \cite{Rene2020}
 
 
