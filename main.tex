@@ -908,7 +908,22 @@ Since some model parameters are more sensitive than others, we define linear con
 Prior to the main experimental setup above, I simulated each model class for realistic intervals of parameters, whilst fixing the other parameters to values that I had empirically or analytically determined to be able to produce meaningful output, and plotted the loss and rate when compared to the target model of the same model class, essentially performing a grid search over parameters allowing to plot the marginals of the parameter landscape formed by the loss metric and target model signal.
 The results which are included below illuminate how optimisation traverses the gradients formed by the parameter landscape, and gives an idea about the extent to which the procedure is applicable to the model class.
 
+
 \subsection{Parameter landscapes defined by loss metrics}
+
+When performing gradient descent, we traverse an error landscape given by the loss metric, and iteratively update the parameter values by moving a certain amount (often called the step size) in the direction along the error gradient. 
+This updates the parameters to values that would result in a lower loss for the current data interval at hand, for which the loss was computed.
+As may be seen from this more conceptual description; in order for gradient descent to work, the error signals need to be informative over the space of potential true values, and continuously defined for paths that lead to the regions that may contain the target parameter sets and values, or minima.
+
+As we shall see below when plotting 2D projections of the loss across different parameter combinations, this isn't the case for all of the parameters and model types, especially when only considering a rate-based metric.
+Note however that this is to be in part expected particularly for a rate-based metric, as the loss signal is to some extent oblivious to the timing of spiking in the data, as it only considers the neuronal rates.
+This does not render the loss metric unusable, as we may expect to capture the rates well with a rate-based distance metric - however, the ambiguity of the optima is an issue wrt retrieving the true ground-truth values.
+The ambiguity of the error landscape formed by the rate based metrics is illustrated in figures \ref{fig:p_landscape_hmap_GLIF}, and \ref{fig:p_landscape_hmap_LIF} included in this section.
+
+When it comes to the likelihood metrics that calculate the likelihood of producing the target spike train given the simulated probabilities, and assuming either a Bernoulli or Poisson distribution, over the model parameters, arguably seems to be somewhat more suited for retrieving sensible parameter-configurations.
+However, as illuminated in part by figure \ref{fig:p_landscape_hmap_SGIF}, these metrics are also ambiguous both in terms of retrieving the ground-truth, and defining a constrained set of configurations.
+
+% For these cases, the parameters settle into a point soon after wandering into the region with very low loss, which is then a local minima in the numerical optimisation procedure.
 
 % GLIF
 \begin{figure}
@@ -918,6 +933,7 @@ The results which are included below illuminate how optimisation traverses the g
     \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/GLIF/test_export_2d_heatmap_N_4_loss_b_s_a_v.eps}
     \vskip -0.1in
     \caption{p landscape GLIF $\tau_s, \tau_m$ (left), and $b_s, a_v$ (right)}
+    \label{fig:p_landscape_hmap_GLIF}
 \end{figure}
 
 
@@ -928,16 +944,17 @@ The results which are included below illuminate how optimisation traverses the g
     \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/LIF/test_export_2d_heatmap_N_4_loss_E_L_tau_m.eps}
     \vskip -0.1in
     \caption{p landscape LIF $\tau_s, \tau_m$, and $E_L, \tau_m$ (right)}
+    \label{fig:p_landscape_hmap_LIF}
 \end{figure}
 
 
 % \subsection{Stochastic integrate-and-fire GBO}
 
-Bernoulli and Poisson NLL for optimisation.
-Definition outlined in \ref{chpt:background}.
+% Bernoulli and Poisson NLL for optimisation.
+% Definition outlined in \ref{chpt:background}.
 
-Population-level GBO for comparison with \cite{Rene2020}.
-Results included below:
+% Population-level GBO for comparison with \cite{Rene2020}.
+% Results included below:
 % results spike correlations and RMSE, report comparatively too.
 
 % mesoGIF
@@ -949,6 +966,7 @@ Results included below:
     \includegraphics[width=0.32\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_tau_m_tau_s.eps}
     \vskip -0.1in
     \caption{p landscape using frd metric for population (N=4) SGIF model}
+    \label{fig:p_landscape_hmap_SGIF}
 \end{figure}
 
 % \begin{figure}
@@ -969,9 +987,7 @@ Results included below:
 %     \vskip -0.1in
 %     \caption{p landscape SGIF 3}
 % \end{figure}
-
-
-Description parameter landscape plots. 
+% Description parameter landscape plots. 
 
 
 \subsection{Gradient descent with Adam}
@@ -1226,12 +1242,6 @@ SBI over a rate-based metric for LIF and GLIF;
 % geodesic_distances_Synthetic_LIF.eps
 
 Custom coupled GLM fitted to target spike trains.
-\begin{figure}
-    \centering
-    \includegraphics[width=\columnwidth]{figures/matlab/NMF_geodesic_all_Synthetic_v2.eps}
-    \caption{all NMF distances synthetic exps}
-\end{figure}
-
 % citecite
 
 \begin{figure}
@@ -1247,6 +1257,47 @@ Custom coupled GLM fitted to target spike trains.
 %     \caption{GLM microGIF}
 %     \label{fig:GLM_microGIF}
 % \end{figure}
+
+
+\section{NMF analysis}
+
+We analyse to the fits in the different settings in order to assess to what extent the procedures may capture functional organisation of the networks, by analysing the co-activity in the spiking, which may indicate that the inferred models may be probed to assess functional aspects or to test or generate functionally related hypotheses.
+
+\begin{figure}
+    \includegraphics[width=0.49\columnwidth]{figures/matlab/NMF/ACs_target_GT_model_mesoGIF_N_4.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/matlab/NMF/ACs_nuovo_spikes_mt_microGIF_euid_12-09_16-02-03-400_lfn_bernoulli_nll.eps}
+    \centering
+    \includegraphics[width=0.3\columnwidth]{figures/matlab/NMF/target_GT_model_mesoGIF_N_4.eps}
+    \includegraphics[width=0.3\columnwidth]{figures/matlab/NMF/modules_nuovo_spikes_mt_microGIF_euid_12-09_16-02-03-400_lfn_bernoulli_nll_4.eps}
+    \caption{ACs (top) SGIF, N=4, target (left) fitted (right), Bernoulli NLL, and modules (bottom)}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=0.49\columnwidth]{figures/matlab/NMF/ACs_target_GT_model_microGIF_N_21.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/matlab/NMF/ACs_nuovo_synthetic_v2_spikes_mt_microGIF_lfn_bernoulli_nll_euid_01-01_15-56-11-305.eps}
+    \caption{ACs SGIF, N=4, target (left) fitted (right), Bernoulli NLL. modules plotted in \ref{fig:modules_SGIF_N_21}}
+    \label{fig:ACs_SGIF_N_21}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=0.3\columnwidth]{figures/matlab/NMF/modules_target_GT_model_microGIF_N_21_4.eps}
+    \includegraphics[width=0.3\columnwidth]{figures/matlab/NMF/modules_nuovo_synthetic_v2_spikes_mt_microGIF_lfn_bernoulli_nll_euid_01-01_15-40-04-701.eps}
+    \caption{NMF modules SGIF, N=21, target (left) fitted (right), Bernoulli NLL, for \ref{fig:ACs_SGIF_N_21}}
+    \label{fig:modules_SGIF_N_21}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=0.49\columnwidth]{figures/matlab/NMF/ACs_target_GT_model_mesoGIF_N_4.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/matlab/NMF/ACs_target_GT_model_microGIF_N_21.eps}
+    \caption{ACs SGIF, N=4, N=21 (right)}
+\end{figure}
+
+
+\begin{figure}
+    \hspace{-0.1\columnwidth}
+    \includegraphics[width=1.2\columnwidth]{figures/matlab/NMF_geodesic_all_Synthetic_v2.eps}
+    \caption{all NMF distances synthetic exps}
+\end{figure}
 
 
 \section{Discussion}
@@ -1494,8 +1545,13 @@ Poisson significantly lower loss: Ttest\_relResult(statistic=9.871807340796684, 
 
 \section{Discussion}
 
-Direct microscopic model inference tractable for non-dales law compliant models by using GD and Adam over a rate-based metric for (G)LIF models, and over the negative log-likelihood for stochastic models.
-Local minima wrt parameters as shown previously with known GT, however, when considering the NMF ensembles captured through the two approaches,
+% Direct microscopic model inference tractable for non-dales law compliant models by using GD and Adam over a rate-based metric for (G)LIF models, and over the negative log-likelihood for stochastic models.
+% Local minima wrt parameters as shown previously with known GT, however, when considering the NMF ensembles captured through the two approaches,
+
+The fact that the error landscapes for the parameters are ambiguous explains why the spike trains are not as correlated in the models with GBO as when using ABC/SBI (as reported by \cite{Rene2020}), as GBO numerically and iteratively here updates parameter values in parallel, thus doing so slightly independently of the other parameters. 
+This may suggest that sequential parameter inference is required for better convergence when applying GBO for SNNs in this setting.
+However, this takes away the key goal of scalability of the inference algorithm, and would render ABC a better candidate for the job, as we then estimate a full posterior over all parameters dependently - which is also the explanation for a higher correlation and better produced target data by the ABC procedure; as this might be capturing the parameter-dependencies better.
+Authors have also reported that reproducing realistic data breaks down when drawing from the inferred posterior independently for each parameter, which we also empirically verified in our experimental setup, by using the aforementioned SBI-framework.
 
 
 % =======================================================
