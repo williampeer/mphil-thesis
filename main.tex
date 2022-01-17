@@ -1018,13 +1018,10 @@ These results show that GBO is possible for direct, scalable inference of neuron
     \centering
 	\includegraphics[width=0.49\columnwidth]{figures/export_rates_saved_all.eps}
 	\includegraphics[width=0.49\columnwidth]{figures/export_p_dists_saved_all.eps}
-	\vspace{0.1in}
-	\includegraphics[width=0.49\columnwidth]{figures/sbi_plot_rates_all.eps}
-	\includegraphics[width=0.49\columnwidth]{figures/sbi_mean_p_dist_all.eps}
-	
-	\caption{Fitted model rates across model types and loss metrics, and average parameter distance between the ground-truth model and both the initial and converged inferred models  for GBO (top) and SBI (bottom).}
+	\caption{Fitted model rates across model types and loss metrics, and average parameter distance between the ground-truth model and both the initial and converged inferred models when using \textbf{GBO} for model inference. see figure \ref{fig:rate_p_dists_SBI} for comparison with SBI.}
+	\label{fig:rate_p_dists_GBO}
 \end{figure}
-
+%  for \textbf{GBO (top)} and \textbf{SBI (bottom)}.
 % SBI
 % \begin{figure}
 %     \centering
@@ -1039,9 +1036,91 @@ These results show that GBO is possible for direct, scalable inference of neuron
 % export_spike_trains_euid_12-09_16-36-58-996.eps
 
 
+% BIN_SIZE = 1/9
+% massive_dict keys: dict_keys(['correlations_OU_per_model_type', 'activity_rmse_OU_per_model_type', 'correlations_wn_per_model_type', 'activity_rmse_wn_per_model_type', 'correlations_OU_per_model_type_per_pop', 'activity_rmse_OU_per_model_type_per_pop', 'correlations_wn_per_model_type_per_pop', 'activity_rmse_wn_per_model_type_per_pop'])
+% correlations_OU_per_model_type_per_pop BNLL [[0.136229   0.45113911]
+%  [0.16280599 0.28163129]
+%  [0.07925058 0.45339818]
+%  [0.08042286 0.51556134]]
+% activity_rmse_OU_per_model_type_per_pop BNLL [ 8.741314 10.78977  16.814838 28.585888]
+% correlations_wn_per_model_type_per_pop BNLL [[-0.04303113  0.48399174]
+%  [-0.05307253  0.47993182]
+%  [ 0.09430935  0.54154142]
+%  [-0.13191614  0.4481658 ]]
+% activity_rmse_wn_per_model_type_per_pop BNLL [ 8.9276905 11.528968  19.901028  29.041882 ]
+% correlations_OU_per_model_type_per_pop PNLL [[ 0.21973303  0.39076739]
+%  [-0.03306306  0.48793001]
+%  [ 0.03666054  0.65488266]
+%  [ 0.03208419  0.47790354]]
+% activity_rmse_OU_per_model_type_per_pop PNLL [11.170116 13.295268 17.302729 25.481037]
+% correlations_wn_per_model_type_per_pop PNLL [[-0.03063577  0.59096444]
+%  [ 0.09773039  0.48791501]
+%  [-0.0160414   0.44861028]
+%  [ 0.0196374   0.62583975]]
+% activity_rmse_wn_per_model_type_per_pop PNLL [11.527083  14.5694475 19.83553   25.033321 ]
+
+
+% ==================== ----------------------- 16.01.2022 ==================== ----------------------
+% *** https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.pearsonr.html
+
+% massive_dict keys: dict_keys(['correlations_OU_per_model_type', 'activity_rmse_OU_per_model_type', 'correlations_wn_per_model_type', 'activity_rmse_wn_per_model_type', 'correlations_OU_per_model_type_per_pop', 'activity_rmse_OU_per_model_type_per_pop', 'correlations_wn_per_model_type_per_pop', 'activity_rmse_wn_per_model_type_per_pop'])
+% correlations_OU_per_model_type_per_pop BNLL unfiltered mean: [[0.136229   0.45113911]
+%  [0.16280599 0.28163129]
+%  [0.07925058 0.45339818]
+%  [0.08042286 0.51556134]]
+% num "converged": 14
+% correlations_OU_per_model_type_per_pop BNLL filtered w threshold: 0.2 [[0.2285608  0.45060827]
+%  [0.35417916 0.29010902]
+%  [0.13811508 0.46374777]
+%  [0.13586292 0.53474661]]
+% correlations_wn_per_model_type_per_pop BNLL unfiltered mean: [[-0.04303113  0.48399174]
+%  [-0.05307253  0.47993182]
+%  [ 0.09430935  0.54154142]
+%  [-0.13191614  0.4481658 ]]
+% num "converged": 10
+% correlations_wn_per_model_type_per_pop BNLL filtered w threshold: 0.2 [[0.09267896 0.60143853]
+%  [0.14028457 0.58431124]
+%  [0.20588619 0.55422147]
+%  [0.07390235 0.49125028]]
+% correlations_wn_per_model_type_per_pop PNLL unfiltered mean: [[ 0.21973303  0.39076739]
+%  [-0.03306306  0.48793001]
+%  [ 0.03666054  0.65488266]
+%  [ 0.03208419  0.47790354]]
+% num "converged": 16
+% correlations_wn_per_model_type_per_pop PNLL filtered w threshold: 0.2 [[ 0.26594066  0.43419887]
+%  [-0.01944962  0.59813733]
+%  [-0.0220576   0.68623279]
+%  [ 0.03665507  0.52298418]]
+% correlations_wn_per_model_type_per_pop PNLL unfiltered mean: [[-0.03063577  0.59096444]
+%  [ 0.09773039  0.48791501]
+%  [-0.0160414   0.44861028]
+%  [ 0.0196374   0.62583975]]
+% num "converged": 17
+% correlations_wn_per_model_type_per_pop PNLL filtered w threshold: 0.2 [[0.0135526  0.61893445]
+%  [0.0820617  0.46132494]
+%  [0.05597967 0.48230394]
+%  [0.05354188 0.68179549]]
+% activity_rmse_OU_per_model_type_per_pop BNLL [ 8.741314 10.78977  16.814838 28.585888]
+% activity_rmse_wn_per_model_type_per_pop BNLL [ 8.9276905 11.528968  19.901028  29.041882 ]
+% activity_rmse_OU_per_model_type_per_pop PNLL [11.170116 13.295268 17.302729 25.481037]
+% activity_rmse_wn_per_model_type_per_pop PNLL [11.527083  14.5694475 19.83553   25.033321 ]
+
+
 \subsection{Simulation-based inference}
 
 Using the best performing loss-metric as found in the GBO experiments, and also revealed by the parameter landscape plots, i.e. the firing rate loss metric, we performed SBI by using the Python-framework of the Macke-lab \href{https://github.com/mackelab/sbi}{SBI}.
+
+In sum, SBI over a rate-based metric diverged for SGIF.
+SBI over a rate-based metric for LIF and GLIF; 
+
+\begin{figure}
+    \centering
+	\includegraphics[width=0.49\columnwidth]{figures/sbi_plot_rates_all.eps}
+	\includegraphics[width=0.49\columnwidth]{figures/sbi_mean_p_dist_all.eps}
+	\caption{Fitted model rates across model types and loss metrics, and average parameter distance between the ground-truth model and both the initial and converged inferred models when using \textbf{SBI} for model inference. see figure \ref{fig:rate_p_dists_GBO} for comparison with GBO.}
+	\label{fig:rate_p_dists_SBI}
+\end{figure}
+
 
 \begin{figure}
     \centering
@@ -1060,6 +1139,18 @@ Using the best performing loss-metric as found in the GBO experiments, and also 
 	\includegraphics[width=\columnwidth]{figures/sbi_p_avgs_pairplot_SNPE_microGIF_12-14_16-14-12-736.eps}
 	\caption{Mean posterior marginals between parameters for the SGIF model class.}
 \end{figure}
+
+
+\subsection{Comparison with published ABC results}
+
+\cite{Rene2020} ABC over population-level models using MCMC-sampling, and then sequential GBO using NLL minimisation.
+Published results in aforementioned, figure 9.
+
+
+\begin{tabular}{c|c}
+     &  \\
+     & 
+\end{tabular}
 
 % table
 % init_rmse_wn [array(15.597686, dtype=float32)]
@@ -1142,90 +1233,8 @@ Using the best performing loss-metric as found in the GBO experiments, and also 
 % activity_rmse_wn_per_model_type_per_pop PNLL [33.797703 43.241554 58.6266   73.71228 ]
 
 
-% BIN_SIZE = 1/9
-% massive_dict keys: dict_keys(['correlations_OU_per_model_type', 'activity_rmse_OU_per_model_type', 'correlations_wn_per_model_type', 'activity_rmse_wn_per_model_type', 'correlations_OU_per_model_type_per_pop', 'activity_rmse_OU_per_model_type_per_pop', 'correlations_wn_per_model_type_per_pop', 'activity_rmse_wn_per_model_type_per_pop'])
-% correlations_OU_per_model_type_per_pop BNLL [[0.136229   0.45113911]
-%  [0.16280599 0.28163129]
-%  [0.07925058 0.45339818]
-%  [0.08042286 0.51556134]]
-% activity_rmse_OU_per_model_type_per_pop BNLL [ 8.741314 10.78977  16.814838 28.585888]
-% correlations_wn_per_model_type_per_pop BNLL [[-0.04303113  0.48399174]
-%  [-0.05307253  0.47993182]
-%  [ 0.09430935  0.54154142]
-%  [-0.13191614  0.4481658 ]]
-% activity_rmse_wn_per_model_type_per_pop BNLL [ 8.9276905 11.528968  19.901028  29.041882 ]
-% correlations_OU_per_model_type_per_pop PNLL [[ 0.21973303  0.39076739]
-%  [-0.03306306  0.48793001]
-%  [ 0.03666054  0.65488266]
-%  [ 0.03208419  0.47790354]]
-% activity_rmse_OU_per_model_type_per_pop PNLL [11.170116 13.295268 17.302729 25.481037]
-% correlations_wn_per_model_type_per_pop PNLL [[-0.03063577  0.59096444]
-%  [ 0.09773039  0.48791501]
-%  [-0.0160414   0.44861028]
-%  [ 0.0196374   0.62583975]]
-% activity_rmse_wn_per_model_type_per_pop PNLL [11.527083  14.5694475 19.83553   25.033321 ]
-
-
-% ==================== ----------------------- 16.01.2022 ==================== ----------------------
-% *** https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.pearsonr.html
-
-% massive_dict keys: dict_keys(['correlations_OU_per_model_type', 'activity_rmse_OU_per_model_type', 'correlations_wn_per_model_type', 'activity_rmse_wn_per_model_type', 'correlations_OU_per_model_type_per_pop', 'activity_rmse_OU_per_model_type_per_pop', 'correlations_wn_per_model_type_per_pop', 'activity_rmse_wn_per_model_type_per_pop'])
-% correlations_OU_per_model_type_per_pop BNLL unfiltered mean: [[0.136229   0.45113911]
-%  [0.16280599 0.28163129]
-%  [0.07925058 0.45339818]
-%  [0.08042286 0.51556134]]
-% num "converged": 14
-% correlations_OU_per_model_type_per_pop BNLL filtered w threshold: 0.2 [[0.2285608  0.45060827]
-%  [0.35417916 0.29010902]
-%  [0.13811508 0.46374777]
-%  [0.13586292 0.53474661]]
-% correlations_wn_per_model_type_per_pop BNLL unfiltered mean: [[-0.04303113  0.48399174]
-%  [-0.05307253  0.47993182]
-%  [ 0.09430935  0.54154142]
-%  [-0.13191614  0.4481658 ]]
-% num "converged": 10
-% correlations_wn_per_model_type_per_pop BNLL filtered w threshold: 0.2 [[0.09267896 0.60143853]
-%  [0.14028457 0.58431124]
-%  [0.20588619 0.55422147]
-%  [0.07390235 0.49125028]]
-% correlations_wn_per_model_type_per_pop PNLL unfiltered mean: [[ 0.21973303  0.39076739]
-%  [-0.03306306  0.48793001]
-%  [ 0.03666054  0.65488266]
-%  [ 0.03208419  0.47790354]]
-% num "converged": 16
-% correlations_wn_per_model_type_per_pop PNLL filtered w threshold: 0.2 [[ 0.26594066  0.43419887]
-%  [-0.01944962  0.59813733]
-%  [-0.0220576   0.68623279]
-%  [ 0.03665507  0.52298418]]
-% correlations_wn_per_model_type_per_pop PNLL unfiltered mean: [[-0.03063577  0.59096444]
-%  [ 0.09773039  0.48791501]
-%  [-0.0160414   0.44861028]
-%  [ 0.0196374   0.62583975]]
-% num "converged": 17
-% correlations_wn_per_model_type_per_pop PNLL filtered w threshold: 0.2 [[0.0135526  0.61893445]
-%  [0.0820617  0.46132494]
-%  [0.05597967 0.48230394]
-%  [0.05354188 0.68179549]]
-% activity_rmse_OU_per_model_type_per_pop BNLL [ 8.741314 10.78977  16.814838 28.585888]
-% activity_rmse_wn_per_model_type_per_pop BNLL [ 8.9276905 11.528968  19.901028  29.041882 ]
-% activity_rmse_OU_per_model_type_per_pop PNLL [11.170116 13.295268 17.302729 25.481037]
-% activity_rmse_wn_per_model_type_per_pop PNLL [11.527083  14.5694475 19.83553   25.033321 ]
-
-
-compare with figure 9. in \cite{Rene2020}
-
-
-\begin{tabular}{c|c}
-     &  \\
-     & 
-\end{tabular}
-
-In sum, SBI over a rate-based metric diverged for SGIF.
-SBI over a rate-based metric for LIF and GLIF; 
 
 % General description across p-dists, and mostly rates (implicitly loss).
-
-\subsection{NMF analysis}
 
 % \begin{figure}
 % 	\includegraphics{figures/export_rates_only_GT_all.eps}
@@ -1241,7 +1250,50 @@ SBI over a rate-based metric for LIF and GLIF;
 % geodesic_distances_Synthetic_GLIF.eps
 % geodesic_distances_Synthetic_LIF.eps
 
-Custom coupled GLM fitted to target spike trains.
+\subsubsection{Model input perturbation and formulation}
+
+Task: Model site from which spikes have been recorded and decoded. Issue: We don’t have the input to the site. Options: Auto-encode temporal evolution of spike train, or infer model to produce outputs when noise-driven. Question: Is this at all attainable?
+
+Learning methods:
+BP, BPTT, Surrogate gradient (what we’re doing), soft-threshold (very similar to what we’re doing, but not in-place), STDP (has similarities, but not what we’re doing - more suitable to local and temporal learning?)
+
+One finding is that we can infer a LIF SNN capturing higher-order statistics with a noise-driven setup (during inference). Using more temporally oriented loss functions quickly becomes problematic due to the input-noise, however. Can we show this analytically or empirically somehow for more complex models?
+Another scheme: Predict next input given previous - (learn patterns from the information we have) then predict when perturbing with noise. Would also allow for hand-engineering input with different qualities (inspired by vigilance/sleep state), and test whether functional ensembles resemble those observed during these states in vivo.
+
+Given the learning algorithms that we have available, how detailed spiking models may we infer by using common data sets? More specifically, can we increase the level of detail and level of higher-order statistics captured in a model by also inferring internal neuron variables by using gradient-based optimization? Is this possible by only using a one-dimensional target signal, such as spike trains? Does more detailed neuron models than LIF models enable capturing a higher level of detail and statistics, through allowing a wider array of model behaviour? Can we fit these models in a noise-driven scheme, such that the approach may be used on real-world data? If not, what are our alternative approaches? Could we for instance fit to output data given previous output data, i.e. similar to auto-regression? If so, would this enable us to predict output under different brain states?
+Model inference should be compared to common statistical models, including GLMs, Gaussian mixture models, and Poisson models.
+
+
+Method assumes access to observed neural activities and external input.
+René et al. (2019/20) paper:
+“The method we present assumes that the model to be inferred can be expressed as a
+set of stochastic equations and that we have access to time series for both the observed (and possibly aggregated) neural activities and external input”
+
+% ---
+There usually is a larger space for which performance given by the loss metric is fairly equal, just requiring a different combination of parameters - i.e. there is no single fixed point or trajectory leading to it in the parameter landscape leading to a global minimum.
+My interpretation of this is that what we identify with learning algorithms for SNNs is not a specific configuration which captures the data set at hand, but a configuration which reaches a mode of behaviour that would allow it do produce the data.
+This may indicate that there are other principles underlying the learning of these networks.
+
+
+\subsubsection*{Sine modulated white noise input}
+
+\begin{equation}
+    \sum^M \sin(W_n(t))
+\end{equation}
+
+\subsubsection*{White noise input}
+
+\begin{equation}
+    W_n(t) \sim \mathcal{U}(t, m)
+\end{equation}
+
+
+
+\subsection{NMF analysis}
+
+We analyse to the fits in the different settings in order to assess to what extent the procedures may capture functional organisation of the networks, by analysing the co-activity in the spiking, which may indicate that the inferred models may be probed to assess functional aspects or to test or generate functionally related hypotheses.
+
+Custom coupled GLM fitted to target spike trains. Baseline.
 % citecite
 
 \begin{figure}
@@ -1258,10 +1310,6 @@ Custom coupled GLM fitted to target spike trains.
 %     \label{fig:GLM_microGIF}
 % \end{figure}
 
-
-\section{NMF analysis}
-
-We analyse to the fits in the different settings in order to assess to what extent the procedures may capture functional organisation of the networks, by analysing the co-activity in the spiking, which may indicate that the inferred models may be probed to assess functional aspects or to test or generate functionally related hypotheses.
 
 \begin{figure}
     \includegraphics[width=0.49\columnwidth]{figures/matlab/NMF/ACs_target_GT_model_mesoGIF_N_4.eps}
@@ -1305,43 +1353,6 @@ We analyse to the fits in the different settings in order to assess to what exte
 \subsection{Stochasticity and SNNs}
 
 
-\subsection{Model input perturbation and formulation}
-
-Task: Model site from which spikes have been recorded and decoded. Issue: We don’t have the input to the site. Options: Auto-encode temporal evolution of spike train, or infer model to produce outputs when noise-driven. Question: Is this at all attainable?
-
-Learning methods:
-BP, BPTT, Surrogate gradient (what we’re doing), soft-threshold (very similar to what we’re doing, but not in-place), STDP (has similarities, but not what we’re doing - more suitable to local and temporal learning?)
-
-One finding is that we can infer a LIF SNN capturing higher-order statistics with a noise-driven setup (during inference). Using more temporally oriented loss functions quickly becomes problematic due to the input-noise, however. Can we show this analytically or empirically somehow for more complex models?
-Another scheme: Predict next input given previous - (learn patterns from the information we have) then predict when perturbing with noise. Would also allow for hand-engineering input with different qualities (inspired by vigilance/sleep state), and test whether functional ensembles resemble those observed during these states in vivo.
-
-Given the learning algorithms that we have available, how detailed spiking models may we infer by using common data sets? More specifically, can we increase the level of detail and level of higher-order statistics captured in a model by also inferring internal neuron variables by using gradient-based optimization? Is this possible by only using a one-dimensional target signal, such as spike trains? Does more detailed neuron models than LIF models enable capturing a higher level of detail and statistics, through allowing a wider array of model behaviour? Can we fit these models in a noise-driven scheme, such that the approach may be used on real-world data? If not, what are our alternative approaches? Could we for instance fit to output data given previous output data, i.e. similar to auto-regression? If so, would this enable us to predict output under different brain states?
-Model inference should be compared to common statistical models, including GLMs, Gaussian mixture models, and Poisson models.
-
-
-Method assumes access to observed neural activities and external input.
-René et al. (2019/20) paper:
-“The method we present assumes that the model to be inferred can be expressed as a
-set of stochastic equations and that we have access to time series for both the observed (and possibly aggregated) neural activities and external input”
-
-% ---
-There usually is a larger space for which performance given by the loss metric is fairly equal, just requiring a different combination of parameters - i.e. there is no single fixed point or trajectory leading to it in the parameter landscape leading to a global minimum.
-My interpretation of this is that what we identify with learning algorithms for SNNs is not a specific configuration which captures the data set at hand, but a configuration which reaches a mode of behaviour that would allow it do produce the data.
-This may indicate that there are other principles underlying the learning of these networks.
-
-
-\subsubsection*{Sine modulated white noise input}
-
-\begin{equation}
-    \sum^M \sin(W_n(t))
-\end{equation}
-
-\subsubsection*{White noise input}
-
-\begin{equation}
-    W_n(t) \sim \mathcal{U}(t, m)
-\end{equation}
-
 \subsection*{Multi-layer versus single-layer SNNs}
 
 Multi-layer net crucial for non-linear function approximation! We have not had this. If we only wish to capture the spike statistics, then a multi-layer version training on the next spike given the previous could perform better than the current single-layer noise-input to spike output?
@@ -1378,6 +1389,8 @@ Below is a list of points summarising observations that I made during my researc
 \end{itemize}
 
 
+% =======================================================
+% =======================================================
 % =======================================================
 \chapter{Sleep regulation in the rodent brainstem}\label{chpt:sleep}
 
@@ -1526,6 +1539,88 @@ GLM baseline
     \caption{GLM sample cell 5 exp 5}
 \end{figure}
 
+
+
+% rates for GLIF LIF not captured well for sleep data. why? res in appendix?
+
+% \begin{figure}
+%     \centering
+    
+%     \caption{inferred model firing rates per data set for the (non-Dales compliant) GLIF model, using white noise with a fixed rate as input perturbation.}
+%     \label{fig:approx_rates_sleep_exps_GLIF}
+% \end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/sleep/approx_rate_across_exp_microGIF_bernoulli_nll_vs_fitted.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/sleep/approx_rate_across_exp_microGIF_poisson_nll_vs_fitted.eps}
+    \caption{inferred model firing rates per data set for the SGIF model, using white noise with a fixed rate as input perturbation, Bernoulli NLL (top), and Poisson NLL (bottom)}
+    \label{fig:approx_rates_sleep_exps_SGIF}
+\end{figure}
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/sleep/ACs138.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/sleep/ACs_SGIF_exp5_fit_bernoulli_nll_2.eps}
+    \caption{ACs exp 5 target (left), and SGIF fit (right) Bernoulli NLL minimisation}
+    \label{fig:ACs_exp5}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.3\columnwidth]{figures/sleep/modules138.eps}
+    \includegraphics[width=0.3\columnwidth]{figures/sleep/modules_SGIF_exp5_fit_bernoulli_nll.eps}
+    \caption{ACs exp 5 target (left), and SGIF fit (right). these particular modules have a geodesic similarity of approximately $73 \%$.}
+    \label{fig:modules_exp5}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.65\columnwidth]{figures/sleep/geodesic_exp138.eps}
+    \caption{geodesic distances across model types and loss functions for exp. \#5}
+    \label{fig:geodesic_distances_exp5}
+\end{figure}
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/sleep/ACs147.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/sleep/ACs_nuovo_sleep_v2_spikes_mt_microGIF_euid_12-29_02-12-29-631_exp_6_lfn_poisson_nll.eps}
+    \caption{ACs exp 7 target (left), and SGIF fit (right), Poisson NLL minimisation}
+    \label{fig:ACs_exp7}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.3\columnwidth]{figures/sleep/modules_exp147.eps}
+    \includegraphics[width=0.3\columnwidth]{figures/sleep/ACs_nuovo_sleep_v2_spikes_mt_microGIF_euid_12-29_02-12-29-631_exp_6_lfn_poisson_nll.eps}
+    \caption{ACs exp 5 target (left), and SGIF fit (right). these particular modules have a geodesic similarity of approximately $69 \%$}
+    \label{fig:modules_exp7}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.65\columnwidth]{figures/sleep/geodesic_exp138.eps}
+    \caption{geodesic distances across model types and loss functions for exp. \#5}
+    \label{fig:geodesic_distances_exp5}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.65\columnwidth]{figures/sleep/geodesic_exp147.eps}
+    \caption{geodesic distances across model types and loss functions for exp. \#7}
+    \label{fig:geodesic_distances_exp7}
+\end{figure}
+
+
+
 % {'exp108_microGIF_bernoulli_nll': 11.975849, 'exp108_microGIF_poisson_nll': 11.67591, 'exp109_microGIF_bernoulli_nll': 10.515618, 'exp109_microGIF_poisson_nll': 10.103509, 'exp124_microGIF_bernoulli_nll': 10.443208, 'exp124_microGIF_poisson_nll': 13.823259, 'exp126_microGIF_bernoulli_nll': 11.697008, 'exp126_microGIF_poisson_nll': 13.574955, 'exp138_microGIF_bernoulli_nll': 16.86, 'exp138_microGIF_poisson_nll': 11.835349, 'exp146_microGIF_bernoulli_nll': 10.581168, 'exp146_microGIF_poisson_nll': 11.95316, 'exp147_microGIF_bernoulli_nll': 13.653505, 'exp147_microGIF_poisson_nll': 12.750887}
 % {'exp108_microGIF_bernoulli_nll': 6.3071237, 'exp108_microGIF_poisson_nll': 6.146446, 'exp109_microGIF_bernoulli_nll': 4.048536, 'exp109_microGIF_poisson_nll': 2.9935741, 'exp124_microGIF_bernoulli_nll': 4.172781, 'exp124_microGIF_poisson_nll': 12.03365, 'exp126_microGIF_bernoulli_nll': 6.742306, 'exp126_microGIF_poisson_nll': 8.469471, 'exp138_microGIF_bernoulli_nll': 14.084356, 'exp138_microGIF_poisson_nll': 6.122085, 'exp146_microGIF_bernoulli_nll': 3.8953998, 'exp146_microGIF_poisson_nll': 7.132417, 'exp147_microGIF_bernoulli_nll': 5.78849, 'exp147_microGIF_poisson_nll': 5.2616377}
 % {'exp108_microGIF_bernoulli_nll': 785.5906, 'exp108_microGIF_poisson_nll': 198.94684, 'exp109_microGIF_bernoulli_nll': 825.34186, 'exp109_microGIF_poisson_nll': 247.29172, 'exp124_microGIF_bernoulli_nll': 921.8936, 'exp124_microGIF_poisson_nll': 263.27893, 'exp126_microGIF_bernoulli_nll': 715.59863, 'exp126_microGIF_poisson_nll': 242.95949, 'exp138_microGIF_bernoulli_nll': 1284.1718, 'exp138_microGIF_poisson_nll': 283.38675, 'exp146_microGIF_bernoulli_nll': 787.7815, 'exp146_microGIF_poisson_nll': 233.002, 'exp147_microGIF_bernoulli_nll': 1030.3088, 'exp147_microGIF_poisson_nll': 251.07625}
@@ -1570,9 +1665,77 @@ Fast synapses to $1.5 \si{ms}$ for numerical stability during optimisation, inst
 
 \section{Tasks}
 
-\section{Synapse types}
+\subsection{Auto-encoding}
+
+\subsection{General Predictive Encoding}
+
+\section{Results}
+
+The tasks were replicated first for the NLIF model, and then tested on a leaky model type, by incorporating the synapse model into a LIF SNN.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Gating/AutoEncoding/NLIF_sample/plot_loss_test_mt_NLIF_et_AutoEncoding_N_30_titers_200.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Gating/AutoEncoding/NLIF_sample/test_plot_outputs_NLIF_seed_23.png}
+    \caption{Auto-encoding with NLIF, sample experiment. loss on the left, target and readouts on the right}
+    \label{fig:autoencoding_NLIF}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Gating/AutoEncoding/LIF_sample/plot_loss_test_mt_LIF_et_AutoEncoding_N_30_titers_200.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Gating/AutoEncoding/LIF_sample/test_plot_outputs_LIF_seed_25.png}
+    \caption{Auto-encoding with LIF, sample experiment. loss on the left, target and readouts on the right}
+    \label{fig:autoencoding_LIF}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Gating/GeneralPredictiveEncoding/NLIF_sample/plot_loss_test_mt_NLIF_et_GeneralPredictiveEncoding_N_30_titers_200.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Gating/GeneralPredictiveEncoding/NLIF_sample/test_plot_outputs_NLIF_seed_25.png}
+    \caption{General predictive encoding with NLIF, sample experiment. loss on the left, target and readouts on the right}
+    \label{fig:general_predictive_NLIF}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Gating/GeneralPredictiveEncoding/LIF_sample/plot_loss_test_mt_LIF_et_GeneralPredictiveEncoding_N_30_titers_200.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Gating/GeneralPredictiveEncoding/LIF_sample/test_plot_outputs_LIF_seed_24.png}
+    \caption{General predictive encoding with LIF, sample experiment. loss on the left, target and readouts on the right}
+    \label{fig:general_predictive_LIF}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/NLIF/test_export_2d_heatmap_N_4_loss_original_loss_W_fast_W_syn.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/NLIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_O.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/NLIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_W_fast.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/NLIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_W_syn.eps}
+    \caption{Parameter landscape for NLIF w autoencoding task}
+    \label{fig:p_landscape_NLIF_autoencoding}
+\end{figure}
+% can insert rate plot too
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/LIF/test_export_2d_heatmap_N_4_loss_original_loss_W_fast_W_syn.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/LIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_O.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/LIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_W_fast.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/LIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_W_syn.eps}
+    \caption{Parameter landscape for LIF w autoencoding task}
+    \label{fig:p_landscape_LIF_autoencoding}
+\end{figure}
+% can insert rate plot too
 
 \section{Discussion}
+
+Results show that the approach works well also for leaky SNN models, demonstrating that aspects relating to the setup enable successful GBO wrt the task, with the model accurately reproducing the target signal.
+However, the parameter configuration that is inferred in order to do so, yet varies.
+
+What does this suggest? What does it illuminate about SNN dynamics? What further tests would it be interesting to do?
 
 analog output versus discrete pulses and latent internal states (??)
 research has been impeded by lack of supervised learning algorithms
@@ -1630,6 +1793,18 @@ Part of the difficulty stems from that (1) there are multiple configurations whi
 
 %% You can include appendices like this:
 % \appendix
+
+\appendix\label{further_results}
+\title{Further results}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/sleep/approx_rate_across_exp_LIF_no_cell_types_frd_vs_fitted.eps}
+    \includegraphics[width=0.49\columnwidth]{figures/sleep/approx_rate_across_exp_GLIF_no_cell_types_frd_vs_fitted.eps}
+    \caption{inferred model firing rates per data set for the (non-Dales compliant) LIF model (left), and GLIF model (right), using white noise with a fixed rate as input perturbation.}
+    \label{fig:approx_rates_sleep_exps_LIF}
+\end{figure}
+
 \appendix\label{appendix:sample_GLM_code}
 \title{Sample GLM code}
 
