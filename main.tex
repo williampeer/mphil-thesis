@@ -1105,52 +1105,26 @@ These results show that GBO is possible for direct, scalable inference of neuron
 % activity_rmse_OU_per_model_type_per_pop PNLL [11.170116 13.295268 17.302729 25.481037]
 % activity_rmse_wn_per_model_type_per_pop PNLL [11.527083  14.5694475 19.83553   25.033321 ]
 
-
-\subsection{Simulation-based inference}
-
-Using the best performing loss-metric as found in the GBO experiments, and also revealed by the parameter landscape plots, i.e. the firing rate loss metric, we performed SBI by using the Python-framework of the Macke-lab \href{https://github.com/mackelab/sbi}{SBI}.
-
-In sum, SBI over a rate-based metric diverged for SGIF.
-SBI over a rate-based metric for LIF and GLIF; 
-
-\begin{figure}
-    \centering
-	\includegraphics[width=0.49\columnwidth]{figures/sbi_plot_rates_all.eps}
-	\includegraphics[width=0.49\columnwidth]{figures/sbi_mean_p_dist_all.eps}
-	\caption{Fitted model rates across model types and loss metrics, and average parameter distance between the ground-truth model and both the initial and converged inferred models when using \textbf{SBI} for model inference. see figure \ref{fig:rate_p_dists_GBO} for comparison with GBO.}
-	\label{fig:rate_p_dists_SBI}
-\end{figure}
-
-
-\begin{figure}
-    \centering
-	\includegraphics[width=0.5\columnwidth]{figures/sbi_p_avgs_pairplot_SNPE_LIF_12-15_04-56-19-338.eps}
-	\caption{Mean posterior marginals between parameters for the LIF model class, fitted using the same ground-truth model and synthetic data as in the LIF GBO experiments.}
-\end{figure}
-
-\begin{figure}
-    \centering
-	\includegraphics[width=\columnwidth]{figures/sbi_p_avgs_pairplot_SNPE_GLIF_12-15_14-22-38-919.eps}
-	\caption{Mean posterior marginals between parameters for the GLIF model class.}
-\end{figure}
-
-\begin{figure}
-    \centering
-	\includegraphics[width=\columnwidth]{figures/sbi_p_avgs_pairplot_SNPE_microGIF_12-14_16-14-12-736.eps}
-	\caption{Mean posterior marginals between parameters for the SGIF model class.}
-\end{figure}
-
-
 \subsection{Comparison with published ABC results}
 
 \cite{Rene2020} ABC over population-level models using MCMC-sampling, and then sequential GBO using NLL minimisation.
 Published results in aforementioned, figure 9.
 
 
-\begin{tabular}{c|c}
-     &  \\
-     & 
+\begin{table}
+\caption{Neuronal correlations $\rho$ for GBO, converged runs, network size N=4.}
+\label{tab:rho_converged_GBO_pop}
+\begin{center}
+\begin{tabular}{ l l c c c c }
+ & & \multicolumn{4}{c}{$\rho$ per neuron} \\
+ & & $e_{L2/3}$ & $i_{L2/3}$ & $e_{L4}$ & $i_{L4}$ \\
+ \textbf{WN} & \textbf{Bernoulli} & 0.09 & 0.14 & 0.21 & 0.07 \\ 
+ \textbf{WN} & \textbf{Poisson} & 0.27 & -0.02 & -0.02 & 0.04 \\  
+ \textbf{OU} & \textbf{Bernoulli} & 0.23 & 0.35 & 0.14 & 0.14 \\ 
+ \textbf{OU} & \textbf{Poisson} & 0.22 & -0.03 & 0.04 & 0.03 \\  
 \end{tabular}
+\end{center}
+\end{table}
 
 % table
 % init_rmse_wn [array(15.597686, dtype=float32)]
@@ -1286,6 +1260,42 @@ This may indicate that there are other principles underlying the learning of the
 \begin{equation}
     W_n(t) \sim \mathcal{U}(t, m)
 \end{equation}
+
+
+
+\subsection{Simulation-based inference}
+
+Using the best performing loss-metric as found in the GBO experiments, and also revealed by the parameter landscape plots, i.e. the firing rate loss metric, we performed SBI by using the Python-framework of the Macke-lab \href{https://github.com/mackelab/sbi}{SBI}.
+
+In sum, SBI over a rate-based metric diverged for SGIF.
+SBI over a rate-based metric for LIF and GLIF; 
+
+\begin{figure}
+    \centering
+	\includegraphics[width=0.49\columnwidth]{figures/sbi_plot_rates_all.eps}
+	\includegraphics[width=0.49\columnwidth]{figures/sbi_mean_p_dist_all.eps}
+	\caption{Fitted model rates across model types and loss metrics, and average parameter distance between the ground-truth model and both the initial and converged inferred models when using \textbf{SBI} for model inference. see figure \ref{fig:rate_p_dists_GBO} for comparison with GBO.}
+	\label{fig:rate_p_dists_SBI}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+	\includegraphics[width=0.5\columnwidth]{figures/sbi_p_avgs_pairplot_SNPE_LIF_12-15_04-56-19-338.eps}
+	\caption{Mean posterior marginals between parameters for the LIF model class, fitted using the same ground-truth model and synthetic data as in the LIF GBO experiments.}
+\end{figure}
+
+\begin{figure}
+    \centering
+	\includegraphics[width=\columnwidth]{figures/sbi_p_avgs_pairplot_SNPE_GLIF_12-15_14-22-38-919.eps}
+	\caption{Mean posterior marginals between parameters for the GLIF model class.}
+\end{figure}
+
+\begin{figure}
+    \centering
+	\includegraphics[width=0.85\columnwidth]{figures/sbi_p_avgs_pairplot_SNPE_microGIF_12-14_16-14-12-736.eps}
+	\caption{Mean posterior marginals between parameters for the SGIF model class.}
+\end{figure}
 
 
 
@@ -1598,7 +1608,7 @@ GLM baseline
 \begin{figure}
     \centering
     \includegraphics[width=0.3\columnwidth]{figures/sleep/modules_exp147.eps}
-    \includegraphics[width=0.3\columnwidth]{figures/sleep/ACs_nuovo_sleep_v2_spikes_mt_microGIF_euid_12-29_02-12-29-631_exp_6_lfn_poisson_nll.eps}
+    \includegraphics[width=0.3\columnwidth]{figures/sleep/modules_nuovo_sleep_v2_spikes_mt_microGIF_euid_12-29_02-12-29-631_exp_6_lfn_poisson_nll.eps}
     \caption{ACs exp 5 target (left), and SGIF fit (right). these particular modules have a geodesic similarity of approximately $69 \%$}
     \label{fig:modules_exp7}
 \end{figure}
@@ -1606,9 +1616,9 @@ GLM baseline
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.65\columnwidth]{figures/sleep/geodesic_exp138.eps}
-    \caption{geodesic distances across model types and loss functions for exp. \#5}
-    \label{fig:geodesic_distances_exp5}
+    \includegraphics[width=0.65\columnwidth]{figures/sleep/geodesic_exp147.eps}
+    \caption{geodesic distances across model types and loss functions for exp. \#7}
+    \label{fig:geodesic_distances_exp7}
 \end{figure}
 
 
@@ -1643,12 +1653,17 @@ Poisson significantly lower loss: Ttest\_relResult(statistic=9.871807340796684, 
 % Direct microscopic model inference tractable for non-dales law compliant models by using GD and Adam over a rate-based metric for (G)LIF models, and over the negative log-likelihood for stochastic models.
 % Local minima wrt parameters as shown previously with known GT, however, when considering the NMF ensembles captured through the two approaches,
 
+Scalable, tractable approach, works about as well as GLMs wrt NMF modules similarity.
+Provides a starting point for automatic model inference, may accelerate SNN inference research and comp neuro res.
+
 The fact that the error landscapes for the parameters are ambiguous explains why the spike trains are not as correlated in the models with GBO as when using ABC/SBI (as reported by \cite{Rene2020}), as GBO numerically and iteratively here updates parameter values in parallel, thus doing so slightly independently of the other parameters. 
 This may suggest that sequential parameter inference is required for better convergence when applying GBO for SNNs in this setting.
 However, this takes away the key goal of scalability of the inference algorithm, and would render ABC a better candidate for the job, as we then estimate a full posterior over all parameters dependently - which is also the explanation for a higher correlation and better produced target data by the ABC procedure; as this might be capturing the parameter-dependencies better.
 Authors have also reported that reproducing realistic data breaks down when drawing from the inferred posterior independently for each parameter, which we also empirically verified in our experimental setup, by using the aforementioned SBI-framework.
 
 
+% =======================================================
+% =======================================================
 % =======================================================
 \chapter{Gated subthreshold synaptic currents and continuous target signals}
 
