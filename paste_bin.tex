@@ -1,3 +1,203 @@
+% More specifically, using spike sorted data recorded from the mouse brain stem in the pedunculopontine and laterodorsal tegmental (PPT/LDT) areas, we address whether these areas do in fact initiate sleep stages, which has been previously hypothesised and recently debated. 
+% To address this, we looked at the temporal relationship between future and past state prediction, using linear discriminant analysis (LDA) on derived functional modules using non-negative matrix factorisation (NMF), replicating and extending the work reported by the collaborative lab from whom we have been granted access to the spike data.
+% Further, we study methodologies for inferring meaningful computational models using spike train data, and how they inferred models may be studied to evaluate the nature of the neurons by drawing upon the biology corresponding to their parameters within the literature.
+% This algorithmic approach applied to spike train data has, to the best of my knowledge, not been previously explored. This is due to the high dimensional parameter search space, which requires a correspondingly complex approach in order to make computation tractable.
+% As such, not only could an inferred model be used to address hypotheses such as whether sleep regulation within this area is mediated by an ensemble of cholinergic neurons, but the methodology could further be applied in other domains, using data of the same nature from different brain regions.
+% The approach requires only partial data - as is always a constraint within neuroscientific recordings. 
+% Using a form of Bayesian inference, measures of deviation and confidence may be defined comparatively between synthetic models and data, and the recorded spike trains considered as ‘ground truth’. Probable fits with a fair variance suggest meaningful inferred model parameter distributions. However, model quality metrics depend on the data for which the comparison is computed.
+
+% More specifically, the model inference method is based on modelling the probability of spiking for a neuron as a Bernoulli random variable, with the variable modelling spiking in each time bin. We construct time bins for the spike trains such that the probability of spiking in one bin may be approximately dependent only on the previous bin (which might be justified considering its refractory and synaptic time constants). This allows us to formulate the probability of a spike train as a Markov chain, and enables us to estimate population model parameters. Interestingly, the authors found that a better fit for a microscopic model was inferred when first performing gradient descent for a mesoscopic level model, representing each population with average parameters. 
+% This may be due to that inferring only one average parameter value per population regularises the training procedure by averaging over the parameter space of a microscopic model. 
+% There are two key points that I would like to communicate associated with that observation; (1) is that the complexity associated with the parameter space of microscopic models might make convergence towards a global optimum unlikely, and (2) that an average parameter might lose values that are of a secondary or tertiary order of importance, despite prominent in the data set, if somewhat conflicting with the final inferred average value. Addressing (2), it might be fruitful to allow for sets of average values for population models, investigating whether this might increase resulting microscopic model performance. Note that inference of the maximum a posteriori for corresponding microscopic models then might increase exponentially, or at least linearly, with the order of increased number of values inferred at the mesoscopic level. However, it might make sense to infer one average per neuron type as the population level, i.e. if it is believed that it contains for instance two sets of neuron types, or functional ensembles, such as inhibitory-excitatory neurons. This has to my knowledge not been attempted within this methodological approach.
+% Once a mesoscopic model has been attained, it may be used to synthetically generate data for use in the inference of a more detailed neuron-level or microscopic model. By generating synthetic data we may employ the family of Monte-Carlo (MC) methods. In order to accelerate convergence for computational efficiency, Hamiltonian MC is employed. This allows for approximating the full posterior over the most likely parameter distributions for microscopic models.
+
+% Statistically, model soundness may be considered in terms of comparison to a validation set stemming from the same experiment, and also across the 7 performed experiments. However, due to the nature of neuroscientific recordings, where there is a significant uncertainty in both the areas targeted with the silicon probes, and not the least due to significant individual differences for neural ensembles, it is unlikely that we can see neuron-level similarities across experiments. However, similarities at a population and functional level may occur if the same areas are recorded.
+
+
+
+%  for \textbf{GBO (top)} and \textbf{SBI (bottom)}.
+% SBI
+% \begin{figure}
+%     \centering
+% 	\includegraphics[width=0.49\columnwidth]{figures/}
+% 	\includegraphics[width=0.49\columnwidth]{figures/}
+% 	\caption{Fitted model rates across model types and loss metrics, and average parameter distance between the ground-truth model and both the initial and converged inferred models for GBO (top) and SBI (bottom).}
+% \end{figure}
+
+%sample microGIF poisson & bernoulli
+% export_microGIF_plot_loss_euid_12-09_16-36-58-996.eps
+% export_param_inference_X_microGIF_1_E_L_.eps
+% export_spike_trains_euid_12-09_16-36-58-996.eps
+
+
+% BIN_SIZE = 1/9
+% massive_dict keys: dict_keys(['correlations_OU_per_model_type', 'activity_rmse_OU_per_model_type', 'correlations_wn_per_model_type', 'activity_rmse_wn_per_model_type', 'correlations_OU_per_model_type_per_pop', 'activity_rmse_OU_per_model_type_per_pop', 'correlations_wn_per_model_type_per_pop', 'activity_rmse_wn_per_model_type_per_pop'])
+% correlations_OU_per_model_type_per_pop BNLL [[0.136229   0.45113911]
+%  [0.16280599 0.28163129]
+%  [0.07925058 0.45339818]
+%  [0.08042286 0.51556134]]
+% activity_rmse_OU_per_model_type_per_pop BNLL [ 8.741314 10.78977  16.814838 28.585888]
+% correlations_wn_per_model_type_per_pop BNLL [[-0.04303113  0.48399174]
+%  [-0.05307253  0.47993182]
+%  [ 0.09430935  0.54154142]
+%  [-0.13191614  0.4481658 ]]
+% activity_rmse_wn_per_model_type_per_pop BNLL [ 8.9276905 11.528968  19.901028  29.041882 ]
+% correlations_OU_per_model_type_per_pop PNLL [[ 0.21973303  0.39076739]
+%  [-0.03306306  0.48793001]
+%  [ 0.03666054  0.65488266]
+%  [ 0.03208419  0.47790354]]
+% activity_rmse_OU_per_model_type_per_pop PNLL [11.170116 13.295268 17.302729 25.481037]
+% correlations_wn_per_model_type_per_pop PNLL [[-0.03063577  0.59096444]
+%  [ 0.09773039  0.48791501]
+%  [-0.0160414   0.44861028]
+%  [ 0.0196374   0.62583975]]
+% activity_rmse_wn_per_model_type_per_pop PNLL [11.527083  14.5694475 19.83553   25.033321 ]
+
+
+% ==================== ----------------------- 16.01.2022 ==================== ----------------------
+% *** https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.pearsonr.html
+
+% massive_dict keys: dict_keys(['correlations_OU_per_model_type', 'activity_rmse_OU_per_model_type', 'correlations_wn_per_model_type', 'activity_rmse_wn_per_model_type', 'correlations_OU_per_model_type_per_pop', 'activity_rmse_OU_per_model_type_per_pop', 'correlations_wn_per_model_type_per_pop', 'activity_rmse_wn_per_model_type_per_pop'])
+% correlations_OU_per_model_type_per_pop BNLL unfiltered mean: [[0.136229   0.45113911]
+%  [0.16280599 0.28163129]
+%  [0.07925058 0.45339818]
+%  [0.08042286 0.51556134]]
+% num "converged": 14
+% correlations_OU_per_model_type_per_pop BNLL filtered w threshold: 0.2 [[0.2285608  0.45060827]
+%  [0.35417916 0.29010902]
+%  [0.13811508 0.46374777]
+%  [0.13586292 0.53474661]]
+% correlations_wn_per_model_type_per_pop BNLL unfiltered mean: [[-0.04303113  0.48399174]
+%  [-0.05307253  0.47993182]
+%  [ 0.09430935  0.54154142]
+%  [-0.13191614  0.4481658 ]]
+% num "converged": 10
+% correlations_wn_per_model_type_per_pop BNLL filtered w threshold: 0.2 [[0.09267896 0.60143853]
+%  [0.14028457 0.58431124]
+%  [0.20588619 0.55422147]
+%  [0.07390235 0.49125028]]
+% correlations_wn_per_model_type_per_pop PNLL unfiltered mean: [[ 0.21973303  0.39076739]
+%  [-0.03306306  0.48793001]
+%  [ 0.03666054  0.65488266]
+%  [ 0.03208419  0.47790354]]
+% num "converged": 16
+% correlations_wn_per_model_type_per_pop PNLL filtered w threshold: 0.2 [[ 0.26594066  0.43419887]
+%  [-0.01944962  0.59813733]
+%  [-0.0220576   0.68623279]
+%  [ 0.03665507  0.52298418]]
+% correlations_wn_per_model_type_per_pop PNLL unfiltered mean: [[-0.03063577  0.59096444]
+%  [ 0.09773039  0.48791501]
+%  [-0.0160414   0.44861028]
+%  [ 0.0196374   0.62583975]]
+% num "converged": 17
+% correlations_wn_per_model_type_per_pop PNLL filtered w threshold: 0.2 [[0.0135526  0.61893445]
+%  [0.0820617  0.46132494]
+%  [0.05597967 0.48230394]
+%  [0.05354188 0.68179549]]
+% activity_rmse_OU_per_model_type_per_pop BNLL [ 8.741314 10.78977  16.814838 28.585888]
+% activity_rmse_wn_per_model_type_per_pop BNLL [ 8.9276905 11.528968  19.901028  29.041882 ]
+% activity_rmse_OU_per_model_type_per_pop PNLL [11.170116 13.295268 17.302729 25.481037]
+% activity_rmse_wn_per_model_type_per_pop PNLL [11.527083  14.5694475 19.83553   25.033321 ]
+
+% table
+% init_rmse_wn [array(15.597686, dtype=float32)]
+% rmse_wn [29.394892]
+% init_rmse_OU [array(3., dtype=float32)]
+% rmse_OU [29.588663]
+% n_init_rmse_wn tensor([1.])
+% n_rmse_wn tensor([1.8846])
+% n_init_rmse_OU tensor([1.])
+% n_rmse_OU tensor([9.8629])
+% init_corrs_wn [array(1.5, dtype=float32)]
+% correlations_wn [0.1]
+% init_corrs_OU [array(3., dtype=float32)]
+% correlations_OU [-0.19999999]
+
+% init_rmse_wn [array(12.2687, dtype=float32)]
+% rmse_wn [26.907501]
+% init_rmse_OU [array(0., dtype=float32)]
+% rmse_OU [26.815296]
+% n_init_rmse_wn tensor([1.])
+% n_rmse_wn tensor([2.1932])
+% n_init_rmse_OU tensor([nan])
+% n_rmse_OU tensor([inf])
+% init_corrs_wn [array(-0.5, dtype=float32)]
+% correlations_wn [0.16666667]
+% init_corrs_OU [array(0., dtype=float32)]
+% correlations_OU [1.1920929e-08]
+
+% GBO
+% init_rmse_wn [array(14.968042, dtype=float32)]
+% rmse_wn [12.033964]
+% init_rmse_OU [array(2., dtype=float32)]
+% rmse_OU [11.603041]
+% n_init_rmse_wn tensor([1.])
+% n_rmse_wn tensor([0.8040])
+% n_init_rmse_OU tensor([1.])
+% n_rmse_OU tensor([5.8015])
+% init_corrs_wn [array(1., dtype=float32)]
+% correlations_wn [0.25]
+% init_corrs_OU [array(2., dtype=float32)]
+% correlations_OU [-0.125]
+
+% np.mean(correlations_OU_per_model_type_per_pop['microGIF'], axis=0)
+% Out[9]: 
+% array([[ 0.04449298,  0.53082549],
+%       [ 0.03504001,  0.50368762],
+%       [-0.04568029,  0.53626128],
+%       [-0.01166335,  0.52908753]])
+% np.mean(correlations_wn_per_model_type_per_pop['microGIF'], axis=0)
+% Out[10]: 
+% array([[ 0.06472507,  0.56145749],
+%       [ 0.12279707,  0.41758472],
+%       [-0.01644223,  0.46314913],
+%       [ 0.20302207,  0.40018902]])
+
+% np.mean(activity_rmse_wn_per_model_type_per_pop['microGIF'], axis=0)
+% Out[11]: array([29.468164, 38.342987, 58.59618 , 79.747246], dtype=float32)
+% np.mean(activity_rmse_OU_per_model_type_per_pop['microGIF'], axis=0)
+% Out[12]: array([28.68748 , 35.648613, 49.524837, 80.788055], dtype=float32)
+
+% correlations_OU_per_model_type_per_pop BNLL [[ 0.03672772  0.54079383]
+%  [ 0.03348813  0.56219029]
+%  [-0.07295515  0.48390601]
+%  [ 0.02472201  0.62395228]]
+% activity_rmse_OU_per_model_type_per_pop BNLL [24.281664 31.598572 48.442345 85.50205 ]
+% correlations_wn_per_model_type_per_pop BNLL [[ 0.06963954  0.54004642]
+%  [-0.15062001  0.37560239]
+%  [ 0.32837038  0.56875123]
+%  [ 0.28102542  0.41184876]]
+% activity_rmse_wn_per_model_type_per_pop BNLL [25.138638 33.444435 58.565758 85.78223 ]
+% correlations_OU_per_model_type_per_pop PNLL [[ 0.05225825  0.52085716]
+%  [ 0.03659189  0.44518495]
+%  [-0.01840543  0.58861656]
+%  [-0.04804871  0.43422278]]
+% activity_rmse_OU_per_model_type_per_pop PNLL [33.0933   39.69866  50.607323 76.07405 ]
+% correlations_wn_per_model_type_per_pop PNLL [[ 0.05981061  0.58286855]
+%  [ 0.39621414  0.45956705]
+%  [-0.36125484  0.35754704]
+%  [ 0.12501872  0.38852927]]
+% activity_rmse_wn_per_model_type_per_pop PNLL [33.797703 43.241554 58.6266   73.71228 ]
+
+
+
+% General description across p-dists, and mostly rates (implicitly loss).
+
+% \begin{figure}
+% 	\includegraphics{figures/export_rates_only_GT_all.eps}
+% \end{figure}
+
+% bugged_mesoGIF_4.eps
+% bugged_microGIF_4.eps
+% bugged_microGIF_21.eps
+% export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_GLIF_N_4.eps
+% export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_LIF_N_4.eps
+% export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_mesoGIF_N_4.eps
+% export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_microGIF_N_21.eps
+% geodesic_distances_Synthetic_GLIF.eps
+% geodesic_distances_Synthetic_LIF.eps
+
+
 % =============== roughly chpt 4 ===============
 
 \subsection{Shared synthetic data set across model types}
