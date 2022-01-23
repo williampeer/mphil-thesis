@@ -134,7 +134,7 @@
 
 I would like to thank my supervisory team for offering their advice throughout my research.
 I would also like to thank members of my lab group whom offered invaluable support and advice on everything from my project work to mastering stress and finding a flat in Edinburgh.
-I also sincerely appreciated input relating to mathematics and philosophy from two special friends in Ediburgh whom are outside of my lab group - you know who you are.
+I also sincerely appreciated input relating to mathematics and philosophy from two special friends in Ediburgh whom are outside of my lab group.
 Lastly, I would like to sincerely thank the head of our collaborative lab at the University of Strathclyde whom gave me access to in vivo data from the brainstem that was analysed wrt sleep regulation. It was truly inspiring and exciting to be able to see their experimental lab from early on in my project work.
 
 % Nina.
@@ -1283,7 +1283,7 @@ The results showing that for GLIF and SGIF SNNs, the fits are better than for LI
 This may be further emphasised by considering our empirical data from trying to apply GBO to the Izhikevich model, discussed in section \ref{section:izhikevich}, in which we observed that fitting this model was highly challenging due to parameter regions for which model behaviour would be completely chaotic.
 This is due to that the model is a lower-dimensional, collapsed projection of a system designed to be able to exhibit a myriad of behaviours (namely the Hodgkin-Huxley \cite{HH1952} model), but it comes at the cost of introducing regions in this projected system for which impossible and chaotic behaviours emerge.
 
-\subsection{Stochasticity and SNNs}
+\subsection*{Stochasticity and SNNs}
 
 There usually is a larger space for which performance given by the loss metric is fairly equal (as depicted by the error landscape plots), just requiring a different combination of parameters - i.e. there is no single fixed point or trajectory leading to it in the parameter landscape leading to a global minimum.
 My interpretation of this is that what we identify with learning algorithms for SNNs is not a specific configuration which captures the data set at hand, but a configuration which reaches a mode of behaviour that would allow it do produce the data.
@@ -1304,7 +1304,8 @@ Perhaps this is one of the key missing pieces for taking the step from the succe
 
 % Optimisers, parameter landscapes, hyperparameters, (linear) parameter constraints, input-output data, model topology and recurrence.
 
-Preliminary conclusion: The spatiotemporal nature of SNNs, with the main measured effect being a function over a highly composite variable that has a high temporal dependency and thus variability, makes optimisation difficult with the current common definitions of optimisation algorithmics, including the loss metrics mentioned in this thesis.
+% Preliminary conclusion: 
+The spatiotemporal nature of SNNs, with the main measured effect being a function over a highly composite variable that has a high temporal dependency and thus variability, makes optimisation difficult with the current common definitions of optimisation algorithmics, including the loss metrics mentioned in this thesis.
 In addition to being highly sensitive to initial conditions and other factors potentially both skewing the times of spiking, as well as the very mode of behaviour and spiking, input-output transformations, and the spatiotemporal signature of spike trains, need to be handled in a way that is more robust to these perturbations. 
 Currently, there seems to be no defined loss metric that may capture the distance and resulting parameter landscape when going from one mode of behaviour to another in network nodes in a way that is exploitable by means of gradient based optimisation.
 
@@ -1321,15 +1322,10 @@ The results highlight that the procedure is feasible by demonstration a working 
 My initial research proposal outlines a research project where the goal is to meet research needs within the field of sleep regulation through computational modelling.
 More specifically, the aspiration was to model neurons of the pedunculopontine and laterodorsal tegmental areas within the brainstem during different brain states, based on their neuroanatomy as described, even though scarcely, within the literature, and based on in vivo data from these brain areas \cite{Herice2019c, Tsunematsu2019, Pal2007, Martinez-Gonzalez2011, Fraigne2015}.
 Further, an overarching research goal was to be able to capture the emergence of neural ensembles as identified in vivo in the model by using non-negative matrix factorisation (NMF) \cite{Seung1999, Seung2001, Onken2016a}.
-Computational modelling and spiking neural network (SNN) inference covers several research needs within the field of sleep research and the synthesis of neuroscience and its computational counterpart in that it addresses model scarcity, as well as a methodology for accelerating modelling by inference through gradient-based optimisation \cite{Herice2019c, Huh2017, Taherkhani2020}.
-This was the foundation for sparking my interest in a methodological project in which we seek to automate biologically relevant neural network model inference, and more specifically to research both (1) the current state-of-the-art on SNN inference, and (2) leveraging ML based methods of gradient descent and optimisation for SNN inference \cite{Huh2017, Mostafa2020, Tavanaei2019b, Lee2016}.
-
-Sleep is widespread across different animal species, crucial to mental functioning. However, why we sleep, and how we sleep, remains to be understood. Some models exist that seek to capture the phasic nature of sleep, but mostly at an abstract level. 
-There is as such a need for detailed models in the field, with no current models encompassing direct biological parallels. Addressing the need for modelling in the field, and seeking to illuminate how we sleep, we propose to use a set of recently combined methodologies that allow us to infer neuron-level spiking models based on recorded spike trains. 
-In other words, the methodology allows for incorporating both existing knowledge, and to use spike sorted LFP recordings to infer the most statistically probable distributions of model parameters.
-This algorithmic approach applied to spike train data has, to the best of my knowledge, not been previously explored. 
-This is likely due to the high dimensional parameter search space, which requires a correspondingly complex approach in order to make computation tractable.
-The approach requires only partial data - as is always a constraint within neuroscientific recordings. 
+To this end, we have implemented various types of SNN models, a framework for gradient based optimisation using Adam in a modular way, compatible with any differentiable model as well as loss metric, all in PyTorch. This work is presented previously in this dissertation.
+Further, the hand-engineered target models that were used to test the methodology whilst also maintaining the ground truth generative model parameters in chapter \ref{chpt:frontier} were designed to have neuronal rates and parameter values resembling a mixture of excitatory and inhibitory neurons, keeping both biological data and the particular sleep data in mind.
+More generally, computational modelling and spiking neural network (SNN) inference covers several research needs within the field of sleep research and the synthesis of neuroscience and its computational counterpart in that it addresses model scarcity, as well as a methodology for accelerating modelling by inference through gradient-based optimisation \cite{Herice2019c, Huh2017, Taherkhani2020}.
+This was the foundation for sparking my interest in a methodological project in the first place, with the goal of automating biologically relevant neural network model inference, and more specifically to research both (1) the current state-of-the-art on SNN inference, and (2) leveraging ML based methods of gradient descent and optimisation for SNN inference \cite{Huh2017, Mostafa2020, Tavanaei2019b, Lee2016}.
 
 While it is evident that the extent to which GBO may be used to infer an exact SNN model based on spike data from the findings in the previous chapter, the results nevertheless show that the approach may infer models that capture the higher-order statistics and functional organisation fairly well, and even better than a solid baseline model, namely the GLM.
 As the ABC approach of SNPE quickly becomes intractable, and is in fact intractable for the network size of the biological data studied in this chapter (at least for a reasonable execution time, with limited computational resourced), we have employed our GBO procedure to biological spike train data for LIF, GLIF, and SGIF models, and similarly to in the previous chapter, we assess the goodness of fit via the attained model rates, loss, and geodesic NMF module similarities.
@@ -1337,44 +1333,54 @@ As the ABC approach of SNPE quickly becomes intractable, and is in fact intracta
 
 \section{Background}
 
+Sleep is widespread across different animal species, crucial to mental functioning. 
+However, why and how we sleep, remains to be understood. 
+Some models exist that seek to capture the phasic nature of sleep, but mostly at an abstract level. 
+There is as such a need for detailed models in the field, with no current models encompassing direct biological parallels. Addressing the need for modelling in the field, and seeking to illuminate how we sleep, we propose to use a set of recently combined methodologies that allow us to infer neuron-level spiking models based on recorded spike trains. 
+The methodology allows for incorporating both existing knowledge from the ML domain, and lays the groundwork for using GBO for SNN inference, illuminating the extent to which this may be done with the proposed methodology, as well as highlighting key issues that should be adressed in future modeling work along this strand.
+The outlined algorithmic approach applied to spike train data has, to the best of our knowledge, not been previously explored. 
+This may be due to the high dimensional parameter search space, which also complicates making inference tractable and sufficient.
+% The approach requires only partial data - as is always a constraint within neuroscientific recordings. 
+
 \subsection{Sleep stages}
-Three-process switch model. Different timescales may be at play, and constitute the switching-mechanism.
-Can an inferred SNN be used as a starting point to create such a model?
+
+When it comes to the phasic nature of sleep, one seminal yet simple model for describing this is a three-process switch or flip-flop model, as described by \cite{Borbely1992}.
+This describes how a combination of a homeostatic drive, the circadian (24-hour) rhythm, and an ultradian rhythm may facilitate and regulate sleep, wakefulness, and the different types of sleep (namely NREM- and REM-sleep), without detailing the pathways involved.
+% Different timescales may be at play, and constitute the switching-mechanism.
+This begs the question of whether an inferred SNN be used as a starting point to create such a model, or whether it can be determined to be involved in one or more of the three hypothesised regulatory mechanisms.
 
 \subsection{PPT/LDT}
 
-Complex circuitry means a myriad of ppt/ldt inputs, some of which are poorly understood.
-Could these somehow be reverse-engineered given the state and neural activity, classifying the neurons into types, which can tell us something about the pathways involved, and whether they’re “ON” or “OFF”?
-Simple state-driven input as on/off per state to the ensembles should tell us something about each ensemble and its state-preference?
-If so, these can be identified, parameters compared and fixed, and then we could try to reconstruct the projections.
+Many areas have been thoroughly researched with regards to their role in sleep regulation, such as the locus coeruleus (LC), which is fairly well understood.
+However, other areas which have been shown to be involved in sleep regulation are less or poorly understood.
+One such area is the pedunculopontine and laterodorsal tegmental areas (PPT/LDT) of the brainstem, with its circuitry containing a myriad of inputs and outputs.
+Could these be modeled by inferring models that reproduce similar spiking activity by using GBO with data recorded by silicon probe insertion into the area?
+If so, to what extent can we reverse-engineer the neural activity, classify the neurons into types, and illuminate the pathways involved, such as whether the neurons facilitate REM-sleep or not - i.e. are REM “ON” or “OFF”?
+While it is limited what we can capture in the current model, one thing that is out of scope for this thesis, but would be straightforward to implement, is designing input that more closely resembles that of during REM- and NREM-sleep.
+This could then be presented to inferred models, and if captured by the inferred model, the ensembles could tell us something about state-regulation.
+% If so, the can be identified, parameters compared and fixed, and then we could try to reconstruct the projections.
 
 % PPT/LDT LFP data; most spiking during NREMS
 % (to consider: Little time spent in NREMS)
-Want to primarily look at REMS: disinhibition of monoaminergic LC projections (prerequisite; Timofeev et al. (2017)) (shut off / inhibited in LC by GABA), 
+% Want to primarily look at REMS: disinhibition of monoaminergic LC projections (prerequisite; Timofeev et al. (2017)) (shut off / inhibited in LC by GABA), 
 
-PPT/LDT:
-Cholinergic are REMS and wake
-GABAergic; REMS, wake, or both
-NREM?
+% PPT/LDT:
+% Cholinergic are REMS and wake
+% GABAergic; REMS, wake, or both
+% NREM?
 
 
 \section{Analysis of target data}
 
-Data from PPT/LDT area/brainstem. Evaluation and assessment through (rigorous) analysis and classification/prediction of brain state. Shows four well-qualified experiments for further analysis and bridging using the mesoscopic modelling approach.
-Provides a solid bridge from the domain of experimental data to generating data using a simulated model that is derived from a good data foundation that we know is well-aligned with brain state.
+The biological data that we were granted access to is from a silicon probe recording (8x4 Buszaki probes) from the PPT/LDT area of the brainstem. 
+It has been used in previous published studies, in which evaluation and assessment through rigorous analysis and classification and prediction of the future brain state given the neuronal signals, as well as NMF modules, was performed \cite{Tsunematsu2019}. 
 
-% Idea: “ultradian” process for synchronous/asynchronous activity -> nREM/REM, also should give rise to qualities during wakefulness (such as better brainstorming/creativity, or some types of productivity in “phases”/stages)
-
-% Idea: Cell types and model parameters that may be used in type classification from fitting data to GLIF models is lacking for the mouse brainstem in the Allen Brain project database.
-
-Replicated results of \cite{Tsunematsu2019}, finding that NMF ACs were more indicative of future brain state than HPC signals, which was a novel finding presented in the original work.
+We here replicate results of \cite{Tsunematsu2019}, showing that NMF ACs were more indicative of future brain state than HPC signals, which was a novel finding when presented in the original work.
 This also means that the data should contain information that if captured in a model may illuminate the functional dynamics associated with sleep regulation in the area (PPT/LDT).
-
-In order to test whether ...
+% In order to test whether ...
 % See first year(?) review
-However, single-neuron signals slightly better predictors - suggesting both that there was some information lost in factorisation, but also that the ensembles were very good representations of functional units, as argued in the original paper.
-
-% Insert 1st years' work here. ??
+When tested, we find that single-neuron signals were slightly better predictors. 
+However, as the gain was only small it also suggests that the ensembles were very good representations of functional units, as argued in the original paper.
 
 \begin{figure}
     \centering
@@ -1390,10 +1396,9 @@ However, single-neuron signals slightly better predictors - suggesting both that
     \caption{LDA \& RF over exps}
 \end{figure}
 
-Replicated from \cite{Tsunematsu2019} % double-check ref.
-Suggests spike statistics well captured in factorised modules, as ACs sufficient to predict brain state.
-Thus, functional ensembles should be well represented by modules, and be a correspondingly suitable methodology to assess capturing these by calculating the similarity of the factorised modules for fitted SNN models.
-As the similarity metric, we simply calculate the geodesic similarity between modules, as previously in the synthetic SNN inference work.
+% Suggests spike statistics well captured in factorised modules, as ACs sufficient to predict brain state.
+% Thus, functional ensembles should be well represented by modules, and be a correspondingly suitable methodology to assess capturing these by calculating the similarity of the factorised modules for fitted SNN models.
+% As the similarity metric, we simply calculate the geodesic similarity between modules, as previously in the synthetic SNN inference work.
 
 \section{Inference}
 
@@ -1425,7 +1430,6 @@ GLM baseline
 \end{figure}
 
 
-
 \begin{figure}
     \centering
     \includegraphics[width=0.49\columnwidth]{figures/sleep/ACs138.eps}
@@ -1442,15 +1446,12 @@ GLM baseline
     \label{fig:modules_exp5}
 \end{figure}
 
-
 \begin{figure}
     \centering
     \includegraphics[width=0.65\columnwidth]{figures/sleep/geodesic_exp138.eps}
     \caption{geodesic distances across model types and loss functions for exp. \#5}
     \label{fig:geodesic_distances_exp5}
 \end{figure}
-
-
 
 \begin{figure}
     \centering
@@ -1467,15 +1468,6 @@ GLM baseline
     \caption{ACs exp 5 target (left), and SGIF fit (right). these particular modules have a geodesic similarity of approximately $69 \%$}
     \label{fig:modules_exp7}
 \end{figure}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.65\columnwidth]{figures/sleep/geodesic_exp147.eps}
-    \caption{geodesic distances across model types and loss functions for exp. \#7}
-    \label{fig:geodesic_distances_exp7}
-\end{figure}
-
 
 \begin{figure}
     \centering
@@ -1503,12 +1495,7 @@ GLM baseline
 Poisson significantly lower loss: Ttest\_relResult(statistic=9.871807340796684, pvalue=6.23389044753519e-05)
 
 
-\section{Neuroscience parallels for sleep regulation}
-
-Limited what can be hypothesised and/or tested in the inferred models .. ?
-Out of scope for now. 
-However, would be interesting to design different perturbation schemes, which represent and are thought to correspond to different sleep and stimulus states, and assess to what extent the fitted model outputs change accordingly, and comparatively with the biological data.
-
+% \section{Neuroscience parallels for sleep regulation}
 % Grace (14)
 % Temporal structure ow cholin. Neur.s. can affect downstream
 % Chemogenetic could not induce REMS
@@ -1547,6 +1534,9 @@ However, would be interesting to design different perturbation schemes, which re
 Scalable, tractable approach, works about as well as GLMs wrt NMF modules similarity.
 Provides a starting point for automatic model inference, may accelerate SNN inference research and comp neuro res.
 
+Limited what can be hypothesised and/or tested in the inferred models .. ?
+However, would be interesting to design different perturbation schemes, which represent and are thought to correspond to different sleep and stimulus states, and assess to what extent the fitted model outputs change accordingly, and comparatively with the biological data.
+
 The fact that the error landscapes for the parameters are ambiguous explains why the spike trains are not as correlated in the models with GBO as when using ABC/SBI (as reported by \cite{Rene2020}), as GBO numerically and iteratively here updates parameter values in parallel, thus doing so slightly independently of the other parameters. 
 This may suggest that sequential parameter inference is required for better convergence when applying GBO for SNNs in this setting.
 However, this takes away the key goal of scalability of the inference algorithm, and would render ABC a better candidate for the job, as we then estimate a full posterior over all parameters dependently - which is also the explanation for a higher correlation and better produced target data by the ABC procedure; as this might be capturing the parameter-dependencies better.
@@ -1570,6 +1560,8 @@ Fast synapses to $1.5 \si{ms}$ for numerical stability during optimisation, inst
 % \subsection{NLIF definition}
 
 \section{Tasks}
+
+Two tasks of input transformation; (1) auto-encoding the input of two sine-modulated white noise inputs, essentially predicting the input as output, and (2) a more general predicting coding task in which a linear transformation of the inputs formed the composite target signal. The equations defining the signals in the two tasks are outlined below.
 
 \subsection{Auto-encoding}
 
@@ -1692,7 +1684,7 @@ By correlation and number of mutations of the ordered spike train set, we can ge
 Part of the difficulty stems from that (1) there are multiple configurations which can produce similar spike patterns, and thus we may hypothesise that there is no "ground-truth" optimal solution per se, and (2) due to the multiple factors of stochasticity we cannot operate with precise spike train comparisons. These two points result in that currently the way of going about to analyse biologically realistic models are closer to the way we analyse recordings from the biological brain. As such, a bridge between inference methodologies such as the ones successfully employed in ML, and the field of computational modelling is needed.
 A good starting point for this might be to fit SNNs to more low-dimensional, well-defined target signals, preferably with an informative input, as demonstrated to converge well for both non-leaky as well as leaky integrate-and-fire SNNs in chapter \ref{chpt:gated_synaptic}.
 
-\section{Future work}
+\section*{Future work}
 
 The question yet remains how we may ameliorate, or even solve automatic model inference for SNN models, and thereby accelerate computational neuroscience research.
 Below is a list of points summarising observations that I made during my research that may be useful to have in mind for future research in the area.
