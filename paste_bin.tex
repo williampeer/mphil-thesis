@@ -1,3 +1,28 @@
+% “Computationally, we now know that optimization of trajectories gives rise to elegant solutions for very complex motor tasks (Harris and Wolpert, 1998; Todorov and Jordan, 2002; Mordatch et al., 2012). We suggest that cost function optimization occurs much more generally in shaping the internal representations and processes used by the brain. Importantly, we also suggest that this requires the brain to have mechanisms for efficient credit assignment in multilayer and recurrent networks.” - Marblestone et al. (2016). Frontiers in Computational Neuroscience
+
+% Can we say something about this Pareto-front with GD?
+% When sampling from full posterior dist from a SBI posterior we get realistic data - when independently sampling from marginals we get unrealistic data. Flaw in model, and in assuming parameter independence.
+% Both of these methodologies get at a reasonable frontier - however, learning in itself in the structures is something different, remaining a mystery.
+% If only the temporal unfolding of spike events was done according to linear transformations, or in a ...
+% --> gating res.
+
+% Can compute manifolds in which the activity lives and moves
+% Functioning: “Carried out by movements along manifolds”
+% Activity is modulated by incoming activity, which manipulate manifolds
+% However, successfully implementing (..) is an engineering challenge we have yet to overcome. 
+% It is difficult to predict what such an algorithm would need to contain, as most applications of DNNs are very domain specific, and extremely or fully prone to catastrophic forgetting when trained on a new data set.
+% There is still a fundamental gap between general knowledge acquisition and the specialised kind we see within ML.
+
+% ==================== CHPT 7. ==================
+
+% What does this suggest? What does it illuminate about SNN dynamics? What further tests would it be interesting to do?
+% analog output versus discrete pulses and latent internal states (??)
+% research has been impeded by lack of supervised learning algorithms
+% they present differentiable formulation of SNNs, with exact gradient calculation
+% simple tasks
+% difficult to optimise discrete, binary all-or-none signals
+% other methods circumvent non-differentiability
+
 % {'exp108_microGIF_bernoulli_nll': 11.975849, 'exp108_microGIF_poisson_nll': 11.67591, 'exp109_microGIF_bernoulli_nll': 10.515618, 'exp109_microGIF_poisson_nll': 10.103509, 'exp124_microGIF_bernoulli_nll': 10.443208, 'exp124_microGIF_poisson_nll': 13.823259, 'exp126_microGIF_bernoulli_nll': 11.697008, 'exp126_microGIF_poisson_nll': 13.574955, 'exp138_microGIF_bernoulli_nll': 16.86, 'exp138_microGIF_poisson_nll': 11.835349, 'exp146_microGIF_bernoulli_nll': 10.581168, 'exp146_microGIF_poisson_nll': 11.95316, 'exp147_microGIF_bernoulli_nll': 13.653505, 'exp147_microGIF_poisson_nll': 12.750887}
 % {'exp108_microGIF_bernoulli_nll': 6.3071237, 'exp108_microGIF_poisson_nll': 6.146446, 'exp109_microGIF_bernoulli_nll': 4.048536, 'exp109_microGIF_poisson_nll': 2.9935741, 'exp124_microGIF_bernoulli_nll': 4.172781, 'exp124_microGIF_poisson_nll': 12.03365, 'exp126_microGIF_bernoulli_nll': 6.742306, 'exp126_microGIF_poisson_nll': 8.469471, 'exp138_microGIF_bernoulli_nll': 14.084356, 'exp138_microGIF_poisson_nll': 6.122085, 'exp146_microGIF_bernoulli_nll': 3.8953998, 'exp146_microGIF_poisson_nll': 7.132417, 'exp147_microGIF_bernoulli_nll': 5.78849, 'exp147_microGIF_poisson_nll': 5.2616377}
 % {'exp108_microGIF_bernoulli_nll': 785.5906, 'exp108_microGIF_poisson_nll': 198.94684, 'exp109_microGIF_bernoulli_nll': 825.34186, 'exp109_microGIF_poisson_nll': 247.29172, 'exp124_microGIF_bernoulli_nll': 921.8936, 'exp124_microGIF_poisson_nll': 263.27893, 'exp126_microGIF_bernoulli_nll': 715.59863, 'exp126_microGIF_poisson_nll': 242.95949, 'exp138_microGIF_bernoulli_nll': 1284.1718, 'exp138_microGIF_poisson_nll': 283.38675, 'exp146_microGIF_bernoulli_nll': 787.7815, 'exp146_microGIF_poisson_nll': 233.002, 'exp147_microGIF_bernoulli_nll': 1030.3088, 'exp147_microGIF_poisson_nll': 251.07625}
