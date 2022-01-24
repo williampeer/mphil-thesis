@@ -1330,6 +1330,7 @@ This was the foundation for sparking my interest in a methodological project in 
 While it is evident that the extent to which GBO may be used to infer an exact SNN model based on spike data from the findings in the previous chapter, the results nevertheless show that the approach may infer models that capture the higher-order statistics and functional organisation fairly well, and even better than a solid baseline model, namely the GLM.
 As the ABC approach of SNPE quickly becomes intractable, and is in fact intractable for the network size of the biological data studied in this chapter (at least for a reasonable execution time, with limited computational resourced), we have employed our GBO procedure to biological spike train data for LIF, GLIF, and SGIF models, and similarly to in the previous chapter, we assess the goodness of fit via the attained model rates, loss, and geodesic NMF module similarities.
 
+Test; am I online?
 
 \section{Background}
 
@@ -1370,30 +1371,37 @@ This could then be presented to inferred models, and if captured by the inferred
 % NREM?
 
 
-\section{Analysis of target data}
+\section{Biological target data}
 
 The biological data that we were granted access to is from a silicon probe recording (8x4 Buszaki probes) from the PPT/LDT area of the brainstem. 
-It has been used in previous published studies, in which evaluation and assessment through rigorous analysis and classification and prediction of the future brain state given the neuronal signals, as well as NMF modules, was performed \cite{Tsunematsu2019}. 
+It is analysed in published research, in which evaluation and assessment through rigorous analysis and classification and prediction of the future brain state given the neuronal signals, as well as NMF modules, was performed \cite{Tsunematsu2019}. 
 
-We here replicate results of \cite{Tsunematsu2019}, showing that NMF ACs were more indicative of future brain state than HPC signals, which was a novel finding when presented in the original work.
+We here replicate much of the results of \cite{Tsunematsu2019}, confirming that NMF ACs were more indicative of future brain state than HPC signals, which was a novel finding and insight when presented in the original paper.
 This also means that the data should contain information that if captured in a model may illuminate the functional dynamics associated with sleep regulation in the area (PPT/LDT).
 % In order to test whether ...
 % See first year(?) review
-When tested, we find that single-neuron signals were slightly better predictors. 
-However, as the gain was only small it also suggests that the ensembles were very good representations of functional units, as argued in the original paper.
+Further, we also tested and confirmed that single-neuron signals were slightly better predictors. 
+However, as the gain is only marginal or small it also suggests that the ensembles are indeed good representations of the spike activity, and thereby functional ensembles, as argued in the original paper.
+Therefore, we perform NMF on the predicted spike trains of our inferred models, and compare the factorised modules attained with those of the biological target data.
+Note that the quality of the spike data in terms of neuronal activity and non-silent neurons varied across the different experiments.
+So did classification performance with the aforementioned variability.
+Therefore, we have focussed on the two experiments in which most neurons displayed activity, and the state classification performance was consistently high (see figures \ref{fig:lda_classification} and \ref{fig:lda_rf_classification}).
+These were also the two only data sets for which three NMF modules were needed in order to account for at least $75$ \% of the variance in the original spike data with the factorised matrices.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.49\columnwidth]{figures/LDA/lda_temporal_shifting_and_prediction_bins_4_lda_acs_temporal_windows_4_exp_6.eps}
     \includegraphics[width=0.49\columnwidth]{figures/LDA/lda_temporal_shifting_and_prediction_bins_4_lda_acs_temporal_windows_4_exp_4.eps}
-    \caption{Most well-defined data exps: 4 and 6, i.e. rich firing across neurons. best state-prediction performance}
+    \caption{The biological data often contained silent neurons, with the most consistently active signals and thus 'well-defined' data being particularly the data sets for experiments 4 and 6.}
+    \label{fig:lda_classification}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=0.49\columnwidth]{figures/LDA/bars_LDA_per_signal_t_3.eps}
     \includegraphics[width=0.49\columnwidth]{figures/LDA/bars_RF_per_signal_t_3.eps}
-    \caption{LDA \& RF over exps}
+    \caption{LDA and random-forest classification over the different experiments.}
+    \label{fig:lda_rf_classification}
 \end{figure}
 
 % Suggests spike statistics well captured in factorised modules, as ACs sufficient to predict brain state.
@@ -1402,21 +1410,21 @@ However, as the gain was only small it also suggests that the ensembles were ver
 
 \section{Inference}
 
-% ABC too costly.
-% \subsection{GBO}
-Differentiable SGIF-model adapted from \cite{Rene2020}, using GD for direct neuron-level (microscopic) SNN inference, by negative log-likelihood minimisation, assuming either a Bernoulli or Poisson distribution of the spike train.
+As mentioned above, we have focussed on the two experiments with consistently high 'quality' in terms of neuronal activity and vigilance state prediction performance.
+Further, we adopt the differentiable SGIF-model as described in previous chapters \cite{Rene2020}, using GBO for direct neuron-level SNN inference by negative log-likelihood minimisation, assuming either a Bernoulli or Poisson distribution of the spike train.
+For NMF performance evaluation, we also fit GLMs as a baseline comparison model in NMF module similarity assessment.
 
-GLM baseline
+For each experiment, we fit $N=20$ models as in the other setups to each experiment, for each model type and loss function, pseudorandomly and uniformy initialising the model parameters before inference, with a different random seed for each experiment.
+We here report the results for each configuration for the two data sets, in addition to illustrations of the fitted GLMs.
 
 \begin{figure}
-    \centering
-    \includegraphics[width=\columnwidth]{figures/sleep/plot1_cell5_pdf.eps}
+    \includegraphics[width=1.1\columnwidth]{figures/sleep/plot1_cell5_pdf.eps}
     \caption{response filters GLM exp 5}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\columnwidth]{figures/sleep/GLM_multi_cell5_5sec_bin_white_noise.eps}
+    \includegraphics[width=0.9\columnwidth]{figures/sleep/GLM_multi_cell5_5sec_bin_white_noise.eps}
     \caption{GLM sample cell 5 exp 5}
 \end{figure}
 
@@ -1425,7 +1433,7 @@ GLM baseline
     \centering
     \includegraphics[width=0.49\columnwidth]{figures/sleep/approx_rate_across_exp_microGIF_bernoulli_nll_vs_fitted.eps}
     \includegraphics[width=0.49\columnwidth]{figures/sleep/approx_rate_across_exp_microGIF_poisson_nll_vs_fitted.eps}
-    \caption{inferred model firing rates per data set for the SGIF model, using white noise with a fixed rate as input perturbation, Bernoulli NLL (top), and Poisson NLL (bottom)}
+    \caption{Inferred model firing rates per data set for the SGIF model, using white noise with a fixed rate as input perturbation, Bernoulli NLL (top), and Poisson NLL (bottom)}
     \label{fig:approx_rates_sleep_exps_SGIF}
 \end{figure}
 
@@ -1477,23 +1485,10 @@ GLM baseline
 \end{figure}
 
 
-
-% {'exp108_microGIF_bernoulli_nll': 11.975849, 'exp108_microGIF_poisson_nll': 11.67591, 'exp109_microGIF_bernoulli_nll': 10.515618, 'exp109_microGIF_poisson_nll': 10.103509, 'exp124_microGIF_bernoulli_nll': 10.443208, 'exp124_microGIF_poisson_nll': 13.823259, 'exp126_microGIF_bernoulli_nll': 11.697008, 'exp126_microGIF_poisson_nll': 13.574955, 'exp138_microGIF_bernoulli_nll': 16.86, 'exp138_microGIF_poisson_nll': 11.835349, 'exp146_microGIF_bernoulli_nll': 10.581168, 'exp146_microGIF_poisson_nll': 11.95316, 'exp147_microGIF_bernoulli_nll': 13.653505, 'exp147_microGIF_poisson_nll': 12.750887}
-% {'exp108_microGIF_bernoulli_nll': 6.3071237, 'exp108_microGIF_poisson_nll': 6.146446, 'exp109_microGIF_bernoulli_nll': 4.048536, 'exp109_microGIF_poisson_nll': 2.9935741, 'exp124_microGIF_bernoulli_nll': 4.172781, 'exp124_microGIF_poisson_nll': 12.03365, 'exp126_microGIF_bernoulli_nll': 6.742306, 'exp126_microGIF_poisson_nll': 8.469471, 'exp138_microGIF_bernoulli_nll': 14.084356, 'exp138_microGIF_poisson_nll': 6.122085, 'exp146_microGIF_bernoulli_nll': 3.8953998, 'exp146_microGIF_poisson_nll': 7.132417, 'exp147_microGIF_bernoulli_nll': 5.78849, 'exp147_microGIF_poisson_nll': 5.2616377}
-% {'exp108_microGIF_bernoulli_nll': 785.5906, 'exp108_microGIF_poisson_nll': 198.94684, 'exp109_microGIF_bernoulli_nll': 825.34186, 'exp109_microGIF_poisson_nll': 247.29172, 'exp124_microGIF_bernoulli_nll': 921.8936, 'exp124_microGIF_poisson_nll': 263.27893, 'exp126_microGIF_bernoulli_nll': 715.59863, 'exp126_microGIF_poisson_nll': 242.95949, 'exp138_microGIF_bernoulli_nll': 1284.1718, 'exp138_microGIF_poisson_nll': 283.38675, 'exp146_microGIF_bernoulli_nll': 787.7815, 'exp146_microGIF_poisson_nll': 233.002, 'exp147_microGIF_bernoulli_nll': 1030.3088, 'exp147_microGIF_poisson_nll': 251.07625}
-% {'exp108_microGIF_bernoulli_nll': 478.35587, 'exp108_microGIF_poisson_nll': 90.61257, 'exp109_microGIF_bernoulli_nll': 568.65466, 'exp109_microGIF_poisson_nll': 115.3953, 'exp124_microGIF_bernoulli_nll': 618.6944, 'exp124_microGIF_poisson_nll': 233.36815, 'exp126_microGIF_bernoulli_nll': 503.43787, 'exp126_microGIF_poisson_nll': 148.58171, 'exp138_microGIF_bernoulli_nll': 1448.3081, 'exp138_microGIF_poisson_nll': 186.98854, 'exp146_microGIF_bernoulli_nll': 537.0402, 'exp146_microGIF_poisson_nll': 136.35039, 'exp147_microGIF_bernoulli_nll': 561.5808, 'exp147_microGIF_poisson_nll': 134.77667}
-% {'microGIF': {'bernoulli_nll': [11.975849, 10.515618, 10.443208, 11.697008, 16.86, 10.581168, 13.653505], 'poisson_nll': [11.67591, 10.103509, 13.823259, 13.574955, 11.835349, 11.95316, 12.750887]}}
-% {'microGIF': {'bernoulli_nll': [6.3071237, 4.048536, 4.172781, 6.742306, 14.084356, 3.8953998, 5.78849], 'poisson_nll': [6.146446, 2.9935741, 12.03365, 8.469471, 6.122085, 7.132417, 5.2616377]}}
-% {'microGIF': {'bernoulli_nll': [785.5906, 825.34186, 921.8936, 715.59863, 1284.1718, 787.7815, 1030.3088], 'poisson_nll': [198.94684, 247.29172, 263.27893, 242.95949, 283.38675, 233.002, 251.07625]}}
-% {'microGIF': {'bernoulli_nll': [478.35587, 568.65466, 618.6944, 503.43787, 1448.3081, 537.0402, 561.5808], 'poisson_nll': [90.61257, 115.3953, 233.36815, 148.58171, 186.98854, 136.35039, 134.77667]}}
-
-% print('sleep_data_approx_rates', sleep_data_approx_rates)
-% sleep_data_approx_rates [4.5312505, 2.3666666, 6.6166663, 6.727778, 7.861111, 24.842594, 8.857842]
-% print('sleep_data_approx_rate_stds', sleep_data_approx_rate_stds)
-% sleep_data_approx_rate_stds [9.835535, 2.53673, 4.742714, 6.977707, 6.586351, 35.420063, 11.326365]
-
-Poisson significantly lower loss: Ttest\_relResult(statistic=9.871807340796684, pvalue=6.23389044753519e-05)
-
+Interestingly, the results show that assuming a Poisson distribution and using this to optimise over the negative log-likelihood results in a significantly lower loss than when assuming a Bernoulli distribution: Student-T test (statistic=$9.87$, $p_{value}=6.23e^{-05}$).
+This is in contrast to the work on synthetic target data, in which the best performance was attained by assuming a Bernoulli distribution when optimising over the NLL.
+One possible explanation for this is that true biological data may be of a more complex nature, which is better described by a Poisson- rather than a Bernoulli-assumption.
+% Elaborate more?
 
 % \section{Neuroscience parallels for sleep regulation}
 % Grace (14)
@@ -1519,11 +1514,13 @@ Poisson significantly lower loss: Ttest\_relResult(statistic=9.871807340796684, 
 % “A Tradeoff in the neural code across regions and species” January 2004
 % Pryluk et al.
  
-% Specific q could be: Role of cholin. Neurons. Temporal structure may be important for REMSG
+% Specific q could be: Role of cholin. Neurons. Temporal structure may be important for REMS
  
 % Izhikevich instead of LIF for Grace
 % Once they get REMS – state dependence from cholin. Circuitry too
 % Temporal structure might be important
+
+As the number of nodes is slightly higher for these data sets, the SBI ABC approach outlined in chapter \ref{chpt:frontier} is intractable for the data at hand, and is thus out of scope for the biological data. 
 
 
 \section{Discussion}
@@ -1531,11 +1528,14 @@ Poisson significantly lower loss: Ttest\_relResult(statistic=9.871807340796684, 
 % Direct microscopic model inference tractable for non-dales law compliant models by using GD and Adam over a rate-based metric for (G)LIF models, and over the negative log-likelihood for stochastic models.
 % Local minima wrt parameters as shown previously with known GT, however, when considering the NMF ensembles captured through the two approaches,
 
-Scalable, tractable approach, works about as well as GLMs wrt NMF modules similarity.
-Provides a starting point for automatic model inference, may accelerate SNN inference research and comp neuro res.
+This chapter demonstrates the scalable and modular GBO approach applied to biological spike train data, for which it is still a tractable approach, as well as MLE for GLMs to form a baseline for the NMF similarity evaluation.
+By doing so, it provides a starting point for automatic model inference of SNNs using GBO by demonstrating one way of implementing the approach.
+It is our hope that this may aid in accelerating SNN inference research, and potentially have a positive impact on computational neuroscience modeling research.
 
-Limited what can be hypothesised and/or tested in the inferred models .. ?
-However, would be interesting to design different perturbation schemes, which represent and are thought to correspond to different sleep and stimulus states, and assess to what extent the fitted model outputs change accordingly, and comparatively with the biological data.
+As for the results, it is limited what can be hypothesised about biology from the inferred models.
+Due to the local minima of the parameter values, parallels pertaining to which neuron types and neurotransmitter pathways that we might be looking at would be highly speculative.
+On the other hand, the higher the geodesic NMF similarity, the better the inferred models capture and represent the spike train statistics.
+As such, it would be interesting to design different perturbation schemes, which represent and are thought to correspond to different sleep and stimulus states, and assess to what extent the fitted model outputs change accordingly, and comparatively with the biological data.
 
 The fact that the error landscapes for the parameters are ambiguous explains why the spike trains are not as correlated in the models with GBO as when using ABC/SBI (as reported by \cite{Rene2020}), as GBO numerically and iteratively here updates parameter values in parallel, thus doing so slightly independently of the other parameters. 
 This may suggest that sequential parameter inference is required for better convergence when applying GBO for SNNs in this setting.
@@ -1548,16 +1548,13 @@ Authors have also reported that reproducing realistic data breaks down when draw
 % =======================================================
 \chapter{Gated subthreshold synaptic currents and continuous target signals}\label{chpt:gated_synaptic}
 
-Non-leaky integrate-and-fire (NLIF) model with subthreshold continuous spike signals defined to sum to 1 inside of an active zone \cite{Huh2017}.
-Also tested for LIF models.
-We find that indeed exact gradient calculation is not a strictly necessary constraint for optimal autoencoding and general predictive encoding performance - thus, we hypothesise that it is the synapse model in combination with the lower-dimensional and continuous target signal that enables optimisation convergence due to greatly constraining the parameter space - and also in that the signal is far less noisy, also resulting in a more well-defined and traversable parameter landscape.
-
-Fast synapses to $1.5 \si{ms}$ for numerical stability during optimisation, instead of double floating point precision as reported in \cite{Huh2017} as required for convergence, since we found this to be sufficient for convergence in the numerical optimisation procedure, whilst maintaining the same performance as for instantaneously fast synapses to counterbalance the effect of the input perturbation and other, slower synaptic currents.
+While we demonstrated the feasibility of gradient descent based SNN inference by application in the previous chapters, we also showed clear limitations to the procedure, particularly relating to being prone to converge to local minima due to the error landscapes formed by the inference signal and configuration.
+Here, we revisit the synapse model used in our SNN models, and redesign the input-output scheme by adopting the approach of \cite{Huh2017}; namely by implementing subthreshold continuous synaptic currents which are used as the model output in conjunction with a readout transformation weight matrix.
+% resulting in spike signals defined to sum to 1 inside of an active zone \cite{Huh2017}.
+We first replicate the results with non-leaky integrate-and-fire (NLIF) SNNs, and then extend the research to LIF models, and find that indeed 'exact' gradient calculation (i.e. using non-leaky neurons) is not a hard constraint for optimal auto-encoding and general predictive encoding task performance.
+Because of this novel insight, we hypothesise that it is the synapse model in combination with the lower-dimensional and continuous target signal that enables optimisation convergence due to greatly constraining the parameter space - and also in that the signal is far less noisy, also resulting in a more well-defined and traversable parameter landscape.
 
 % With NIF neurons, one could analytically show/solve the systems and show where noise would render the loss function useless. However, unsure how to test this for spike output task. Could we use (Mostafa, 2018) combined with (Huh \& Sejnowski, 2017)? Or at least the latter?
-% \section{Gated sub-threshold spike-signal model}
-% \section{Study: \textit{NLIF for exact gradient based model inference}}
-% \subsection{NLIF definition}
 
 \section{Tasks}
 
@@ -1574,6 +1571,16 @@ Two tasks of input transformation; (1) auto-encoding the input of two sine-modul
 \begin{equation}
     \frac{do}{dt} = \frac{- o + i + Ao}{\tau_f}
 \end{equation}
+
+
+\section{Setup}
+
+For each task, we pseudorandomly initialise the model to be fitted, drawing each parameter value uniformly from intervals of non-extreme values.
+Pseudorandomly here denotes that we deterministically set a random seed for each experiment and model initialisation, which is then used for the random number generation.
+Note that this then also affects the input and output signals.
+We do this for $N=20$ models for each task and model type, and report the results following in this chapter, including a near $100$ \% convergence rate.
+For the fast synapses, we set the time constant $\tau_{fast}$ to $1.5 \si{ms}$ for numerical stability during optimisation, instead of $\tau_{fast}=1 \si{ms}$ with double floating point precision as reported in \cite{Huh2017}, since we found this to be sufficient for numerical stability and convergence. 
+% Whilst maintaining the same performance as for instantaneously fast synapses to counterbalance the effect of the input perturbation and other, slower synaptic currents.
 
 
 \section{Results}
@@ -1639,11 +1646,12 @@ The tasks were replicated first for the NLIF model, and then tested on a leaky m
 
 \section{Discussion}
 
-Results show that the approach works well also for leaky SNN models, demonstrating that aspects relating to the setup enable successful GBO wrt the task, with the model accurately reproducing the target signal.
-However, the parameter configuration that is inferred in order to do so, yet varies.
+The results show that the approach works well also for leaky SNN models, demonstrating that aspects relating to the setup enable successful GBO with regards to the task, with the model accurately reproducing the target signal.
+However, the parameter configuration that is inferred in order to do so, varies greatly.
+Whether these results are indicative of that biological neuronal wiring and learning stability stems from lower-dimensional signal effects, or whether it is simply an artefact of the crudeness of our rough and approximate numerical ODE system simulation, remains unclear.
+Further experiments could be performed to try and illuminate whether these dynamics could in fact be crucial in vivo - but nevertheless, observing such an effect in silico is an interesting finding in itself, which may be exploited in designing algorithms such as for low-power on chip spiking network models
 
-What does this suggest? What does it illuminate about SNN dynamics? What further tests would it be interesting to do?
-
+% What does this suggest? What does it illuminate about SNN dynamics? What further tests would it be interesting to do?
 analog output versus discrete pulses and latent internal states (??)
 research has been impeded by lack of supervised learning algorithms
 they present differentiable formulation of SNNs, with exact gradient calculation
@@ -1659,7 +1667,7 @@ other methods circumvent non-differentiability
 % =====================================================
 % =====================================================
 % =====================================================
-\chapter{(Discussion) SNN optimisation requires a well-defined setting}
+\chapter{Discussion - SNN GBO requires a well-defined setting}
 
 Optimisation enables in-place inference, but convergence requires a well-defined setting
 % Can compute manifolds in which the activity lives and moves
@@ -1711,8 +1719,19 @@ Below is a list of points summarising observations that I made during my researc
 %% You can include appendices like this:
 % \appendix
 
-\appendix\label{further_results}
-\title{Further results}
+\appendix
+\label{appendix:code}
+
+\chapter{Code}
+
+\begin{verbatim}
+    Pseudocode
+\end{verbatim}
+
+\appendix
+\label{further_results}
+
+\chapter{Supplementary figures}
 
 \begin{figure}
     \centering
@@ -1722,8 +1741,8 @@ Below is a list of points summarising observations that I made during my researc
     \label{fig:approx_rates_sleep_exps_LIF}
 \end{figure}
 
-\appendix\label{appendix:sample_GLM_code}
-\title{Sample GLM code}
+% \appendix\label{appendix:sample_GLM_code}
+% \chapter{Sample GLM code}
 
 % 
 % \chapter{First appendix}
