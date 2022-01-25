@@ -1652,6 +1652,24 @@ In fact, they show that it may be just as well-defined for a LIF SNN as for a NL
 \end{figure}
 % can insert rate plot too
 
+
+\begin{table}
+\caption{Average RMSE per experiment and model type with the subthreshold synapse current model, where "AE" denotes auto-encoding, and "GPE" denotes general predictive encoding.}
+\label{tab:RMSE_per_exp_gating}
+\begin{center}
+\begin{tabular}{ l l c c }
+ & & $RMSE$ & $std$ \\
+AE & NLIF & \textbf{0.175} & 0.063 \\ 
+AE & LIF & 0.201 & 0.098 \\  
+ \\
+GPE & NLIF & 0.080 & 0.027 \\ 
+GPE & LIF & \textbf{0.058} & 0.011 \\  
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
 \section{Discussion}
 
 The results show that the approach works well also for leaky SNN models, demonstrating that aspects relating to the setup enable successful GBO with regards to the task, with the model accurately reproducing the target signal.
@@ -1723,12 +1741,15 @@ Below is a list of points summarising some key observations that we made during 
 
 \chapter{Code}
 
-\begin{verbatim}
-    Pseudocode
-\end{verbatim}
+For the subthreshold synapse current models, the code used may be found at \href{https://github.com/williampeer/gating_sgd}{github:gating\_sgd}.
+For a more general SNN inference demo framework, please see \href{https://github.com/williampeer/snn_inference}{github:snn\_inference}.
+
+% \begin{verbatim}
+%     Pseudocode
+% \end{verbatim}
 
 \appendix
-\label{further_results}
+\label{supplementary_material}
 
 \chapter{Supplementary figures}
 
