@@ -31,6 +31,7 @@
     pdftitle={Spiking neural network model inference},
     pdfpagemode=FullScreen,
     }
+\usepackage[section]{placeins}
 
 % \urlstyle{same}
 
@@ -1576,6 +1577,17 @@ This task is slightly more complex than the previous, as it requires inferring a
 \end{equation}
 
 
+\subsection{Loss}
+
+For the loss function, we used the same function as in the original paper;
+
+\begin{equation}
+    \mathcal{L} 2(M, T) = \frac{||M-T||_2 + \lambda ||M||_2}{2} = \frac{\sum \sqrt{(M-T)^2} + \lambda(\sum |M|)}{2}
+\end{equation}
+
+where $M$ is the readout of the model, $T$ is the target signal, and $\lambda$ is a regularisation constant.
+
+
 \section{Setup}
 
 For each task, we pseudorandomly initialise the model to be fitted, drawing each parameter value uniformly from intervals of non-extreme values.
@@ -1584,6 +1596,8 @@ Note that this then also affects the input and output signals.
 We do this for $N=20$ models for each task and model type, and report the results following in this chapter, including a near $100$ \% convergence rate.
 For the fast synapses, we set the time constant $\tau_{fast}$ to $1.5 \si{ms}$ for numerical stability during optimisation, instead of $\tau_{fast}=1 \si{ms}$ with double floating point precision as reported in \cite{Huh2017}, since we found this to be sufficient for numerical stability and convergence. 
 % Whilst maintaining the same performance as for instantaneously fast synapses to counterbalance the effect of the input perturbation and other, slower synaptic currents.
+
+As for the optimiser, we used Adam, and set the learning rate $\alpha=0.01$, and used $\lambda = \frac{1}{N} \approx 0.00333$ for the regularisation constant.
 
 
 \section{Results}
@@ -1753,6 +1767,366 @@ For a more general SNN inference demo framework, please see \href{https://github
 
 \chapter{Supplementary figures}
 
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/_weights_O_U.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/plot_loss_test_mt_LIF_et_AutoEncoding_N_30_titers_200.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_2_O_T.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_2_W_in.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_compare_minUO.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_compare_W_fast.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_W.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_y_minUO_T.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_z_sorted_minUO.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_z_sorted_W_fast.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_I_tot_LIF_seed_23.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_input_components_LIF_seed_23.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_inputs_LIF_23.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_itargets_LIF_23.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_mem_voltage_single_neuron_LIF_seed__23.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_outputs_LIF_seed_23.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_spikes_train_iter_199_LIF_23.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_spikes_train_iter_30_LIF_23.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_spikes_train_iter_80_LIF_23.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/plot_loss_test_mt_LIF_et_AutoEncoding_N_30_titers_200.png}
+%     \caption{Caption}
+%     \label{fig:my_label}
+% \end{figure}
+
+\section*{Gated subthreshold synapse currents}
+
+\subsection*{Auto-encoding}
+
+% --------------------------
+\subsection*{NLIF}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/_weights_O_U.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/plot_loss_test_mt_NLIF_et_AutoEncoding_N_30_titers_200.png}
+    \caption{Sample NLIF auto-encoding experiment; final weights and loss across epochs.}
+    \label{fig:NLIF_AE_1_w_loss}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/test_heatmap_2_O_T.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/test_heatmap_2_W_in.png}
+    \caption{Sample NLIF auto-encoding experiment; input and readout weights after training.}
+    \label{fig:NLIF_AE_1_O_W_in}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/test_heatmap_compare_minUO.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/test_heatmap_compare_W_fast.png}
+    \caption{Sample NLIF auto-encoding experiment; negative product of input and output weights, and the fast synaptic weights.}
+    \label{fig:NLIF_AE_1_neg_UO_W_fast}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.6\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/test_heatmap_W.png}
+    % \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_y_minUO_T.png}
+    \caption{Sample NLIF auto-encoding experiment; the synaptic weights.}
+    \label{fig:NLIF_AE_1_W_syn}
+\end{figure}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_z_sorted_minUO.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_z_sorted_W_fast.png}
+%     \caption{Sample LIF auto-encoding experiment; synaptic weights and the negative input-output weights product transposed.}
+%     \label{fig:my_label}
+% \end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/test_plot_I_tot_NLIF_seed_24.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/test_plot_input_components_NLIF_seed_24.png}
+    \caption{Sample NLIF auto-encoding experiment; the input current and input components.}
+    \label{fig:NLIF_AE_1_I_tot_in_comp}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/test_plot_inputs_NLIF_24.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/test_plot_itargets_NLIF_24.png}
+    \caption{Sample NLIF auto-encoding experiment; the inputs and targets.}
+    \label{fig:NLIF_AE_1_inputs_targets}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/test_plot_mem_voltage_single_neuron_NLIF_seed__24.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/test_plot_outputs_NLIF_seed_24.png}
+    \caption{Sample NLIF auto-encoding experiment; the membrane potentials and readouts.}
+    \label{fig:NLIF_AE_1_inputs_targets}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/test_plot_spikes_train_iter_0_NLIF_24.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/AutoEncoding/01-04_16-42-46-568/test_plot_spikes_train_iter_199_NLIF_24.png}
+    \caption{Sample NLIF auto-encoding experiment; the model spike train after epoch $t_{iter}=30$ (left), and after training, $t_{iter}=200$ (right).}
+    \label{fig:NLIF_AE_1_readouts_t_i_30_and_200}
+\end{figure}
+
+\FloatBarrier
+
+% -------------------------
+
+\subsection*{LIF}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/_weights_O_U.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/plot_loss_test_mt_LIF_et_AutoEncoding_N_30_titers_200.png}
+    \caption{Sample LIF auto-encoding experiment; final weights and loss across epochs.}
+    \label{fig:LIF_AE_1_w_loss}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_2_O_T.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_2_W_in.png}
+    \caption{Sample LIF auto-encoding experiment; input and readout weights after training.}
+    \label{fig:LIF_AE_1_O_W_in}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_compare_minUO.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_compare_W_fast.png}
+    \caption{Sample LIF auto-encoding experiment; negative product of input and output weights, and the fast synaptic weights.}
+    \label{fig:LIF_AE_1_neg_UO_W_fast}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.6\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_W.png}
+    % \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_y_minUO_T.png}
+    \caption{Sample LIF auto-encoding experiment; the synaptic weights.}
+    \label{fig:LIF_AE_1_W_syn}
+\end{figure}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_z_sorted_minUO.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_z_sorted_W_fast.png}
+%     \caption{Sample LIF auto-encoding experiment; synaptic weights and the negative input-output weights product transposed.}
+%     \label{fig:my_label}
+% \end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_I_tot_LIF_seed_23.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_input_components_LIF_seed_23.png}
+    \caption{Sample LIF auto-encoding experiment; the input current and input components.}
+    \label{fig:LIF_AE_1_I_tot_in_comp}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_inputs_LIF_23.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_itargets_LIF_23.png}
+    \caption{Sample LIF auto-encoding experiment; the inputs and targets.}
+    \label{fig:LIF_AE_1_inputs_targets}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_mem_voltage_single_neuron_LIF_seed__23.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_outputs_LIF_seed_23.png}
+    \caption{Sample LIF auto-encoding experiment; the membrane potentials and readouts.}
+    \label{fig:LIF_AE_1_inputs_targets}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_spikes_train_iter_30_LIF_23.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_spikes_train_iter_80_LIF_23.png}
+    
+    \caption{Sample LIF auto-encoding experiment; the model spike train after epoch $t_{iter}=30$ (left), and $t_{iter}=80$ (right).}
+    \label{fig:LIF_AE_1_readouts_t_i_30_and_80}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.6\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_plot_spikes_train_iter_199_LIF_23.png}
+    \caption{Sample LIF auto-encoding experiment; the model readouts after training, epoch $t_{iter}=200$.}
+    \label{fig:LIF_AE_1_loss_and_readouts}
+\end{figure}
+
+\FloatBarrier
+
+% ================================
+\subsection*{General predictive encoding}
+
+% --------------------------------
+\subsection*{NLIF}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/_weights_O_U.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/plot_loss_test_mt_NLIF_et_GeneralPredictiveEncoding_N_30_titers_200.png}
+    \caption{Sample NLIF general predictive encoding experiment; final weights and loss across epochs.}
+    \label{fig:NLIF_GPE_1_w_loss}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_heatmap_2_O_T.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_heatmap_2_W_in.png}
+    \caption{Sample NLIF general predictive encoding experiment; input and readout weights after training.}
+    \label{fig:NLIF_GPE_1_O_W_in}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_heatmap_compare_minUO.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_heatmap_compare_W_fast.png}
+    \caption{Sample NLIF general predictive encoding experiment; negative product of input and output weights, and the fast synaptic weights.}
+    \label{fig:NLIF_GPE_1_neg_UO_W_fast}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.6\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_heatmap_W.png}
+    % \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_y_minUO_T.png}
+    \caption{Sample NLIF general predictive encoding experiment; the synaptic weights.}
+    \label{fig:NLIF_GPE_1_W_syn}
+\end{figure}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_z_sorted_minUO.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_z_sorted_W_fast.png}
+%     \caption{Sample LIF auto-encoding experiment; synaptic weights and the negative input-output weights product transposed.}
+%     \label{fig:my_label}
+% \end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_plot_I_tot_NLIF_seed_23.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_plot_input_components_NLIF_seed_23.png}
+    \caption{Sample NLIF general predictive encoding experiment; the input current and input components.}
+    \label{fig:NLIF_GPE_1_I_tot_in_comp}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_plot_inputs_NLIF_23.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_plot_itargets_NLIF_23.png}
+    \caption{Sample NLIF general predictive encoding experiment; the inputs and targets.}
+    \label{fig:NLIF_GPE_1_inputs_targets}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_plot_mem_voltage_single_neuron_NLIF_seed__23.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_plot_outputs_NLIF_seed_23.png}
+    \caption{Sample NLIF general predictive encoding experiment; the membrane potentials and readouts.}
+    \label{fig:NLIF_GPE_1_inputs_targets}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_plot_spikes_train_iter_0_NLIF_23.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_plot_spikes_train_iter_50_NLIF_23.png}
+    \caption{Sample NLIF general predictive encoding experiment; the model spike train after epoch $t_{iter}=0$ (left), and after training, $t_{iter}=50$ (right).}
+    \label{fig:NLIF_GPE_1_readouts_t_i_0_and_50}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_plot_spikes_train_iter_100_NLIF_23.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/NLIF/General/01-04_16-42-32-911/test_plot_spikes_train_iter_199_NLIF_23.png}
+    \caption{Sample NLIF general predictive encoding experiment; the model spike train after epoch $t_{iter}=100$ (left), and after training, $t_{iter}=200$ (right).}
+    \label{fig:NLIF_GPE_1_readouts_t_i_100_and_200}
+\end{figure}
+
+\FloatBarrier
+% --------------------------------
+
+\subsection*{LIF}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/_weights_O_U.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/plot_loss_test_mt_LIF_et_GeneralPredictiveEncoding_N_30_titers_200.png}
+    \caption{Sample LIF general predictive encoding experiment; final weights and loss across epochs.}
+    \label{fig:LIF_GPE_1_w_loss}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/test_heatmap_2_O_T.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/test_heatmap_2_W_in.png}
+    \caption{Sample LIF general predictive encoding experiment; input and readout weights after training.}
+    \label{fig:LIF_GPE_1_O_W_in}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/test_heatmap_compare_minUO.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/test_heatmap_compare_W_fast.png}
+    \caption{Sample LIF general predictive encoding experiment; negative product of input and output weights, and the fast synaptic weights.}
+    \label{fig:LIF_GPE_1_neg_UO_W_fast}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.6\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/test_heatmap_W.png}
+    % \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_y_minUO_T.png}
+    \caption{Sample LIF general predictive encoding experiment; the synaptic weights.}
+    \label{fig:LIF_GPE_1_W_syn}
+\end{figure}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_z_sorted_minUO.png}
+%     \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/AutoEncoding/01-04_16-35-37-680/test_heatmap_z_sorted_W_fast.png}
+%     \caption{Sample LIF auto-encoding experiment; synaptic weights and the negative input-output weights product transposed.}
+%     \label{fig:my_label}
+% \end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/test_plot_I_tot_LIF_seed_27.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/test_plot_input_components_LIF_seed_27.png}
+    \caption{Sample LIF general predictive encoding experiment; the input current and input components.}
+    \label{fig:LIF_GPE_1_I_tot_in_comp}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/test_plot_inputs_LIF_27.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/test_plot_itargets_LIF_27.png}
+    \caption{Sample LIF general predictive encoding experiment; the inputs and targets.}
+    \label{fig:LIF_GPE_1_inputs_targets}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/test_plot_mem_voltage_single_neuron_LIF_seed__27.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/test_plot_outputs_LIF_seed_27.png}
+    \caption{Sample LIF general predictive encoding experiment; the membrane potentials and readouts.}
+    \label{fig:LIF_GPE_1_inputs_targets}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/test_plot_spikes_train_iter_60_LIF_27.png}
+    \includegraphics[width=0.49\columnwidth]{figures/Supplementary/gating/LIF/GeneralPredictiveEncoding/01-04_16-46-28-427/test_plot_spikes_train_iter_199_LIF_27.png}
+    
+    \caption{Sample LIF general predictive encoding experiment; the model spike train after epoch $t_{iter}=360$ (left), and after training $t_{iter}=200$ (right).}
+    \label{fig:LIF_GPE_1_readouts_t_i_30_and_80}
+\end{figure}
+
+\FloatBarrier
+% --------------------------------
 \begin{figure}
     \centering
     \includegraphics[width=0.49\columnwidth]{figures/sleep/approx_rate_across_exp_LIF_no_cell_types_frd_vs_fitted.eps}
