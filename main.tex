@@ -776,7 +776,22 @@ Assuming a Bernoulli distribution, $pdf=Bernoulli(\theta; x)$, or assuming a Poi
 
 % =======================================================
 \chapter{Gradient-descent based LIF SNN inference}\label{chpt:LIF}
+
 \section{Poster: \textit{Spiking Network Inference Using Gradient Based Optimisation}}
+
+Before beginning on the next chapter, which describes in more detail the state-of-the-art of SNN inference using both gradient-based optimisation and to some extent approximate Bayesian computation by simulation-based inference, we would like to present the work that we have done specifically for and constrained to leaky integrate-and-fire neurons using gradient-descent for parameter-inference, before expanding on the methodology and applying in to a wider range of model types and classes.
+The poster contains the essentials pertaining to the post-inference NMF analysis, the van Rossum distance metric, as well as single-neuron level rate analysis, along with inferred kernel density estimates over the parameters across experiments.
+
+These experiments seemed highly promising with regards to ground-truth parameter retrieval - however, they are in part due to smaller initial parameter intervals, and the fact that the LIF-model is relatively low-dimensional.
+This becomes clearer in the more extensive report on LIF inference when considering the relative (normalised) parameter distance before and after training, which was done following the work presented in the poster.
+It is nevertheless interesting that the inferred kernel density estimates are somewhat centred around the true means for several of the LIF-parameters.
+While we hypothesise that this won't hold for the more high-dimensional models, such as for the stochastic general integrate-and-fire (SGIF) \cite{Rene2020} and generalised leaky integrate-and-fire (GLIF) models \cite{allen_glif_white_paper}, it is certainly something that it would be interesting to pursue in future research.
+
+Further, the report addresses different combinations of the van Rossum distance and firing rate distance metrics, as well as different optimiser schemes.
+These did not vary significantly for the LIF model, at least not when considering the relative (normalised) parameter distance and geodesic NMF model similarities between stochastic gradient descent (SGD) and adaptive moment estimation (Adam) optimisation, nor between the van Rossum distance and firing rate distance.
+Again, this is probably due to the lower dimensionality of the LIF model, which results in that all setups are rendered "good enough" for the model inference.
+However, during our work in the next chapters, we observed empirically in initial experiments that Adam was significantly better in terms of both convergence and the number of training iterations for the more complex models (SGIF and GLIF), as well as in the gated subthreshold synaptic current synapse models in chapter \ref{chpt:gated_synaptic} \cite{Huh2017}.
+
 \includepdf[pages=-]{files/FENS-virtual-2020-e-Poster-W-P-Berg-and-A-Onken-Spiking-Network-Inference-Using-Gradient-Based-Optimisation-PORTRAIT-5.pdf}
 
 \section{Report/paper draft: \textit{Parallel spiking neural network parameter inference using gradient based optimization}}
@@ -1751,21 +1766,24 @@ Below is a list of points summarising some key observations that we made during 
 % \appendix
 
 \appendix
-\label{appendix:code}
 
 \chapter{Code}
+\label{appendix:code}
 
-For the subthreshold synapse current models, the code used may be found at \href{https://github.com/williampeer/gating_sgd}{github:gating\_sgd}.
-For a more general SNN inference demo framework, please see \href{https://github.com/williampeer/snn_inference}{github:snn\_inference}.
+\begin{itemize}
+    \item For the subthreshold synapse current models, the code used may be found at \href{https://github.com/williampeer/gated_synapse_model}{github:gated\_synapse\_model}.
+    \item For a more general SNN inference demo framework, please see \href{https://github.com/williampeer/snn_inference_demo}{github:snn\_inference\_demo}.
+    \item For the NMF analysis, we extended custom Matlab code. The Python-code that we used in order to export model spike train data to a sparse, Matlab-compatible format may be found in the snn\_inference\_demo-repository, in the file \href{https://github.com/williampeer/snn_inference_demo/blob/master/data_util.py}{data\_util.py}
+    \item For the GLM MLE, we extended the custom Matlab code found at \href{https://github.com/pillowlab/GLMspiketools}{github:GLMspiketools}.
+\end{itemize}
+
 
 % \begin{verbatim}
 %     Pseudocode
 % \end{verbatim}
 
-\appendix
-\label{supplementary_material}
-
 \chapter{Supplementary figures}
+\label{appendix:supplementary_material}
 
 
 % \begin{figure}
