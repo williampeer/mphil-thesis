@@ -32,6 +32,7 @@
     pdfpagemode=FullScreen,
     }
 \usepackage[section]{placeins}
+\usepackage{amsmath}
 
 % \urlstyle{same}
 
@@ -561,7 +562,7 @@ where the synaptic input current to a neuron $j$ is modelled as $I_{syn,j} = \su
 While forward passes are done according to a spike-threshold function with non-linear resetting of the membrane potential upon spiking, the backward pass is made possible by separately defining a differentiable soft-threshold function over the membrane potential which is used solely for back-propagating the error gradients obtained by minimizing the loss functions. We use the commonly applied sigmoidal function for this purpose,
 
 \begin{equation}
-    s_t(v) = \frac{1}{1+e^{-(v_t))}},
+    s_t(v) = \frac{1}{1+e^{-v_t}},
 \end{equation}
 
 where $s_t$ denotes whether a neuron spikes at time $t$ with a membrane potential $v_t$.
@@ -621,8 +622,8 @@ Each neuron is connected to every other neuron in the network, the weights being
 
 \begin{equation}
     I_{syn} = \begin{cases}
-        (1 - f_I) I_{syn} + I_A \quad \text{for } v \geq \theta_v + \theta_s,\\
-        (1 - f_I) I_{syn} \quad \text{otherwise}
+        (1 - f_I) I_{syn} + I_A, & \text{for } v \geq \theta_v + \theta_s \\
+        (1 - f_I) I_{syn}, & \text{otherwise}
     \end{cases}
 \end{equation}
 
