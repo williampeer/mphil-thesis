@@ -1526,23 +1526,28 @@ Because of this novel insight, we hypothesise that it is the synapse model in co
 
 \section{Tasks}
 
-Two tasks of input transformation; (1) auto-encoding the input of two sine-modulated white noise inputs, essentially predicting the input as output, and (2) a more general predicting coding task in which a linear transformation of the inputs formed the composite target signal. The equations defining the signals in the two tasks are outlined below.
+We adopt two of the tasks performed in the original study \cite{Huh2018} in order to replicate, extend, test and compare our results for both the NLIF and LIF models.
+These wwo tasks of input transformation; (1) auto-encoding the input of two sine-modulated white noise inputs, essentially predicting the input as output, and (2) a more general predicting coding task in which a linear transformation of the inputs formed the composite target signal. The equations defining the signals in the two tasks are outlined below.
 
 \subsection{Auto-encoding}
 
 This task is the simplest of the two, and only requires the pseudorandomly initialised model to 'learn' to encode the output as the input itself.
 
 \begin{equation}
-    \frac{do}{dt} = \frac{-o + i}{\tau_f}
+    \frac{do}{dt} = \frac{-o + i}{\tau_f},
 \end{equation}
+
+where $o$ is the output signal, $i$ the input signal, and $\tau_f$ a time-constant for the output adaptation, essentially resulting in a filter/less sensitivity to very rapid input changes in the encoding, i.e. a slightly smoother output signal. However, this constant is kept quite low.
 
 \subsection{General Predictive Encoding}
 
 This task is slightly more complex than the previous, as it requires inferring a composite linear transformation encoding of the input.
 
 \begin{equation}
-    \frac{do}{dt} = \frac{- o + i + Ao}{\tau_f}
+    \frac{do}{dt} = \frac{- o + i + Ao}{\tau_f},
 \end{equation}
+
+where $A$ here denotes a coefficient matrix which transforms the output signal in a less straightforward way than simply encoding the signal itself.
 
 
 \subsection{Loss}
@@ -1650,18 +1655,27 @@ GPE & LIF & \textbf{0.058} & 0.011 \\
 \end{center}
 \end{table}
 
+We have included further results in \ref{appendix:supplementary_material}, should the reader wish to study further illustrated results, and for consistency.
 
 
 \section{Discussion}
 
-The results show that the approach works well also for leaky SNN models, demonstrating that aspects relating to the setup enable successful GBO with regards to the task, with the model accurately reproducing the target signal.
-However, the parameter configuration that is inferred in order to do so, varies greatly.
-Whether these results are indicative of that biological neuronal wiring and learning stability stems from lower-dimensional signal effects, or whether it is simply an artefact of the crudeness of our rough and approximate numerical ODE system simulation, remains unclear.
+By introducing a synapse model that varies continuously with the membrane potential when inside of an active zone, and defining the signal such that it generates a spike current summing to one in all cases of entering the active zone, we replicate the findings of the original paper \cite{Huh2018} for two distinct tasks.
+The first is an auto-encoding task, in which the output signal is simply an encoding of the input-signal, and the second is a task in which the output signal is a linear combination of the input signal.
+In both tasks we find that the the setup enables GBO with excellent task performance and convergence rates.
+However, the model parameters that are inferred vary greatly for the same tasks with the different random seeds and thus training signals and model initialisations.
+Yet, the different inferred parameter sets perform as well - exemplifying that there are a myriad of possible solutions in the solution space, as previously discussed and also here illuminated in the parameter landscape (defined by the error metric) plots.
+% However, the parameter configuration that is inferred in order to do so, varies greatly.
+% Whether these results are indicative of that biological neuronal wiring and learning stability stems from lower-dimensional signal effects, or whether it is simply an artefact of the crudeness of our rough and approximate numerical ODE system simulation, remains unclear.
+Interestingly, our results show that the approach works well also for leaky SNN models, demonstrating that aspects relating to the setup enable successful GBO with regards to the task, with the model accurately reproducing the target signal, and also suggesting that further research incorporating the synapse model would be interesting to pursue.
 Further experiments could be performed to try and illuminate whether these dynamics could in fact be crucial in vivo - but nevertheless, observing such an effect in silico is an interesting finding in itself, which may be exploited in designing algorithms such as for low-power on chip spiking network models.
-The fact that we observe sudden jumps in the loss for some epochs during training in this chapter, indicates that we're able to traverse the error landscape better, including traversing such peaks which may otherwise hinder inference.
-Notably, this was not something we observed when using the spike trains as target signals in the previous chapters.
-A common argument against rate-based models is that they fail to describe the fast dynamics of spike-based computation.
-Using the lower-dimensional signals here requires relatively fast spike-based dynamics, and also results in enabling GBO for inference of stable configurations doing so.
+
+The fact that we observe sudden jumps in the loss for some epochs during training in this chapter may indicate that we're able to traverse the error landscape better than in the setups of chapter \ref{chpt:frontier}, including traversing such peaks which may otherwise hinder inference, as this was not something we observed when using the spike trains as target signals in the previous chapters.
+
+A common argument for using a more fine-grained spiking model than a rate-based model is that in limiting the model to the rate only we do not describe the fast dynamics of spike-based computation.
+However, it is often problematic to base inference on a precise timing based model and signal, particularly when the signal slightly noisy and/or stochastic, as seen particularly in the synthetic data model inference of this work.
+Interestingly, however using the lower-dimensional signals in this chapter is entirely compatible with the fast spike-based dynamics, and enables GBO for inference of stable configurations that solve the tasks well.
+This is an interesting observation that to the best of our knowledge has not been well described or observed in the literature before for LIF models.
 As such, it might provide a basis for bridging rate-based and precise timing-based models and approaches.
 In either case, the approach is a way of enabling optimisation for the usually difficult to optimise discrete, binary all-or-none spike signals of SNNs, by instead considering the subthreshold synaptic currents as the signals - which might be argued to be even more biologically realistic, as the cellular machinery has significantly pronounced dynamics and effects other than upon the precise time of spiking.
 Further, instead of circumventing the non-differentiability of binary spike-signals by constructing a surrogate signal, we operate on one of the natural signals of the model system.
@@ -1681,29 +1695,29 @@ Optimisation enables in-place inference, but convergence requires a well-defined
 If dealing with spike train data directly, by correlation and number of mutations of the ordered spike train set, we could potentially get closer to a more well-defined loss metric than when using a rate-based metric as in this work - but such a metric would not be differentiable, nor would even such a metric be able to precisely measure whether one network is functionally equivalent to another.
 Part of the difficulty stems from that (1) there are multiple configurations which can produce similar spike patterns, and thus we may hypothesise that there is no "ground-truth" optimal solution per se, and (2) due to the multiple factors of stochasticity we cannot operate with precise spike train comparisons. 
 A better starting point for SNN inference might be to fit the models to more low-dimensional, well-defined target signals, preferably with an informative input, as demonstrated to converge well for both non-leaky as well as leaky integrate-and-fire SNNs in chapter \ref{chpt:gated_synaptic}.
-Further, albeit with a composite linear transformation, convergence is significantly improved with this lower-dimensional signal.
+With a composite linear transformation, convergence is significantly improved and near perfect with this lower-dimensional signal, and task performance also consistently good with a low error.
 
-One issue might be said to be that the same parameters are not necessarily retrieved when looking at the inferred models, as illuminated by the parameter landscape plots in the previous chapter.
+An issue in all contexts defined throughout this SNN inference work might be said to be that the same (ground-truth) parameters are not retrieved when comparing the inferred models with the target ground-truth generative models, as illuminated by the parameter landscape plots in the previous chapter.
 However, there are multiple trajectories that may give rise to elegant solutions biologically speaking of e.g. motor tasks in the motor cortex \cite{Marblestone2016}.
-Along this line of thought, it doesn’t matter what specific configuration a network reaches, as long as it reaches “the bottom of the loss curve”, i.e. finds a good/satisfactory solution.
-$\rightarrow$ Optimal is any configuration solving the task at hand, and optimal is plural, and diverse. Optimal can be a frontier in high-dimensional space.
-In Bayesian inference approaches we may be able to trace this front by sampling from the full posterior, which may form realistic combinations in the output-space \cite{Lueckmann2017}.
-However, when such approaches become intractable, GBO may yet successfully retrieve model configurations doing so if certain criteria are met.
-Namely that we are working with a non-noisy, consistent (and continuous) signal, and with a more granular subthreshold continuous synaptic current model.
+Along this line of thought, it may not matter what specific configuration a network reaches, as long as it reaches “the bottom of the loss curve”, i.e. finds a good/satisfactory solution.
+Biologically speaking, any configuration solving the task at hand may be satisfactory, and the definition of optimal is plural, and diverse. In terms of optimisation; optimal can be said to be a set of frontiers in a high-dimensional space.
+In Bayesian inference approaches we may be able to trace this front by sampling from the full posterior, which may form realistic combinations in the output-space \cite{Lueckmann2017}. However, the fact that potentially non-overlapping regions may form good solutions also explain why our posteriors as inferred in chapter \ref{chpt:frontier} were not necessarily centred around the true means, even for the less complex experiments, where the complexity should not give rise to divergence due to a too low sample size.
+Further, when ABC/SBI approaches become intractable, we have demonstrated that GBO may yet successfully retrieve model configurations that model the data or perform the task at hand.
 
+% Namely that we are working with a non-noisy, consistent (and continuous) signal, and with a more granular subthreshold continuous synaptic current model.
 % It may be argued that under similar conditions, we may detect things such as phase-locking, which may indicate a clear function of the timing of spiking in information processing - however, testing this is out of scope in this work due to time constraints, and difficulty of task design.
 
 
 \section*{Future work}
 
-The question yet remains how we may robustly solve automatic model inference of SNN models, and thereby accelerate computational neuroscience research.
+The question yet remains how we may robustly solve automatic model inference of SNN models in a setting more suited for in vivo recordings and data, such as for spike train data, and in doing so potentially accelerating computational neuroscience and modeling research.
 This work contributes to this goal by demonstrating a way of combining gradient based optimisation and spiking neural network model inference by considering a range of different models, loss metrics, model types, data types, and synapse models.
 In doing so, we demonstrate both the potential as well as limitations that this approach bears in its studied form.
-Below is a list of points summarising some key observations that we made during this research, which may be useful to bear in mind for future research:
+Below is a list of points summarising some key observations that we made during this research, which may be useful to bear in mind for the future researcher in the field:
 
 \begin{itemize}
-    \item Work with well-defined input-output transformations
-    \item Consider using a lower-dimensional input-output signals to greatly facilitate GBO
+    \item Work with as well-defined input-output transformations as possible
+    \item Consider using lower-dimensional input-output signals to greatly facilitate GBO
     \item Consider simulating multi-layer networks - although these are then non-linear and less straightforward, they could constrain the state space
     \item Constrain parameter intervals as much as possible using sensible intervals (such as when looking at probable cell type mixtures using the Allen Brain DB)
     \item Using a subthreshold synapse model results in more granular continuously differentiable signals, allowing for optimisation for instance in "silent" models with subthreshold synaptic currents, and improves optimisation
