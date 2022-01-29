@@ -1,4 +1,69 @@
 
+%   Looking to machine learning and the success in applying gradient-based optimisation to tackle high-dimensional modelling problems, we here investigate the potential of applying this to the class of spiking neural network models. Further, we look at statistical assessment methods, and application of outlined methodology both to synthetically generated as well as biologically recorded in vivo data.
+%   In sum, our results show that models may capture higher-order statistics of recorded nuclei, and that using some parallelisation tricks, we may decrease the computational cost to some extent. However, the lower bound on computational complexity still makes it challenging to apply the outlined methodology to very rich (i.e. high number of recorded nuclei) data sets.
+
+% ======== Should be rewritten after main text completed. ============
+% Computational models are used to try and explain observed data.
+% By implementing models that replicate observed data, the model itself may explain why and how the modelled system behaves as it does, and what its function is.
+% However, in order to be able to propose that the behaviour and functioning indeed arises due to mechanisms and dynamics similar to those in the model, the parallel between model properties and dynamics and in our case the brain and recorded nuclei needs to be firmly established.
+% These are usually established by design, and verified by statistical comparisons over different metrics.
+% However, to this day, constructing biologically interpretable and realistic models remains highly challenging, with no robust data driven approach working for other than very small networks.
+% While there is significant ongoing research efforts in bridging data driven approaches with computational modelling, this remains an unsolved task for neuron-level resolution spiking neural networks with a scalable methodology.
+% Currently, the most promising algorithm involves approximate Bayesian computation by training a deep neural network to approximate the posterior of the output (here spike trains) over the model parameters as the prior, and using simulation-based inference in order to generate samples, i.e. to simulate spike trains given a prior.
+% As the reader may note from this, the approach does not scale well - but it does maintain a full posterior over the parameters, as they are sampled altogether.
+% % SNNs biologically realistic models. 
+% Do we have the tools for SNN parameter inference, instead of rigorous and tedious hand-engineering?
+% ML advances: GBO.
+% SNNs differ from RNNs in a fundamental/crucial way. Show via parameter landscape and loss functions.
+% However, can find frontier(s).
+% SNN variants and applicability of GBO (only NLIF thus far, but still local minima).
+% To some extent GIF; frontier.
+% Same for GLIF versions??
+% Input scheme. Param landscape plots.
+% Loss functions.
+% PyTorch (+batching)
+
+% ABC, (EA; e.g. NGO)
+
+% Albeit GT off for the above, comparison wrt NMF.
+% Hand-engineered case and full analysis with NMF and LDA.
+
+% In conclusion...
+
+% BONUS (if time): Fitting to sleep data, with small sleep regul PPT/LDT lit rev first?
+
+% BONUS2: Append Izhikevich paper and place in context.
+
+% BONUS3: ?
+
+
+    % Neuroscience -> ML.
+    % Now: ML -> Neuroscience?
+    % SNNs hard. However, since DNNs work so well: SNNs as DL-case?
+    % Tricks \& hacks to allow for GBO for SNNs, too!
+    % Modern PyTorch-implementation - much performance, such high-level library.
+    % Batching is nice.
+    % Model classes. Performance over experiments with synthethic data \& GT, and on synthetic general data, and on sleep data.
+    % Also probabilistic model, which lends itself better to optim by NLL, rather than frd or vrd.
+    % Vrd worse probably due to stochasticity obscuring rather than refining error gradient signal w metric.
+    % Param landscapes GBO
+    % SBI using DNN to estimate posterior over parameters: Intractable for neuron-level (?). Compared with pop-level classes. Finding?
+    
+        % More data, and higher res. data available. 
+    % In today's modern society, unfathomable amounts of data are generated every split second. 
+     % Often experts are required to make an effort at hand-engineering models for particular data. 
+        % The key ingredient to enabling this advance has been hardware-improvements, which in turn have enabled using backpropagation for large network-models, which have been shown to be universal function approximators. In other words, by scaling up the network size, one may approximate a correspondingly more complex function and data set.
+    % At the very core of the inference procedure for this model class, we find gradient based optimisation (GBO).
+    % In this work, I look at whether this may be leveraged for SNNs.
+    % As modeling within computational neuroscience is a tedious endeavour, particularly of more biologically realistic models that entrain biological aspects in their parameters, it is natural to look at whether the successful approach for the highly complex tasks that have been solved by DL may be leveraged for SNNs.
+        % , rather than the current state-of-the-art, which is simulation Based inference using approximate Bayesian computation - in fact with a DNN to estimate the posterior over the simulator (here SNN) parameters.
+    % The probabilistic SNNs are compared to a published approach in which making a Bernoulli assumption over the spike history enables using the negative log likelihood for optimisation over population-level models. 
+    % In this work we test all approaches for both population-level and neuron-level models.
+        % NMF ensembles and geodesic dist. - spike train correlations better with SNN models than with GLMs? if not, no inductive bias / little gain with spike train as signal.
+            % NLIF shows high sensitivity to initial parametrisation. also suggests ... different nature spatiotemporal signal of spike train.
+    % may be fruitful to use synapse model in conjunction with the above, but overall the results suggest that under the current formulation
+
+
 % exp_key: AutoEncoding, m_name: LIF
 % mean_rmse:  0.20110197
 % std_rmse:  0.0982714
