@@ -197,7 +197,7 @@ This also holds true for SNNs, where the previous model state also has an effect
 In any case, this begs the question of how hard we want to pursue the retrieval of the ground-truth parameters. 
 In fact, is retrieving the ground-truth at all something we should strive for, or necessary?
 Arguably, there are multiple configurations in the motor cortex that may elegantly solve a motor task at hand \cite{Marblestone2016}.
-The question of the relevance of the ground-truth parameters is one that has been particularly problematic for me throughout my research. No matter how hard I tried to shape the parameter error landscape, there was always a myriad of parameter combinations, and a rich parameter solution space, that would allow for solving the task at hand, or modeling the data.
+The question of the relevance of the ground-truth parameters is one that has been particularly problematic for me throughout my research. No matter how hard we tried to shape the parameter error landscape, there was always a myriad of parameter combinations, and a rich parameter solution space, that would allow for solving the task at hand, or modeling the data.
 
 
 \subsection*{Hand-engineered models may be qualitatively similar to local minima}
@@ -336,8 +336,8 @@ However, the sole basis for studying SNNs in this work is to maintain the biolog
 Therefore, it is important to study how the precise timing of spiking may be made relevant in the models, as that is arguably not only a relevant source of information, but a rich encoding scheme employed by the neural circuitry in the biological brain.
 While this was initially debated, it has been argued both by information theorists, neuroscientists and computer scientists alike recently that the precise timing of spiking is not only relevant, but is in fact necessary in order to encode all of the information that has shown to be processed by the brain, i.e. a rate-coding is not enough to represent a task which is solved by a neural network.
 
-In my work I have studied employing gradient based optimisation as well as approximate Bayesian computation using amortised learning for both a probabilistic class of stochastic spiking neural networks \cite{Rene2020}, for leaky types of integrate-and-fire SNNs \cite{allen_glif_white_paper}, and for closed-form (still with multiple solutions?) exact-gradient types of non-leaky integrate-and-fire SNNs \cite{Huh2017}.
-I have also replicated and analysed Izhikevich SNNs, but chosen not to apply GBO to this model class due to planes of chaos in the parameter landscape, simply resulting in that the Izhikevich neuron ODEs are a lower-dimensional projection of the Hodgkin-Huxley ODEs - resulting in that while they are of lower complexity simulation-wise, the collapse of several variables into fewer results in variable intervals for which model behaviour is unrealistic and/or chaotic, making GBO impossible.
+In my work we have studied employing gradient based optimisation as well as approximate Bayesian computation using amortised learning for both a probabilistic class of stochastic spiking neural networks \cite{Rene2020}, for leaky types of integrate-and-fire SNNs \cite{allen_glif_white_paper}, and for closed-form (still with multiple solutions?) exact-gradient types of non-leaky integrate-and-fire SNNs \cite{Huh2017}.
+We have also replicated and analysed Izhikevich SNNs, but chosen not to apply GBO to this model class due to planes of chaos in the parameter landscape, simply resulting in that the Izhikevich neuron ODEs are a lower-dimensional projection of the Hodgkin-Huxley ODEs - resulting in that while they are of lower complexity simulation-wise, the collapse of several variables into fewer results in variable intervals for which model behaviour is unrealistic and/or chaotic, making GBO impossible.
 
 
 \section{Bayesian approaches}
@@ -382,7 +382,7 @@ This can then be used to estimate the posterior given a target observation, whic
 
 % Since DNNs are universal function approximators, they may be used to approximate the function of the posterior distribution over the parameters given observations for a given model system.
 It seems that DL is an excellent candidate for this type of function approximation, and that in this regard GBO works just as well as it does in ML, depending on how well-defined the posterior distribution in fact is in the data.
-We find in our work that particularly when working with models that have larger spaces which I like to think of as "frontiers" in the parameter landscape for which the loss is approximately equal, the posterior is similarly not condensed around fixed points.
+We find in our work that particularly when working with models that have larger spaces which may be thought of as "frontiers" in the parameter landscape for which the loss is approximately equal, the posterior is similarly not condensed around fixed points.
 \cite{Lueckmann2021}, however find that the posterior approximation still contains the relationship, i.e. dependence, over the parameters. % TODO: Check ref.
 In other words, while they cannot be sampled independently for marginals, sampling over the full posterior still generates realistic data, even if necessarily still suffering from the same local minima samples from the posterior, due to the input-output ambiguity.
 
@@ -586,7 +586,7 @@ We extend their work to also test their methodology on LIF SNNs (see chapter \re
 
 \subsection{Stochastic integrate-and-fire models (SGIF)}\label{microGIF}
 
-Lastly, to tie my work with a current state-of-the-art procedure, I have implemented the cortical microcolumn-inspired (based on \cite{Schwalger2017}, adapted to a lower set of neurons) stochastic integrate-and-fire (SGIF) population model of \cite{Rene2020}, and extended it such that it is compatible with in-place gradient based optimisation. 
+Lastly, to tie my work with a current state-of-the-art procedure, we have implemented the cortical microcolumn-inspired (based on \cite{Schwalger2017}, adapted to a lower set of neurons) stochastic integrate-and-fire (SGIF) population model of \cite{Rene2020}, and extended it such that it is compatible with in-place gradient based optimisation. 
 We compare the results on both population- and neuron-level model fits with previously reported results, and also propose that the GBO procedure may be used to directly infer heterogeneous neuron-level models, and test this by fitting models to a full-size SNN SGIF target model.
 We also test fitting SGIF models to biological data, and evaluate the goodness of fit using loss metrics and geodesic similarities between the NMF modules.
 
@@ -746,7 +746,7 @@ In order to study how to infer spiking neural network models (SNNs) we need seve
 Research on SNNs using gradient-based optimisation is fairly limited, and includes approximate Bayesian computation for smaller models, conversion learning in which more traditional ANNs are transformed to simpler SNNs after training, or surrogate gradient descent, in which a surrogate signal over the model spikes, usually as a function over the membrane potential, is used in order to obtain a differentiable output that may be used to optimise the model's parameters over a given loss metric by backpropagating the error signal. Notably, there exists some research on gradient descent for SNNs in which the model is defined such that its parameters may be used directly for error signal gradient backpropagation, including \cite{Huh2017}, \cite{Rene2020}. This is slightly different from surrogate gradient descent in that the backpropagation is a more natural extension of the system, and thus albeit remaining unrealistic in terms of biology, it is closer to learning in a Hebbian and spike-time dependent plasticity (STDP) fashion, as noted by the authors in \cite{Huh2017}.
 
 % Currently, the state-of-the-art methods are only partly successful in training a subset of SNN model parameters for smaller models.
-With the goal of accelerating SNN inference research, I looked at the most prominent state-of-the-art methodologies for SNN inference, which may be divided into (1) gradient based optimisation (GBO), and (2) approximate Bayesian computation (ABC) \cite{Lueckmann2018, Rene2020, Cranmer2020a, Lueckmann2021}.
+With the goal of accelerating SNN inference research, we looked at the most prominent state-of-the-art methodologies for SNN inference, which may be divided into (1) gradient based optimisation (GBO), and (2) approximate Bayesian computation (ABC) \cite{Lueckmann2018, Rene2020, Cranmer2020a, Lueckmann2021}.
 GBO enables leveraging recent ML advances from deep learning, and albeit biologically implausible as a learning rule in its own right, allows for in-place inference of models that are biologically realistic. The computational cost of doing gradient based computation is also exponentially less than that of doing ABC, as this involves doing a costly (Monte-Carlo) sampling step \cite{Rene2020}.
 Therefore, GBO is the main focus of this work, and leveraging system definitions that may allow for more information to be captured and propagated by means of gradient descent types of optimisation is therefore also something that is desirable, and notably consistent with the works that have been extended.
 
@@ -804,7 +804,7 @@ Current implementations of SNNs in the field are commonly done in Brian 2 \cite{
 Upon commencing work on SNNs using LIF neurons, the only recent work we found that supported optimisation in a supervised or semi-supervised manner was in Theano \cite{Bergstra2010}, a legacy Python library for symbolic programming.
 With recent advances in ML not only through increased computational resources and novel optimisation techniques, but also in programming libraries that also compile to and run on the GPU, and in either case contains highly optimised library code implemented in a lower-level programming language (typically C, C++, or Cuda), we wanted to make use of this aspect too, and after too many hours of fighting with at best poorly documented legacy Theano-library code, we decided to set out to implement SNNs in PyTorch.
 This led to the implementation of a modular framework and pipeline of SNN inference using GBO in PyTorch \cite{Paszke2017, Paszke2019}.
-Key to allowing using PyTorch, is maintaining a neuronal state throughout simulation, which I implemented by enforcing sequential input propagation throughout the model, such that the internal state is updated for each time-step.
+Key to allowing using PyTorch, is maintaining a neuronal state throughout simulation, which we implemented by enforcing sequential input propagation throughout the model, such that the internal state is updated for each time-step.
 With this simple trick, intervals of input mutate the state with each input corresponding to some desired time-step constant, in my code set to $1 \si{ms}$ for simplicity.
 However, it does result in that intervals of simulation need to be performed for each backward pass, i.e. updating the model parameters given error gradients.
 
@@ -852,7 +852,7 @@ The model output is then compared with the output of a target data set, and the 
 
 \subsection{Batching and SNNs}
 
-Despite the need to do simulation in a sequential manner as described above, I implemented iteration over batches of activity, effectively allowing for a type of batch normalisation, and increasing the parallelisability of the algorithm with the number of batches run in parallel, allowing for better use of the computational resources at hand.
+Despite the need to do simulation in a sequential manner as described above, we implemented iteration over batches of activity, effectively allowing for a type of batch normalisation, and increasing the parallelisability of the algorithm with the number of batches run in parallel, allowing for better use of the computational resources at hand.
 
 
 \section{Experiments}
@@ -879,7 +879,7 @@ Note that the constraints do not pose small intervals of possible values for the
 % SBI is also different from what René et al. did in their paper. So these are two methods to compare with their findings. 
 % \section{Results}
 
-Prior to the main experimental setup above, I simulated each model class for realistic intervals of parameters, whilst fixing the other parameters to values that I had empirically or analytically determined to be able to produce meaningful output, and plotted the loss and rate when compared to the hand-engineered target model of the same model class, essentially performing a grid search over parameters allowing to plot the marginals of the parameter landscape formed by the loss metric and target model signal.
+Prior to the main experimental setup above, we simulated each model class for realistic intervals of parameters, whilst fixing the other parameters to values that we had empirically or analytically determined to be able to produce meaningful output, and plotted the loss and rate when compared to the hand-engineered target model of the same model class, essentially performing a grid search over parameters allowing to plot the marginals of the parameter landscape formed by the loss metric and target model signal.
 The results which are included below illuminate how optimisation traverses the gradients formed by the parameter landscape, and gives an idea about the extent to which the procedure is applicable to the model class.
 
 
