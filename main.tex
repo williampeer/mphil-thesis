@@ -39,6 +39,7 @@
 \begin{document}
 \begin{preliminary}
 
+
 \title{Spiking neural network model construction, inference, analysis and applications}
 
 \author{William Peer Berg}
@@ -46,7 +47,6 @@
     
 \abstract{
     Computational models have long been used as hypotheses to illuminate and unravel aspects of neural functioning, with seminal works including models such as the Hodgkin-Huxley model,
-    % Models are themselves hypotheses of the system we wish to study, and may both explain functional aspects about recorded areas, and 
     which also exemplifies that model hypotheses may be tested with in vivo or vitro experiments.
     However, designing high-dimensional biologically realistic spiking models can be an arduous endeavour, and may require a large amount of resources in hand-engineering.
     Automating this arduous process could potentially greatly accelerate computational research within neuroscience.
@@ -59,16 +59,29 @@
     As for the spike trains themselves produced by the models, we wished to test whether higher-order statistics had been captured to a greater extent yet in the SNNs, as when compared to generalised linear models as the baseline.
     When factorising the spike trains by using non-negative matrix factorisation (NMF), the resulting ensembles reveal similar functional ensembles for the synthetic data - however, the SNNs capture the functional NMF ensembles to a greater extent, reflected in a higher NMF module similarity.
     When testing whether this was due to inductive bias by SNN model definition by also fitting to biological data, we found that indeed the similarity was greater for the SNN models than for GLMs, suggesting that GBO may be leveraged to some extent for SNN inference with regards to capturing higher-order spike train statistics.
-    % For the optimisation procedure itself, DNNs are known to be highly sensitive to their initial parametrisations with regards to model performance and optimisation convergence.
-    % SNNs are no different, and seem to be even more sensitive to this, likely due to the temporal nature of the model class, in which the initial state may exert a significant effect on the modelled spike trains and future model state.
-    % Further, there seems to be a fundamental difference in SNN processing in that there are multiple different configurations that may solve the task at hand.
     Further, the parameter landscapes formed by the rate-based metric contains no global saddle point, and at best a frontier as the global minima.
     These observations and results are reflected in the inferred parameters when compared to the ground-truth models for the synthetically generated data, where the inferred SNN likely retrieved a different parameter configuration, while yet capturing the higher-order spike statistics, or solving the task at hand.
     When introducing a lower-dimensional intput-output task and using a readout of a continuous subthreshold synapse current model as the output, we were able to show that optimisation convergence was robust, and that the tasks were solved with low error - albeit yet with completely different final SNN parameter values.
     This emphasises the point that the biological brain may elegantly solve different tasks with completely different configurations, as is the case in every individual, and may suggest that we should not seek to retrieve some target parameter values, as much as higher-order spike statistics.
 }
 
+
 \maketitle
+
+\section*{Lay summary}
+
+Computational models are a highly useful tool, employed in nearly all domains of science and engineering. A model is in itself a hypothesis of a system that we’re studying - whether in biology, physics, or psychology.
+Some of these models, particularly within computational neuroscience, are more complex than others. As such, they may better and in a more detailed way describe what is going on in the biological system that we’re modeling - by in fact being a closer match to the system, such as for instance a collection of neurons from which we have recorded signals using probes.
+A fundamental issue with these models is however that we do not currently have a satisfactory way of automatically attaining them. I.e. there is not algorithm or procedure that allows us to infer such model, no matter how much data we may have.
+Therefore, researchers often spend a great deal of time and resources in hand-engineering such models, which also typically requires expert knowledge.
+As such, a central challenge in computational neuroscience, which could greatly aid in modeling research, is how one might go about inferring more biologically realistic models.
+With the recent widespread success of the algorithmics applied in deep learning, which has given rise to successful applications and better models in a myriad of different disciplines, we investigate whether we may combine the technique employed within deep learning, namely gradient based optimisation, with inference of the more biologically realistic class of neural networks; spiking neural networks.
+We being by revisiting the state-of-the-art within the domain of spiking neural network models (SNNs), and then define a number of different SNNs. We then describe how we may perform gradient based optimisation for SNNs, and how we may evaluate the inferred models, and describe how we have implemented this in a modern machine learning library in Python, called PyTorch.
+We test different ways of performing the optimisation, by guiding it differently with different functions defining the signal that we’re using for optimisation - called loss metrics, and adopt different works that introduce different model types, loss metrics, as well as data and model tasks.
+Overall, we find significant limitations to the current statistical approaches, particularly for when the SNNs increase in size or complexity. However, these might be overcome by using gradient based optimisation (GBO). In our experiments pertaining to GBO, we find that the exact model parameters vary greatly - but that the inferred model configuration yet capture the data, and optionally perform the task at hand well.
+This may suggest that like in the biological brain, there is a myriad of possible solutions, and the precise configuration may not matter as much as commonly suggested. Arguably the precise wiring and neural ‘configuration’ varies greatly between individuals - what is crucial is that we functionally arrive at solving the task at hand well.
+Lastly, when we introduced a synapse model which varies continuously with the modelled neurons’ membrane potential, as well as presented the model with a lower-dimensional training signal, both convergence rates and task performance were excellent. This might suggest a role in the slower waves observed in biological brain waves in learning.
+\clearpage
 
 \section*{Acknowledgements}
 
@@ -76,6 +89,20 @@ I would like to thank my supervisory team for offering their advice throughout m
 I would also like to thank members of my lab group whom offered invaluable support and advice on everything from my project work to mastering stress and finding a flat in Edinburgh.
 I also sincerely appreciated input relating to mathematics and philosophy from two special friends in Ediburgh whom are outside of my lab group.
 Lastly, I would like to sincerely thank the head of our collaborative lab at the University of Strathclyde whom gave us access to in vivo data from the brainstem that was analysed with regards to sleep regulation. It was truly inspiring and exciting to be able to see their experimental lab from early on in my project work.
+
+\clearpage
+\section*{Declaration}
+
+I declare that the thesis has been composed by myself and that the work has not been submitted for any other degree or professional qualification. I confirm that the work submitted is my own, except where otherwise stated.
+% I have presented the included posters at the conferences UK Neural computation 2019, and the FENS forum 2020 (as indicated on the poster), and the included report was submitted to a conference (the International Conference on Machine Learning (ICML) 2021).
+My contribution and that of collaborations have been referenced explicitly both in the text, and the collaborations are indicated below. I confirm that appropriate credit has been given within this thesis where reference has been made to the work of others.
+
+Part of the work presented in Chapter \ref{chpt:sleep}, namely that in section \ref{subsect:bio_data} was previously published in the referenced paper: Tsunematsu, T., Patel, A. A., Onken, A., \& Sakata, S. (2019). State-dependent pontine ensemble dynamics and interactions with cortex across sleep states. BioRxiv, 752683. \href{https://doi.org/10.1101/752683}{DOI} \cite{Tsunematsu2019}, 
+in which my principal supervisor is a co-author.
+I did not contribute to this publication, but was granted access to the data used in the publication after its submission.
+The data access was granted via the collaboration setup by my principal supervisor Arno Onken with the experimental lab led by Shuzo Sakata at the University of Strathclyde in Glasgow, Scotland.
+I replicated some of the findings of the original study before proceeding to employ the data in the unrelated gradient based optimisation work presented in this thesis, and have stated that I have replicated findings where this is the case. 
+
 
 % Nina.
 % Matthias.
@@ -727,15 +754,16 @@ This becomes clearer in the more extensive report on LIF inference when consider
 It is nevertheless interesting that the inferred kernel density estimates are somewhat centred around the true means for several of the LIF-parameters.
 While we hypothesise that this won't hold for the more high-dimensional models, such as for the stochastic general integrate-and-fire (SGIF) \cite{Rene2020} and generalised leaky integrate-and-fire (GLIF) models \cite{allen_glif_white_paper}, it is certainly something that it would be interesting to pursue in future research.
 
-Further, the report addresses different combinations of the van Rossum distance and firing rate distance metrics, as well as different optimiser schemes.
+\includepdf[pages=-]{files/FENS-virtual-2020-e-Poster-W-P-Berg-and-A-Onken-Spiking-Network-Inference-Using-Gradient-Based-Optimisation-PORTRAIT-5.pdf}
+
+\section{Report/paper draft: \textit{Parallel spiking neural network parameter inference using gradient based optimization}}
+
+The report addresses different combinations of the van Rossum distance and firing rate distance metrics, as well as different optimiser schemes.
 These did not vary significantly for the LIF model, at least not when considering the relative (normalised) parameter distance and geodesic NMF model similarities between stochastic gradient descent (SGD) and adaptive moment estimation (Adam) optimisation, nor between the van Rossum distance and firing rate distance.
 Again, this is probably due to the lower dimensionality of the LIF model, which results in that all setups are rendered "good enough" for the model inference.
 However, during our work in the next chapters, we observed empirically in initial experiments that Adam was significantly better in terms of both convergence and the number of training iterations for the more complex models (SGIF and GLIF), as well as in the gated subthreshold synaptic current synapse models in chapter \ref{chpt:gated_synaptic} \cite{Huh2017}.
 
-\includepdf[pages=-]{files/FENS-virtual-2020-e-Poster-W-P-Berg-and-A-Onken-Spiking-Network-Inference-Using-Gradient-Based-Optimisation-PORTRAIT-5.pdf}
-
-\section{Report/paper draft: \textit{Parallel spiking neural network parameter inference using gradient based optimization}}
-\includepdf[pages=-]{files/icml2021_draft_snn_inference.pdf}
+\includepdf[pages=-]{files/icml2021_draft_snn_inference_berg_onken.pdf}
 
 
 % =======================================================
@@ -1339,6 +1367,7 @@ This could then be presented to inferred models, and if captured by the inferred
 
 
 \section{Biological target data}
+\label{subsect:bio_data}
 
 The biological data that we were granted access to is from a silicon probe recording (8x4 Buszaki probes) from the PPT/LDT area of the brainstem. 
 It is analysed in published research, in which evaluation and assessment through rigorous analysis and classification and prediction of the future brain state given the neuronal signals, as well as NMF modules, was performed \cite{Tsunematsu2019}. 
