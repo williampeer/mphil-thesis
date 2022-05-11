@@ -270,7 +270,7 @@ More complex models, however, may incorporate non-linearities also in single nod
 
 % Supervised, semi-supervised - different tasks.
 
-In this thesis, focus on inference of the more complex overarching class of spiking neural networks (SNNs), which maintain a level of biological plausibility.
+In this thesis, we focus on inference of the more complex overarching class of spiking neural networks (SNNs), which maintain a level of biological plausibility.
 There are different approaches for tackling the associated increased complexity, as well as binary nature of spiking itself, resulting in non-linear changes of the internal neuronal variables \cite{Jang, Taherkhani2020, Thalmeier2016, Tavanaei2019a, Bellec2019a, Neftci2019, Bohte2002, Nicola2017, Tavanaei2019, Mostafa2018, Goncalves2019}.
 On the one hand the temporal unfolding of the internal state and their significantly exerted effect on activity requires loss metrics that are adapted to also measure this effect, and on the other hand the limited information when modeling using biological data poses a constraint on the extent to which timing may be emphasised in metrics.
 Further, the explicit encoding scheme adapted in SNNs is traditionally a type of rate-based encoding, but this does not make use of the rich information available in the timing of spiking.
@@ -286,16 +286,16 @@ For further reading on different learning procedures currently studied in the co
 
 \section{Fundamental differences between SNNs and spike train PDF models}
 
-A spike train can be modeled by drawing from a probability distribution $P(X; \lambda)$.
+A spike train can be modeled by drawing from a probability distribution $P(X; \lambda)$, such as a Poisson distribution, where $X$ here denotes the number of observed spikes, and $\lambda$ the rate.
 This is perhaps the simplest baseline model one may construct, also assuming complete independence between neurons in a data set.
 However, this type of model may quickly break down when not assuming dependence between neurons.
 It may also be updated assuming independence, resulting in a more complex probability distribution function (PDF).
-A more robust baseline model would be a generalised linear model, in which a spike train may be modelled by assuming a Poisson distribution as the spike response model for each neuron (as spike trains are often assumed to be of a Poissonian nature as an approximation, as it is hard to disentangle the intricate spike-dependence), with dependence between nodes, coupling them over either the spikes or modeled spike responses - we fit GLMs (section \ref{subsect:GLMs}) of both natures in this work as baseline models for comparison with inferred SNN models.
+Another baseline model would be a generalised linear model, in which a spike train may be modelled by assuming a Poisson distribution as the spike response model for each neuron (as spike trains are often assumed to be of a Poissonian nature as an approximation, as it is hard to disentangle the intricate spike-dependence), with dependence between nodes, coupling them over either the spikes or modeled spike responses - we fit GLMs (section \ref{subsect:GLMs}) of both natures in this work as baseline models for comparison with inferred SNN models.
 GLMs may capture spike correlations and rates well, but not exert different modes of behaviour.
 I.e. it is a spatio-temporal model with the temporal signatures being limited to static functions over spike-responses, which may be somewhat affected by input, but not fundamentally change its dynamics and behaviour, as opposed to in SNNs, which may exert distinct modes of behaviour \cite{Izhikevich2004}.
 The golden standard should as such be to infer models that also capture different modes of behaviour, thus also the dynamics that are at play and may be exerted under different input conditions.
 This may be extremely hard to capture using current inference methodologies, and has to the best of my knowledge not been successfully attained by the research community.
-In this work, we use non-negative matrix factorisation (NMF) \cite{Seung1999, Seung2001}, described in more detail later in this chapter, to assess the functional ensembles captured by models, as it has shown to be able to capture ensembles sufficient for predicting future brain state almost as well as the raw neuron-signals themselves, suggesting that the factorised modules indeed as a suitable representation of potentially functional ensembles, and may well pertain to the dynamics observed in the data.
+In this work, we use non-negative matrix factorisation (NMF) \cite{Seung1999, Seung2001}, described in more detail later in this chapter, to assess the functional ensembles captured by models, as it has shown to be able to capture ensembles sufficient for predicting future brain state almost as well as the raw neuron-signals themselves, suggesting that the factorised modules is a suitable representation of potentially functional ensembles, and may well pertain to the dynamics observed in the data.
 Further, different input and stimulus conditions is in fact something that may be tested both synthetically and in vitro or vivo by stimulation e.g. patch-clamp tissue stimulation or optogenetically \cite{VanDort2015}.
 
 % Typical leaky integrate-and-fire SNN neuron model definition:
@@ -357,7 +357,7 @@ While typically only the weights are inferred in ML models using some gradient b
 % Should talk about points relating to where rate-based metrics is the best one can do wrt spikes
 The same often holds for SNNs in which surrogates are constructed, due to elements such as the initial model configuration, initial conditions, or model perturbation.
 Works such as \cite{Jin2018} employ a rate-based error metric for data and readouts pertaining to image classification tasks.
-By considering how these complex systems behave differently under different conditions, and that they may be heavily affected by their current and thus past state, approaches pertaining to rate codes has seemed to be the extent to which it is possible to incorporate temporal precision whilst successfully optimising and inferring models.
+By considering how these complex systems behave differently under different conditions, and that they may be heavily affected by their current and thus past state, it may be seen that designing an error-metric that emphasises the timing of spiking is problematic. As such, approaches pertaining to rate codes have seemed to largely be the extent to which it is possible to incorporate temporal precision whilst successfully optimising and inferring models.
 While these works are valuable in studying how one might combine optimisation and spiking models, they often are limited not only to rate-based encodings and/or loss metrics, but also to non-noisy ML domain types of data.
 However, the sole basis for studying SNNs in this work is to maintain the biological parallel, such that the model may be used as an interpretable system and hypothesis of recorded site dynamics, and studied as such.
 Therefore, it is important to study how the precise timing of spiking may be made relevant in the models, as that is arguably not only a relevant source of information, but a rich encoding scheme employed by the neural circuitry in the biological brain.
@@ -372,11 +372,12 @@ We have also replicated and analysed Izhikevich SNNs, but chosen not to apply GB
 We assume that the reader is familiar with Bayesian statistics. However, just to give an outline of our notation to the extent that we may also outline the SBI approach used, we may define a sample of observations $O$ given priors $p$, making the posterior over the parameters given an observation,
 
 \begin{equation}
-    P(\theta|X_o) = \frac{P(x_o|\theta)P(x_o)}{P(\theta)}
+    P(\theta|X_o) = \frac{P(x_o|\theta)P(x_o)}{P(\theta)},
 \end{equation}
 
-One way of going about this is to generate observations with a simulator, for which we may generate samples over priors, enabling us to estimate a full posterior over the parameters for a given observation \cite{Lueckmann2017, Lueckmann2018}.
-Note that this does not omit the difficulty of model conditions, including model perturbation and external input.
+Where $P(\theta|X_o)$ is the probability of the parameters $\theta$ given the observations $X_o$, here written out using Bayes' rule, which is used to infer a posterior over the prior, given specific observations ($x_o$).
+One way of doing so is to generate observations with a simulator, for which we may generate samples over priors, enabling us to estimate a full posterior over the parameters for a given observation \cite{Lueckmann2017, Lueckmann2018}.
+Note that this does not avoid the difficulty of modeling the more 'external' conditions, including the model perturbation and external input.
 Further, the computational cost requires sampling a great number of samples in order to estimate the posterior over the parameters, thus increasing drastically with the model dimensionality and number of parameters.
 The approach does, however, come with the benefit of being able to assess and directly measure the certainty by usual statistical metrics around the centres of the posterior distributions, as well as that the full posterior distribution contains samples across all parameters, dependently, which may capture dependencies not so easily captured when estimating using GBO.
 
@@ -421,7 +422,7 @@ In other words, while they cannot be sampled independently for marginals, sampli
 % Refer reader to report or poster in which these are explained, and only provide "glue"-text here, explaining usage and placing them in the context?
 
 While it is non-trivial to exactly evaluate the information processing of two networks, we may use statistical measures such as spike correlations, or dimensionality reduction methods to identify prominent features, or modules of co-active neurons.
-As mentioned previously in the introduction, we use non-negative matrix factorisation (NMF) \cite{Seung1999, Seung2001} in order to identify these sets of co-active neurons in a spike history, which have been found to be good low-dimensional abstractions of functional behaviour, further strengthened by the finding that factorised modules are as good state predictors as the raw neuron-signals when applying linear disctiminant analysis (LDA) or random-forest regression, as done in \cite{Onken2016a}, and replicated in \ref{chpt:sleep}.
+As mentioned previously in the introduction, we use non-negative matrix factorisation (NMF) \cite{Seung1999, Seung2001} in order to identify these sets of co-active neurons in a spike history, which have been found to be good low-dimensional abstractions of functional behaviour, further strengthened by the finding that factorised modules are as good state predictors as the raw neuron-signals when applying linear discriminant analysis (LDA) or random-forest regression, as done in \cite{Onken2016a}, and replicated in \ref{chpt:sleep}.
 
 \subsection{Non-negative matrix factorisation (NMF)}
 
@@ -433,7 +434,7 @@ The NMF factorization may be written as,
     M \approx WH,
 \end{equation}
 
-where the original data set $V$ of dimension $n \times t$ is factorised into two matrices of dimensionality $m \times n$ and $m \times t$.
+where the original data set $M$ of dimension $n \times t$ is factorised into two matrices of dimensionality $m \times n$ and $m \times t$.
 What makes this dimensionality reduction method particularly suited for spike train data is its non-negativity constraint, which naturally leads to a parts-based representation, and which importantly holds for all parts when it comes to neural spike activity.
 % Further, NMF has been shown to outperform other common dimensionality reductions such as independent component analysis, principal component analysis, and factor analysis \cite{Onken2016a}.
 
@@ -444,13 +445,9 @@ The geodesic distance $o$ between two matrices $A$ and $B$ of dimensionality $m 
     o(A, B) = (1-\frac{2}{\pi}\cos^{-1}(A^TB)),
 \end{equation}
 
-where $m$ is the number of modules, and $n$ is the number of nodes in the data set. 
-
-% \subsection{LDA}
-
-% % linreg for separating hyperplane with arbitrary kernel? or simply linear transformations?
-% % \subsection{Random forest}
-% \cite{Onken2016a}
+where $m$ is the number of modules, and $n$ is the number of nodes in the data set.
+This then quantifies a similarity between the modules that are a factorised representation of the spike trains. 
+In this work quantify the geodesic distance between the spatial modules $W$ as a one-dimensional value. One interpretation of this measure since it is a similarity measure between the (factorised) spatial modules is as functional similarity, and to which extent this may have been captured in the model.
 
 
 \subsection{Generalised Linear Models}\label{subsect:GLMs}
@@ -463,16 +460,17 @@ In the GLM model, this is extended by linking the observed spike counts $\mu$ wi
 Further, we may also choose to couple each node's spike response with the other's activities, thus also assuming dependence on these. This may be written as,
 
 \begin{equation}
-    y_t|x_t, w \sim Poiss(y_t; f(X_t^T w)\Delta),
+    y_t|X_t, w \sim Poiss(y_t; f(x_t^T w)\Delta),
 \end{equation}
 
-i.e. the predictor (via the Poisson PDF link function) given the observed activity and a set of weighted couplings between the other nodes gives models that may capture the spatiotemporal statistics that may be inferred by maximum likelihood estimation with linked Poisson PDFs given the observed spike histories, weighted also on the other nodes' estimations.
+i.e. the predictor $y_t$ (via the Poisson PDF link function) given the observed activity $x_t$ and a set of weighted couplings $w$ between the other nodes. This allows us to write models that may capture the spatiotemporal statistics that may be inferred using maximum likelihood estimation (numerically as indicated by $\Delta$) with linked Poisson PDFs, by (a) link function $f$, given the observed spike histories $x_t$, weighted also on the other nodes' estimations $w$.
 This gives the log-likelihood of
 
 \begin{equation}
-    log p(y|X, w) = \sum_{t=1}^T log p(y_t| x_t, w) = \sum_{t=1}^T(y_t log f(x_t^Tw) - f(x_t^Tw)\Delta)
+    log p(y|X, w) = \sum_{t=1}^T log p(y_t| x_t, w) = \sum_{t=1}^T(y_t log f(x_t^Tw) - f(x_t^Tw)\Delta),
 \end{equation}
 
+where $p$ is the probability of the predicted spike responses $y$ given the observed spike responses $x_t$ and the weights $w$, $f$ is a link function, and $\Delta$ is the step size,
 which may be approximated using MAP estimates by numerical methods.
 
 % Coupled GLMs, in which spike histories depend on one another, may also be approximated. This allows to capture second-order and potentially higher-order spike correlations, depending on the link functions used.
@@ -510,7 +508,7 @@ The neuron model we employed in this work is the leaky integrate-and-fire (LIF) 
 \end{equation}
 
 where $E_L$ is the rest potential, $v_t$ is the membrane potential at time $t$, $R_I$ is the membrane resistance, and $I_t$ is the synaptic current.
-The modelled networks are non-transitively fully connected, with the weights normally distributed between $w \in [-1, 1]$. The synapses are modelled as exponentially decaying post-synaptic currents, where a conductance variable $g$ models the conductance for the neurons,
+The modelled networks are non-transitively fully connected (i.e. all-to-all connected, but with no self-recurrent connections), with the weights normally distributed between $w \in [-1, 1]$. The synapses are modelled as exponentially decaying post-synaptic currents, where a conductance variable $g$ models the conductance for the neurons,
 
 \begin{equation}
     \frac{dg}{dt} = -\frac{g}{\tau_g},
