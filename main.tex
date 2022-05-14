@@ -32,9 +32,7 @@
     pdfpagemode=FullScreen,
     }
 \usepackage[section]{placeins}
-\usepackage{amsmath}
-
-% \urlstyle{same}
+\usepackage{amsmath}% \usepackage[printonlyused,withpage]{acronym}
 
 \begin{document}
 \begin{preliminary}
@@ -88,6 +86,7 @@ Lastly, when we introduced a synapse model which varies continuously with the mo
 I would like to thank my supervisory team for offering their advice throughout my research.
 I would also like to thank members of my lab group whom offered invaluable support and advice on everything from my project work to mastering stress and finding a flat in Edinburgh.
 I also sincerely appreciated input relating to mathematics and philosophy from two special friends in Ediburgh whom are outside of my lab group.
+I would also like to thank friends and family at home, whose support was important to me throughout my research.
 Lastly, I would like to sincerely thank the head of our collaborative lab at the University of Strathclyde whom gave us access to in vivo data from the brainstem that was analysed with regards to sleep regulation. It was truly inspiring and exciting to be able to see their experimental lab from early on in my project work.
 
 \clearpage
@@ -112,7 +111,10 @@ I replicated some of the findings of the original study before proceeding to emp
 % Etienne.
 
 \tableofcontents
+
+
 \end{preliminary}
+
 
 
 \chapter{Introduction}
@@ -237,8 +239,11 @@ Therefore, model inference may be a better and less time-consuming alternative, 
 \subsection*{In sum}
 
 This work surveys the literature on GBO related to SNNs and introduces the model definitions, loss metrics, evaluation procedures, and algorithmic approaches in chapter \ref{chpt:background}, demonstrates a way in which GBO may be implemented and performed scalably for these various SNN model classes, and tests the limitations of the procedure, as well as connects it with and compares it with the state-of-the-art for a specific stochastic model type, and for a prominent simulation-based inference by approximate Bayesian computation approach in chapter \ref{chpt:frontier} (with an introduction to the simpler leaky integrate-and-fire model in chapter \ref{chpt:LIF}).
+The goal is to (1) test whether we may capture spike train data (both biological and synthetic) in SNN models using gradient-based optimisation (GBO), and to test whether the parameters can be assumed to be close to the ground-truth by comparing with the ground-truth parameters when fitting to synthetically generated data, and (2) based on the finding in (1) that we may capture the spike statistics, but not parameters, to test whether we may capture the parameters by greatly constraining the target and training signal to lower-dimensional tasks. Note that these different setups also allows us to assess the performance of GBO under different network input-output conditions. Whilst we find that the neuronal parametrisations vary greatly in both cases, we find that performance is excellent for low-dimensional non-noisy signals, but not for spike trains, for which the input is also assumed to be unknown.
+
 Further, using the insights gained in chapter \ref{chpt:frontier}, and mainly to also test the framework and approach on biological data, as well as with the goal of assessing functioning relating to the site from which the data stems, we apply the inference methodology and framework to spike train data from the rodent brainstem in chapter \ref{chpt:sleep}, and assess the extent to which we may capture higher-order spike train statistics by non-negative matrix factorisation analysis and comparison. Due to the rich number of potential model configurations/solutions, as illuminated in both chapter \ref{chpt:frontier} and \ref{chpt:sleep} - particularly with the parameter error landscape plots - what can be hypothesised from the specific inferred parameter values is highly limited.
 Lastly, before our concluding chapter, inspired by the limitation pertaining to exact parameter estimation, as well as convergence and training issues with and difficulties of constructing the loss metrics for SNNs when fitting to spike train data, we extend the work of \cite{Huh2018}, and interestingly find that using their synapse model allows for excellent task performance and convergence rates also for leaky models (thus the exact gradient calculation is not a strict requirement for the procedure to be successful). This demonstrates that synapse models containing richer subthreshold information may be key to enabling scalable and robust SNN inference using GBO, and also highlights that while there are multiple, different configurations that may be inferred by the approach, they may be equally elegant in solving the task at hand - as has also been noted by neuroscientists when studying data relating to the motor cortex \cite{Marblestone2016}.
+On this note, we also briefly discuss the possible implications of this work for representational drift and sloppiness in this chapter, which is compatible with both observations in that the error landscape is observed to be "sloppy" on the network level with flat regions in the parameter hyperspace, but drifting on the neuron-level, as seen in part by that their parametrisations and responses vary drastically between inference runs.
 
 To sum up,
 GBO may be leveraged for a more scalable SNN model inference procedure, which may capture the data that we are fitting to, but not the "true" generative model parameters.
@@ -1289,6 +1294,24 @@ Further, taking into account the aspects pertaining to the training signal, as w
 
 There usually is a larger space for which performance given by the loss metric is fairly equal (as depicted by the error landscape plots), just requiring a different combination of parameters - i.e. there is no single fixed point or trajectory leading to it in the parameter landscape leading to a global minimum.
 One interpretation of this is that what we identify with learning algorithms for SNNs is not a specific configuration which captures the data set at hand, but a configuration which reaches a mode of behaviour that would allow it do produce the data.
+% \subsection*{Implications for representational drift and sloppiness}
+Interestingly, this is in line with the observed phenomena of representational drift whilst maintaining structural stability in the (functional) population patterns of activity \cite{Deitch2021RepresentationalCortex} in that in this work neurons aren't constrained to one configuration (or mode of behaviour) in order to participate in an ensemble, capturing patterns stably on a population-level.
+If we want to take this one step further, it may even indicate that specific "fixed" neuronal representations when it comes to single-neuron activity (and synthetically its parametrisation) is not meaningful, or at least would not allow for the rich behaviour that we see in biology. One may imagine that if each neuron would only allow a fixed representation, this could quickly result in disastrous effects on the network-level, rendering the network incapable of capturing patterns of activity. For further reading on the robustness of networks of spiking neurons, the reader might be interested in the principle of tensegrity, which is eloquently described by \cite{Buzsaki2006}.
+
+% Sloppiness
+One of the motivations for investigating SNN model inference with GBO was the high performance in parameter inference noted by \cite{Teeter2018a}, allowing for classification of cell type based on the inferred parameters.
+However, the aforementioned work pertains to a setting of single-neuron inference (and detailed neurophysiological data).
+In the literature on sloppiness, single neuron properties and connectivity may change significantly whilst the population-level activity remains stable \cite{Panas2015SloppinessNetworks}.
+Interestingly, in this view it might be expected to observe and attain sloppy regions in the error landscape on a network level - in contrast to on the single-neuron level.
+% Not only are our observations in line with observations about representational drift, but also with sloppiness. 
+% This may suggest that population-level configurations are a 
+There are multiple ways one might interpret that networks are capable of learning tasks irrespective of single-neuron changes: 
+In one view, the network-level signal is not sufficient for calibrating the single-neuron behaviour and parameters - for this, some more fine-grained signal is required. Note however that this view posits that the 'goal' of a neuron is to learn a specific representation, or similarly specific responses or behaviours, which is in contrast with the observation of representational drift.
+Another way of viewing this that is more in line with the observation of representational drift is that neurons may change their responses, whilst yet successfully participating in e.g. performing a task on a higher (network and ensemble) level.
+% \cite{Panas2015SloppinessNetworks} hypothesise and note that as long as some neurons remain 'central' and relatively active in an ensemble, they may drive synchrony and thus organisation in the network.
+One hypothesis that comes to mind in this regard, is regarding the driving force behind learning representations and tasks.
+Since neurons may change their responses naturally and more quickly than the network as a whole, which is naturally a lot stabler due to being the combination of all neuronal activities, resulting from all neurons' parametrisation and wiring, perhaps it is the representational drift in itself that allows for exploration, and the observed sloppiness in the error landscape on the network level that allows the relative functional stability (i.e. exploitation) throughout exploration and learning.
+
 
 \subsection*{Multi-layer versus single-layer SNNs}
 
