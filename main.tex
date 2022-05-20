@@ -301,12 +301,13 @@ This is in line with the point discussed below in \ref{subsect:in_sum} about slo
 After all, the goal of in this thesis is primarily to model the target data, but as a side-goal we wish to test whether and to what extent the parameters match those of the synthetic models that generated the data (if the target data was generated in silico).
 
 
-\subsection*{Hand-engineered models may be qualitatively similar to local minima}
+\subsection*{Optimisation may aid in automating model construction by inference}
 
-By hand-engineering models, it is possible to attain qualitative patterns and behaviour. 
-However, this may not be sufficient for capturing the desired higher-order statistics, and may require a large amount of resources. 
-Therefore, model inference may be a better and less time-consuming alternative, which may also be used easily in conjunction with hand-engineering, if desired. 
-
+More complex models, therein SNN models, often require expert resources during implementation and/or model design, in which certain parameters have to be constrained or calibrated according to a desired target regime of behaviour.
+This may to some extent result in more detailed models that may demonstrate and thereby hypothesise some of the dynamics that are at play in generating some observed data.
+% exhibiting patterns and behaviour that are qualitatively similar to that of specific desired patterns or behavioural regimes. 
+However, in the case of SNNs this may not be sufficient for capturing the network organisation, or other desired higher-order statistics such as functional ensembles. 
+In any case, model inference may be a better and more importantly less time-consuming alternative, which may also be used easily in conjunction with more manual processes if so desired. 
 
 \subsection*{In sum}\label{subsect:in_sum}
 
@@ -331,24 +332,31 @@ When testing this hypothesis on biological data, we find that the same as observ
 
 % Mainly surrogate gradient descent, but also some conversion approaches.
 % Spiking neural networks
-In disciplines pertaining to biology, maintaining a more direct link in hypothesised models by incorporating a greater level of detail may allow for correspondingly more illuminating findings.
+In disciplines pertaining to biology, maintaining a more direct link in hypothesised models by incorporating a greater level of detail may allow for correspondingly more illuminating findings \cite{Izhikevich2004}.
+% Izhikevich which model to use
 However, this comes at the cost of increased complexity, often resulting in that construction of such models by sheer hand-engineering is too time-consuming, as the combinatorial expansion of possible solutions to model parametrisations quickly rises to one above where manual search is out of the question.
 Of course, hand-engineering often involves both expert system and domain knowledge for constraining the semi-manual parameter search, and model proposals, and some type of programmatic model search.
-However, inference of spiking neural networks remains a largely unsolved task.
+However, inference of spiking neural networks remains an unsolved task \cite{Taherkhani2020, Cramer2019}.
 With the recent advent of widespread success of deep learning models for arbitrary data sets, we here revisit applying a similar inference procedure for automating inference of biologically plausible models, too - namely spiking neural networks.
 
 There are multiple model definitions and topologies one may consider when studying neural network architectures, which in turn affects network behaviour and inference.
-From the original perceptron \cite{McCulloch1943, Rosenblatt1956} to the Hodgkin-Huxley (HH) model \cite{HH1952}, and from single-neuron to multi-layer networks.
+Ranging in complexity from the original perceptron \cite{McCulloch1943, Rosenblatt1956} to the Hodgkin-Huxley (HH) model \cite{HH1952}, and from single-neuron to multi-layer networks.
 On the one hand, the HH model is complex enough that fitting the parameters of a single node using electrophysiological data requires a significant amount of computational resources, which in turn allows the model to accurately replicate biological membrane potentials and spikes.
 % The \cite{HH1952} 1952 paper more or less hand designing the ODE system in a way that generalises well to describe neuronal and cellular electrophysiology.
-Perceptrons, on the other hand, are far less costly to train and fit, requiring only straightforward matrix multiplications for weight inference, with the nodes' values being either 0 or 1 - however, the behaviour these networks may exert is highly limited and implausible.
+Perceptrons, on the other hand, are far less costly to train and fit, and of a different nature entirely, requiring only straightforward matrix multiplications for weight inference, with the nodes' values being either 0 or 1 - however, the behaviour these networks may exert is highly limited and implausible.
 A common mentioned example to illustrate this is that a two-layer network consisting of perceptrons cannot learn or perform the XOR-task, as hidden layers are required to perform this non-linear separation.
 More complex models, however, may incorporate non-linearities also in single nodes.
+The question is whether we may learn from learning and inference algorithms that have been successful in one domain of neural networks and apply it on more complex classes of network models, and if so what the limitations are, and how one may address these.
+More specifically, we wish to address the question: Can we employ gradient-based optimisation (GBO) for inference of spiking neural networks (SNNs), and how well does it perform for this temporal, more complex class of neural network models? What are the limitations, and do there appear to be any ways of addressing these?
 
-% Supervised, semi-supervised - different tasks.
+These are some of the questions that we have kept in mind when focussing on inference of spiking neural networks (SNNs), along with that they a maintain a higher level of biological plausibility. The latter point is relevant when considering biological data.
+To elaborate on this point: When evaluating the performance of GBO for SNN inference, we wish to study both how well models can capture target data, as well as whether we can expect inferred model parameters to lie within close regions of the ground-truth parameters (when these are available, i.e. when training using synthetic data).
+When it comes to whether we may capture and model target data, we study this along two strands:
+(1) with the aim of capturing target spike-trains in order to be able to model functional organisation on the network-level, and (2) with the aim of performing a simpler task - motivated by the finding that we cannot expect to retrieve ground-truth parameters, but that we may capture higher-order spike-train statistics.
+The second strand is also an interesting one with respect to capturing ground-truth parameters, as we also remove noise and train on a simpler signal - which then strengthens the hypothesis that we cannot aim to retrieve ground-truth parameters via GBO.
+In fact, it raises a more philosophical question about whether this is at all meaningful. More on this later on in the discussions of the various chapters.
 
-In this thesis, we focus on inference of the more complex overarching class of spiking neural networks (SNNs), which maintain a level of biological plausibility.
-There are different approaches for tackling the associated increased complexity, as well as binary nature of spiking itself, resulting in non-linear changes of the internal neuronal variables \cite{Jang, Taherkhani2020, Thalmeier2016, Tavanaei2019a, Bellec2019a, Neftci2019, Bohte2002, Nicola2017, Tavanaei2019, Mostafa2018, Goncalves2019}.
+When it comes to GBO for SNN inference there are different approaches for tackling the associated increased complexity, as well as binary nature of spiking itself, resulting in non-linear changes of the internal neuronal variables \cite{Jang, Taherkhani2020, Thalmeier2016, Tavanaei2019a, Bellec2019a, Neftci2019, Bohte2002, Nicola2017, Tavanaei2019, Mostafa2018, Goncalves2019}.
 On the one hand the temporal unfolding of the internal state and their significantly exerted effect on activity requires loss metrics that are adapted to also measure this effect, and on the other hand the limited information when modeling using biological data poses a constraint on the extent to which timing may be emphasised in metrics.
 Further, the explicit encoding scheme adapted in SNNs is traditionally a type of rate-based encoding, but this does not make use of the rich information available in the timing of spiking.
 Population-encoding \cite{Rene2020} is another type of approach which may make readouts and learning more stable in a network, but also imposes a significant information bottleneck on the amount of information that may be processed and encoded by the network.
@@ -435,7 +443,7 @@ While typically only the weights are inferred in ML models using some gradient b
 The same often holds for SNNs in which surrogates are constructed, due to elements such as the initial model configuration, initial conditions, or model perturbation.
 Works such as \cite{Jin2018} employ a rate-based error metric for data and readouts pertaining to image classification tasks.
 By considering how these complex systems behave differently under different conditions, and that they may be heavily affected by their current and thus past state, it may be seen that designing an error-metric that emphasises the timing of spiking is problematic. As such, approaches pertaining to rate codes have seemed to largely be the extent to which it is possible to incorporate temporal precision whilst successfully optimising and inferring models.
-While these works are valuable in studying how one might combine optimisation and spiking models, they often are limited not only to rate-based encodings and/or loss metrics, but also to non-noisy ML domain types of data.
+While these works are valuable in studying how one might combine optimisation and spiking models, they often are limited not only to rate-based encodings \cite{Brette2015, Brette2019} and/or loss metrics, but also to non-noisy ML domain types of data.
 However, the sole basis for studying SNNs in this work is to maintain the biological parallel, such that the model may be used as an interpretable system and hypothesis of recorded site dynamics, and studied as such.
 Therefore, it is important to study how the precise timing of spiking may be made relevant in the models, as that is arguably not only a relevant source of information, but a rich encoding scheme employed by the neural circuitry in the biological brain.
 While this was initially debated, it has been argued both by information theorists, neuroscientists and computer scientists alike recently that the precise timing of spiking is not only relevant, but is in fact necessary in order to encode all of the information that has shown to be processed by the brain, i.e. a rate-coding is not enough to represent a task which is solved by a neural network.
