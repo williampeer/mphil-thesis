@@ -917,6 +917,8 @@ The contributions include:
     \item Finding that the van Rossum distance may make optimisation diverge in the case of using noisy, uknown input, due to the emphasis on precise timing, which is not meaningful in this case
     \item Demonstrating and providing a modern, modular and efficient implementation of SNN inference in PyTorch, which is modular wrt model, loss metric, and optimiser
     \item Proposing batching as a means of ameliorating the on-line constraint of SNNs due to parameter state dependence
+    \item Coupling our SNN model inference work with published work on SGIF models and ABC
+    \item Coupling SNN inference with SNPE, finding that posterior-estimation over all parameters might not be meaningful and not well capture the ground-truth means, due to the multiple solutions in parameter-space
     \item Finding that we cannot hope to retrieve the ground-truth parameters, and that this might not be a meaningful goal when aspiring to capture the target spike data
     \item Finding that we may capture higher-order statistics in terms of the NMF module similarity in our SNN models when using GBO, also beating or being on par with the proposed GLM baseline models
     \item Finding that even for the case of a non-noisy, fixed, lower-dimensional encoding-task, we converge towards completely different SNN model parameters, all with excellent task performance, even when employing continuous sub-threshold synaptic current models, strengthening the hypothesis that aiming to retrieve the ground-truth parameters might not be meaningful
