@@ -121,6 +121,7 @@ I replicated some of the findings of the original study before proceeding to emp
 
 \tableofcontents
 
+\clearpage
 \section*{List of Acronyms}
 \begin{acronym}
  \acro{GBO}{Gradient based optimisation}
@@ -356,9 +357,14 @@ When it comes to whether we may capture and model target data, we study this alo
 The second strand is also an interesting one with respect to capturing ground-truth parameters, as we also remove noise and train on a simpler signal - which then strengthens the hypothesis that we cannot aim to retrieve ground-truth parameters via GBO.
 In fact, it raises a more philosophical question about whether this is at all meaningful. More on this later on in the discussions of the various chapters.
 
-When it comes to GBO for SNN inference there are different approaches for tackling the associated increased complexity, as well as binary nature of spiking itself, resulting in non-linear changes of the internal neuronal variables \cite{Jang, Taherkhani2020, Thalmeier2016, Tavanaei2019a, Bellec2019a, Neftci2019, Bohte2002, Nicola2017, Tavanaei2019, Mostafa2018, Goncalves2019}.
-On the one hand the temporal unfolding of the internal state and their significantly exerted effect on activity requires loss metrics that are adapted to also measure this effect, and on the other hand the limited information when modeling using biological data poses a constraint on the extent to which timing may be emphasised in metrics.
-Further, the explicit encoding scheme adapted in SNNs is traditionally a type of rate-based encoding, but this does not make use of the rich information available in the timing of spiking.
+When it comes to GBO for SNN inference there are different approaches for tackling the associated increased complexity, as well as binary nature of spiking itself, resulting in non-linear changes of the internal neuronal state and associated variables \cite{Jang, Taherkhani2020, Thalmeier2016, Tavanaei2019a, Bellec2019a, Neftci2019, Bohte2002, Nicola2017, Tavanaei2019, Mostafa2018, Goncalves2019}.
+On the one hand the temporal unfolding resulting from the internal state changes requires loss metrics that are adapted to also measure this non-linear temporally dependent effect, and on the other hand the limited information in biological data poses a constraint on the extent to which we may emphasise such information.
+Traditionally a type of rate-based encoding has largely been the preferred rate-metric for SNNs due to its simplicity and robustness to sudden spike-changes, however this comes at the cost of being more or less agnostic to, and not making use of the rich information available in the precise timing of spiking.
+Another reason why rate-based metrics has been used is that it has been hypothesised that the brain may employ a rate-based encoding scheme. However, it has more recently been accepted that this scheme is not succinct in capturing the rich information processed by the brain, neither on an information content level, nor on a processing speed level (i.e. quick neural computation and responses, on the order of milliseconds), as has been shown by information theorists \cite{Brette2015PhilosophyBrain}.
+Therefore, it is our aim in this work to incorporate temporal information into the spike metrics used for gradient-based optimisation, in order to try and model not only the neuronal rates, but also the timing of spiking.
+If successful, non-negative matrix factorisation should infer spatial modules of similarly temporally co-active ensembles of neurons in the model as in the target data.
+Note however that this does not measure to what extent we have captured spike-patterns unfolding in space and time in the model. However, this is arguably far out of scope in this attempt to combine GBO and SNN inference, as this would require a highly precise model, which we cannot hope to achieve by a best-effort GBO methodology that currently lies in between a rate and precise timing encoding in the loss metric.
+
 Population-encoding \cite{Rene2020} is another type of approach which may make readouts and learning more stable in a network, but also imposes a significant information bottleneck on the amount of information that may be processed and encoded by the network.
 It is likely that the brain employs an encoding scheme in which the rich information contained in the timing of spikes is relevant \cite{Buzsaki2006}. 
 However, as we shall see throughout the work studied in this thesis, it is not possible to do so simply by means of a global gradient descent procedure, which seems to be neither sufficient for precise timing emphasis, nor is biologically plausible \cite{Houghton2008, VanRossum2001, GrunSonjaRotter2010}.
@@ -371,13 +377,23 @@ For further reading on different learning procedures currently studied in the co
 
 \section{Fundamental differences between SNNs and spike train PDF models}
 
-A spike train can be modeled by drawing from a probability distribution $P(X; \lambda)$, such as a Poisson distribution, where $X$ here denotes the number of observed spikes, and $\lambda$ the rate.
-This is perhaps the simplest baseline model one may construct, also assuming complete independence between neurons in a data set.
-However, this type of model may quickly break down when not assuming dependence between neurons.
-It may also be updated assuming independence, resulting in a more complex probability distribution function (PDF).
-Another baseline model would be a generalised linear model, in which a spike train may be modelled by assuming a Poisson distribution as the spike response model for each neuron (as spike trains are often assumed to be of a Poissonian nature as an approximation, as it is hard to disentangle the intricate spike-dependence), with dependence between nodes, coupling them over either the spikes or modeled spike responses - we fit GLMs (section \ref{subsect:GLMs}) of both natures in this work as baseline models for comparison with inferred SNN models.
-GLMs may capture spike correlations and rates well, but not exert different modes of behaviour.
-I.e. it is a spatio-temporal model with the temporal signatures being limited to static functions over spike-responses, which may be somewhat affected by input, but not fundamentally change its dynamics and behaviour, as opposed to in SNNs, which may exert distinct modes of behaviour \cite{Izhikevich2004}.
+In this thesis, we have mainly focussed on spiking neural network models, which we regard as a set of neurons that are each modelled by a set of ordinary differential equations (ODEs), and coupled by a set of synapses, which are in turn modelled by a set of ODEs, ultimately producing spikes, or spike trains when considering intervals of activity. 
+These spikes may either be completely binary as in the spike trains decoded from in vivo LFP recordings, or continuous in the synthetic model formulations where we use continuous sub-threshold synapse currents as the spike readouts.
+In the case of target data, however, we have chosen to always consider binary spike trains as the target data when fitting to spike trains - except for in the chapter on inference using continuous sub-threshold synapse models and fitting to a lower-dimensional target signal (i.e. encoding tasks), where we investigate whether some of the issues identified when fitting to the arguably less informative binary spike trains could be ameliorated.
+In order to place our work on SNN inference using GBO into the context of the current state-of-the-art and field of current research, we have also chosen to include probabilistic spike train models, in which each neuron is modelled by assuming that it produces spikes according to a probability density function, such as a Poisson probability distribution and corresponding density function, or a Bernoulli probability density function.
+This also lends itself to GBO, albeit by using maximum likelihood estimation over the PDF parameters, i.e. by minimising the negative log-likelihood given by the PDF.
+We compare both our SNN GBO results with the PDF-based SNN GBO results, as well as with published results on PDF SNN inference \cite{Rene2020}.
+
+As mentioned above, a spike train can be modeled by drawing from a probability distribution $P(X; \lambda)$, such as a Poisson distribution, where $X$ here denotes the number of observed spikes, and $\lambda$ the rate.
+This is the case in the generalised linear model (GLM), which is a fairly simple, yet robust spike train model.
+Due to that spike trains can be considered to be drawn from a Poisson probability density function, i.e. distributed in a Poisson distribution, we may expect to capture neuronal rates if simply using a set of random Poisson variables for each neuron.
+If we take this one step further, and consider a coupled Poisson model, in which each node is coupled with the others by a weight matrix, and the activities are propagated using a link function, this forms a model that should also capture some of the ensemble activity as seen in the target data.
+Since such coupled Poisson GLMs have been successfully used in other modelling work, we also fit this model class to our target data and use it as a baseline model for comparison with models inferred using GBO.
+% However, this type of model may quickly break down when not assuming dependence between neurons.
+% It may also be updated assuming independence, resulting in a more complex probability distribution function (PDF).
+% Another baseline model would be a generalised linear model, in which a spike train may be modelled by assuming a Poisson distribution as the spike response model for each neuron (as spike trains are often assumed to be of a Poissonian nature as an approximation, as it is hard to disentangle the intricate spike-dependence), with dependence between nodes, coupling them over either the spikes or modeled spike responses - we fit GLMs (section \ref{subsect:GLMs}) of both natures in this work as baseline models for comparison with inferred SNN models.
+GLMs may capture spike correlations and rates well, but not exert different neuronal modes of behaviour in the way that SNNs may (see \cite{Izhikevich2004} for different modes of behaviour exhibited by different SNN formulations).
+I.e. it is a spatio-temporal model with the temporal signatures being limited to static functions over spike-responses, which may be somewhat affected by input, but not fundamentally change its dynamics and behaviour, as opposed to in SNNs, which may exert distinct modes of behaviour.
 The golden standard should as such be to infer models that also capture different modes of behaviour, thus also the dynamics that are at play and may be exerted under different input conditions.
 This may be extremely hard to capture using current inference methodologies, and has to the best of my knowledge not been successfully attained by the research community.
 In this work, we use non-negative matrix factorisation (NMF) \cite{Seung1999, Seung2001}, described in more detail later in this chapter, to assess the functional ensembles captured by models, as it has shown to be able to capture ensembles sufficient for predicting future brain state almost as well as the raw neuron-signals themselves, suggesting that the factorised modules is a suitable representation of potentially functional ensembles, and may well pertain to the dynamics observed in the data.
@@ -397,7 +413,7 @@ Further, different input and stimulus conditions is in fact something that may b
 
 % where $W_{i,j}$ is the synaptic weight from neuron $i$ to neuron $j$, and $s_i$ is the pre-synaptic current from neuron $i$.
 
-\section{The link to recurrent neural networks (RNNs)}
+\section{The link to ML}
 
 As mentioned previously, SNNs are systems in which each node is modeled by a set of ordinary differential equations (ODEs), where each variable or parameter may have a more or less direct biological parallel, such as representing the rest potential $E_L$, the spike threshold $V$, and other properties.
 Together, these result in a model whose membrane potential $v_t$ has a temporal trajectory similar to that of biological neurons.
@@ -407,9 +423,9 @@ The stronger the link between the model and the brain area, the stronger the hyp
 In RNNs, however, the criterion of each node or neuron being a system of ODEs that maintain biological parallels is relaxed or no longer valid. 
 Each node may simply be one value that is some sum over synaptic input that has been transformed by a transfer function, or it is more commonly some slightly more complex unit such as the gated recurrent unit (GRU) \cite{Bengio2013b, Chung2015a} or long short-term memory (LSTM) unit, engineered for application in the domain of machine learning \cite{Hochreiter1997, Schmidhuber2014}.
 When dealing with nodes that are commonly used in machine learning, the temporal dependence is more limited than in more complex SNNs and neuronal ODE systems.
-Further, RNNs are usually trained on tasks in which the input is known, and is some static spatial transformation of inputs to outputs, which forms the data set.
-In other words, the data modeled is usually non-noisy, and of a more straightforward nature than (decoded) brain recordings such as spike trains.
-These aspects make RNNs far more suitable for chaining the error gradients backwards in time, which may be done over each time-step for each error gradient by a modification to the backprop-algorithm by chaining the error gradients, known as back-propagation through time (BPTT) \cite{Rumelhart1986}.
+Further, RNNs are usually trained on tasks in which the input is known, and is some specific transformation of inputs to outputs, such as is the case in image processing data for CNNs, which forms the data set.
+In other words, the data modeled is usually less noisy and of a more straightforward nature than (decoded) brain recordings such as spike trains, which it might be argued are more heterogeneous from an information theoretic input-output mapping. At the very least, the mapping is unknown, including in our work when using spike trains the input.
+These aspects result in that work on RNNs consider a setup more suitable for chaining the error gradients backwards in time, which may be done over each time-step for each error gradient by a modification to the backprop-algorithm by chaining the error gradients, known as back-propagation through time (BPTT) \cite{Rumelhart1986}.
 Note also that RNNs typically deal with continuous, smooth signals in each node, whereas SNNs incorporate non-linear value-changes upon binary spike-events, which also greatly complicates training, let alone inference of model parameters.
 \cite{Neftci2019} describe the connection between RNNs and SNNs well, including the efforts that have been made to employ (surrogate) gradient descent for spiking neural networks.
 In order to give an intuition about the differences, between SNNs and RNNs, the definition of the GRU unit is included below, and may be written as,
@@ -425,7 +441,8 @@ where $h$ is the hidden units, $W$ the weights, and $g$ a gating function,
     g^{i,j} = \sigma ( \textbf{w}_g^{i,j}\textbf{h}_t^{i} + \textbf{u}_g^{i,j}\textbf{h}_{t-1}^{*})
 \end{equation}
 
-basically treating the network instead of a conventional RNN which may be regarded as a (POMDP) process as a process in which each hidden layer has gated recurrent connections determined by a reset gate function, which allows the ignoring of previous hidden states by transition through the reset gate function, whose weights may also be updated by the same methodology;
+basically treating the network instead of a conventional RNN which may be regarded as a process in which each hidden layer has gated recurrent connections determined by a reset gate function, which allows the ignoring of previous hidden states by transition through the reset gate function, which greatly simplifies optimisation when compared to SNNs, where the gradients necessarily are chained backwards in time for all previous state.
+The reset gate function weights may also be updated by the same methodology;
 estimating a probability distribution over sequences, factorising the probability of the sequences, and training an RNN by means of negative log-likelihood minimisation of the training sequences:
 
 \begin{equation}
@@ -433,22 +450,24 @@ estimating a probability distribution over sequences, factorising the probabilit
     p(x_N|x_1,...,x_{N-1}) = g(\textbf{h}_t)
 \end{equation}
 
-Note that this bears resemblance to SNNs, and is bridged particularly by the probabilistic model version of \cite{Rene2020}, which we have based a spike time and gradient compatible model implementation on in section \ref{microGIF}.
+Note that this bears resemblance to SNNs, and is brought somewhat closer particularly by the probabilistic model version of \cite{Rene2020}, which we have based a spike time and gradient compatible model implementation on in section \ref{microGIF}.
 There, a spike train is assumed to be a Bernoulli or Poisson distributed spike history, which may be estimated with the ODE system and its recurrent connections.
 However, connections in a GRU \cite{Chung2015a} system are optimised in a more straightforward manner, with the other parameters and internal dynamics instead being what decides on the "gating".
+Also, the weights are typically the only inferred parameter in ML models using some gradient based optimisation algorithm. 
+As such, it might be argued that the link between RNNs and SNNs is somewhat weak - but we have chosen to include a short section on RNNs for the sake of consistency, and to more clearly outline and contextualise the GBO methodology for SNNs by describing the model class that is arguably the most closely related to SNNs and also importantly for which GBO is successfully applied for inference.
 
-While typically only the weights are inferred in ML models using some gradient based optimisation algorithm, there exists work in which SNNs are transformed such that they are more compatible with BPTT, including probabilistic models in which each node projects a probability of spiking for each time step or interval, and models in which synaptic signals are made continuous and smooth, either by constructing a surrogate gradient signal such as over the membrane potential, or by modeling the signals as a function over the sub-threshold membrane potential, such as for instance when it is above zero, or within a given interval, or by modeling sub-threshold synaptic currents.
+There exists work in which SNNs are transformed such that they are more compatible with BPTT, including probabilistic models in which each node projects a probability of spiking for each time step or interval, and models in which synaptic signals are made continuous and smooth, either by constructing a surrogate gradient signal such as over the membrane potential, or by modeling the signals as a function over the sub-threshold membrane potential, such as for instance when it is above zero, or within a given interval, or by modeling sub-threshold synaptic currents.
 % The former approach has been studied in works such as \cite{}
 % Should talk about points relating to where rate-based metrics is the best one can do wrt spikes
 The same often holds for SNNs in which surrogates are constructed, due to elements such as the initial model configuration, initial conditions, or model perturbation.
 Works such as \cite{Jin2018} employ a rate-based error metric for data and readouts pertaining to image classification tasks.
 By considering how these complex systems behave differently under different conditions, and that they may be heavily affected by their current and thus past state, it may be seen that designing an error-metric that emphasises the timing of spiking is problematic. As such, approaches pertaining to rate codes have seemed to largely be the extent to which it is possible to incorporate temporal precision whilst successfully optimising and inferring models.
-While these works are valuable in studying how one might combine optimisation and spiking models, they often are limited not only to rate-based encodings \cite{Brette2015, Brette2019} and/or loss metrics, but also to non-noisy ML domain types of data.
+While these works are valuable in studying how one might combine optimisation and spiking models, they often are limited not only to rate-based encoding \cite{Brette2015, Brette2019} and/or loss metrics, but also to non-noisy ML domain types of data.
 However, the sole basis for studying SNNs in this work is to maintain the biological parallel, such that the model may be used as an interpretable system and hypothesis of recorded site dynamics, and studied as such.
 Therefore, it is important to study how the precise timing of spiking may be made relevant in the models, as that is arguably not only a relevant source of information, but a rich encoding scheme employed by the neural circuitry in the biological brain.
 While this was initially debated, it has been argued both by information theorists, neuroscientists and computer scientists alike recently that the precise timing of spiking is not only relevant, but is in fact necessary in order to encode all of the information that has shown to be processed by the brain, i.e. a rate-coding is not enough to represent a task which is solved by a neural network.
 
-In my work we have studied employing gradient based optimisation as well as approximate Bayesian computation using amortised learning for both a probabilistic class of stochastic spiking neural networks \cite{Rene2020}, for leaky types of integrate-and-fire SNNs \cite{allen_glif_white_paper}, and for closed-form exact-gradient types of non-leaky integrate-and-fire SNNs \cite{Huh2017}.
+In our work we have studied employing gradient based optimisation as well as approximate Bayesian computation using amortised learning for both a probabilistic class of stochastic spiking neural networks \cite{Rene2020}, for leaky types of integrate-and-fire SNNs \cite{allen_glif_white_paper}, and for closed-form exact-gradient types of non-leaky integrate-and-fire SNNs \cite{Huh2017}.
 We have also replicated and analysed Izhikevich SNNs, but chosen not to apply GBO to this model class due to planes of chaos in the parameter landscape, simply resulting in that the Izhikevich neuron ODEs are a lower-dimensional projection of the Hodgkin-Huxley ODEs - resulting in that while they are of lower complexity simulation-wise, the collapse of several variables into fewer results in variable intervals for which model behaviour is unrealistic and/or chaotic, making GBO impossible.
 
 
@@ -460,7 +479,7 @@ We assume that the reader is familiar with Bayesian statistics. However, just to
     P(\theta|X_o) = \frac{P(x_o|\theta)P(x_o)}{P(\theta)},
 \end{equation}
 
-Where $P(\theta|X_o)$ is the probability of the parameters $\theta$ given the observations $X_o$, here written out using Bayes' rule, which is used to infer a posterior over the prior, given specific observations ($x_o$).
+Where $P(\theta|X_o)$ is the probability of the (model) parameters $\theta$ given the observations $X_o$ (spike train), here written out using Bayes' rule, which is used to infer a posterior over the prior, given specific observations (spike data $x_o$).
 One way of doing so is to generate observations with a simulator, for which we may generate samples over priors, enabling us to estimate a full posterior over the parameters for a given observation \cite{Lueckmann2017, Lueckmann2018}.
 Note that this does not avoid the difficulty of modeling the more 'external' conditions, including the model perturbation and external input.
 Further, the computational cost requires sampling a great number of samples in order to estimate the posterior over the parameters, thus increasing drastically with the model dimensionality and number of parameters.
@@ -500,13 +519,27 @@ We find in our work that particularly when working with models that have larger 
 In other words, while they cannot be sampled independently for marginals, sampling over the full posterior still generates realistic data, even if necessarily still suffering from the same local minima samples from the posterior, due to the input-output ambiguity.
 
 
+\section{Other key works}\ref{sect:key_works}
+
+% short presentation; advantages and limitations in order to clearly motivate my work.
+% "such as in 2.3.1"
+
+% Stringer et al. (2016)
+
+
+Zenke Superspike
+
+Nicola and Clopath
+
+
+
 \section{Evaluating SNN models}
 
 % Not straightforward how to analyse... 
 % Should this be in background or later?
 % Refer reader to report or poster in which these are explained, and only provide "glue"-text here, explaining usage and placing them in the context?
 
-While it is non-trivial to exactly evaluate the information processing of two networks, we may use statistical measures such as spike correlations, or dimensionality reduction methods to identify prominent features, or modules of co-active neurons.
+While it is non-trivial to exactly evaluate the information processing of two networks, i.e. the precise functions they compute, we may use statistical measures such as spike correlations, or dimensionality reduction methods to identify prominent features, or modules of co-active neurons.
 As mentioned previously in the introduction, we use non-negative matrix factorisation (NMF) \cite{Seung1999, Seung2001} in order to identify these sets of co-active neurons in a spike history, which have been found to be good low-dimensional abstractions of functional behaviour, further strengthened by the finding that factorised modules are as good state predictors as the raw neuron-signals when applying linear discriminant analysis (LDA) or random-forest regression, as done in \cite{Onken2016a}, and replicated in \ref{chpt:sleep}.
 
 \subsection{Non-negative matrix factorisation (NMF)}
@@ -628,8 +661,7 @@ All parameters were held as free parameters during optimization, resulting in 4 
 
 \subsection{Generalised leaky integrate-and-fire (GLIF)}
 
-% Write out equations (?)
-My GLIF implementation is based on the whitepaper of \cite{allen_glif_white_paper}, and may be defined as
+Our GLIF implementation is based on the whitepaper of \cite{allen_glif_white_paper}, and may be defined as
 
 \begin{equation}
     \frac{dv}{dt} = \frac{g (E_L - v) + R_I I_{syn}}{C_m},
@@ -729,32 +761,13 @@ Thus, we may use negative log likelihood estimation over the spike probabilities
 % Can be highly parameter-sensitive and result in completely different mode of neuronal behaviour
 
 
-\subsection{Izhikevich}
-
-In our initial SNN research, we replicated \cite{Oliveira2019} to show that the resulting rates could be formulated more or less as a linear function, resulting from sub-threshold oscillations, and that the model is highly sensitive to its initial parameter values.
-One of the motivations for doing this was that the model class may exert all neuronal modes of behaviour as observed in biology \cite{Izhikevich2006}.
-However, as hinted to above, this results in a highly irregular parameter landscape, only further complicated by the previously discussed stochasticity present in the model inference scheme that we are studying.
-To give an intuition about why this is, consider that the Izhikevich model is a 2-dimensional projection of a 4-dimensional ODE system - in fact based upon the original HH model \cite{HH1952}.
-As such, there are regions for which unstable, or even chaotic behaviour, may emerge - i.e. we end up with parameter regions for which the model is highly unrealistic, or not well-defined.
-Therefore, we limit our research to the previously outlined models, and only include parameter landscape plots illustrating the aforementioned, as well as our work on the effect of the recovery variables on resulting subthreshold oscillatory behaviour.
-
-% TODO: Include param landscape figures here??
-
-% All modes of behaviour as observed in biology, however something needed to shift mode(s) of behaviour..
-% Parallels to SNN inference etc
-% (2D ODE syst per neuron)
-
-\subsubsection{Poster: \textit{The effect of the recovery variable parameters on oscillating Izhikevich networks}}\label{section:izhikevich}
-\includepdf[pages=-]{files/berg_and_onken_uk_neural_computation_2019_poster.pdf}
-
-
 \section{Loss metrics}
 
 % simple, rate-based metric. does not capture correlations, or only very vaguely if done over smaller time bins. 
 % can be combined with correlation metric.
 
 % Tricky design, stochasticity, lots of considerations, as we shall see only frontier..
-When it comes to designing suitable loss metrics, this is one of the main challenges for applying gradient based optimisation to SNNs, as it is what defines the gradients, and thus the parameter space that we traverse during optimisation.
+Designing suitable loss metrics is one of the main challenges in applying gradient based optimisation to SNNs, as it is what defines the gradients, and thus the parameter space that we traverse during and throughout optimisation.
 
 We performed optimization using (1)~the firing rate distance, (2)~the van Rossum distance, and (3) the negative log-likelihood assuming either a Bernoulli or Poisson PDF for the probabilistic models.
 Further, we performed initial testing using an additive combination of the van Rossum and firing rate distance, a Pearson correlation metric distance, the Fano Factor \cite{Tchumatchenko2011, Kreuz2013a}, and the mean squared error, but found empirically that none of these were able to produce good results in terms of convergence or performance, and thus abandoned testing the metrics further for this project.
@@ -805,6 +818,7 @@ with $t$ being the current time, $t_{i,spike}$ the most recent time of spiking f
 Our initial hypothesis was that using the van rossum distance, we may better 'guide' the parameter inference search in the parameter traversal in the error landscape (then provided by the van Rossum distance metric), allowing gradient-based methods to converge more often, and to better solutions.
 The basis for the hypothesis was that using the van-rossum distance as a loss function for the spike trains, we attain a more continuous signal, since the discrete spike train is convolved with a time-based kernel, whic may make the gradients more informed via the loss function in larger search areas.
 However, our findings contrast this hypothesis, and we find "\textit{wandering gradients}" for the van Rossum distance.
+Wandering gradients may be defined as gradients that point in no consistent direction, but results in that parameters "wander" arbitrarily during optimisation, in our work due to being in a region for which the loss is relatively constant and uniform.
 Upon closer inspection, the spike train data sets have a too high variability for an emphasis on the precise timing to improve optimisation performance - and we end up only obscuring the error signal further by using the van Rossum distance. 
 I.e. it breaks down for the stochastic signals, and only works well for NLIF, or when we increase the time-constant such that the metric approaches a rate-based metric. And even then the firing rate distance might outperform the van Rossum distance metric for the surrogate gradient descent approaches.
 
@@ -824,12 +838,51 @@ In fact, we also instead minimise the negative log-likelihood, which remains equ
 Assuming a Bernoulli distribution, $pdf=Bernoulli(\theta; x)$, or assuming a Poisson distribution, $Poiss(\theta; x)$, these let us estimate the maximum likelihood over $\theta$.
 
 
+\section{Summary}
+
+Description of main results of the rest of the thesis,
+
+and a list of main contributions made by the thesis
+\begin{itemize}
+    \item Main 1
+    \item Main 2
+\end{itemize}
+
+
+% =======================================================
+
+\chapter{Complementary poster: Izhikevich recovery variable parameters, oscillations and resulting network rates}
+
+In our initial SNN research, we replicated \cite{Oliveira2019} to show that the resulting rates could be formulated more or less as a linear function, resulting from sub-threshold oscillations, and that the model is highly sensitive to its initial parameter values.
+One of the motivations for doing this was that the model class may exert all neuronal modes of behaviour as observed in biology \cite{Izhikevich2006}.
+However, as hinted to above, this results in a highly irregular parameter landscape, only further complicated by the previously discussed stochasticity present in the model inference scheme that we are studying.
+To give an intuition about why this is, consider that the Izhikevich model is a 2-dimensional projection of a 4-dimensional ODE system - in fact based upon the original HH model \cite{HH1952}.
+As such, there are regions for which unstable, or even chaotic behaviour, may emerge - i.e. we end up with parameter regions for which the model is highly unrealistic, or not well-defined.
+Therefore, we limit our research to the previously outlined models, and only include parameter landscape plots illustrating the aforementioned, as well as our work on the effect of the recovery variables on resulting subthreshold oscillatory behaviour.
+
+% TODO: Include param landscape figures here??
+
+% All modes of behaviour as observed in biology, however something needed to shift mode(s) of behaviour..
+% Parallels to SNN inference etc
+% (2D ODE syst per neuron)
+
+\section{Poster: \textit{The effect of the recovery variable parameters on oscillating Izhikevich networks}}\label{section:izhikevich}
+\includepdf[pages=-]{files/berg_and_onken_uk_neural_computation_2019_poster.pdf}
+
+
+% Result of sub-threshold oscillations. 
+In sum, although the Izhikevich model is capable of almost all types of behaviour as seen in biology with only 2-dimensional ODEs per neuron, it comes at the cost of also being able to exhibit highly unrealistic, or chaotic behaviour, for which GBO would diverge, as gradient would be completely un-informative.
+Further, there is a strong dependence on a sub-set of the model parameters, which also poses an issue for GBO; these are the only parameters likely to be inferred using GBO unless specific design and care is taken to calibrate the other parameters, such as for instance sequentially after initial inference of the others - however, this would then render the other inferred values completely dependent on the variables inferred prior in the sequence. 
+In some preliminary experiments we confirmed empirically that divergence indeed did occur due to chaotic behaviour, which was not easily avoided due to several regions of parameter hyperspace for which such behaviour can occur. 
+As such, Izhikevich SNNs are not used further in thiswork where we study SNN inference using GBO.
+
+
 % =======================================================
 \chapter{Gradient-descent based LIF SNN inference}\label{chpt:LIF}
 
 \section{Poster: \textit{Spiking Network Inference Using Gradient Based Optimisation}}
 
-Before beginning on the next chapter, which describes in more detail the state-of-the-art of SNN inference using both gradient-based optimisation and to some extent approximate Bayesian computation by simulation-based inference, we would like to present the work that we have done specifically for and constrained to leaky integrate-and-fire neurons using gradient-descent for parameter-inference, before expanding on the methodology and applying in to a wider range of model types and classes.
+Before beginning on the next chapter, which describes in more detail the state-of-the-art of SNN inference using both gradient-based optimisation and to some extent approximate Bayesian computation by simulation-based inference, we would like to present the work that we have done specifically for and constrained to leaky integrate-and-fire neurons using gradient-descent for parameter-inference, before expanding on the methodology and applying it to a wider range of model types and classes in the following chapter \ref{chpt:frontier}.
 The poster contains the essentials pertaining to the post-inference NMF analysis, the van Rossum distance metric, as well as single-neuron level rate analysis, along with inferred kernel density estimates over the parameters across experiments.
 
 These experiments seemed highly promising with regards to ground-truth parameter retrieval - however, they are in part due to smaller initial parameter intervals, and the fact that the LIF-model is relatively low-dimensional.
@@ -841,12 +894,23 @@ While we hypothesise that this won't hold for the more high-dimensional models, 
 
 \section{Report/paper draft: \textit{Parallel spiking neural network parameter inference using gradient based optimization}}
 
-The report addresses different combinations of the van Rossum distance and firing rate distance metrics, as well as different optimiser schemes.
+The report addresses different combinations of the van Rossum distance and firing rate distance metrics, as well as different optimisation schemes.
 These did not vary significantly for the LIF model, at least not when considering the relative (normalised) parameter distance and geodesic NMF model similarities between stochastic gradient descent (SGD) and adaptive moment estimation (Adam) optimisation, nor between the van Rossum distance and firing rate distance.
-Again, this is probably due to the lower dimensionality of the LIF model, which results in that all setups are rendered "good enough" for the model inference.
+This may suggest that the lower dimensionality of the LIF model results in that all setups are rendered "good enough" for the model inference.
+As we shall see in the following chapter, specifically in the subsection on error and parameter landscapes \ref{sect:e_landscapes}, the reason for this is that the loss metrics result in regions in the parameter error landscapes for which the error and thus gradient is unchanged.
 However, during our work in the next chapters, we observed empirically in initial experiments that Adam was significantly better in terms of both convergence and the number of training iterations for the more complex models (SGIF and GLIF), as well as in the gated subthreshold synaptic current synapse models in chapter \ref{chpt:gated_synaptic} \cite{Huh2017}.
+One possible explanation for this is simply the same as in the ML domain; the adaptive moment allows for an adaptive response to the gradients, and is lowered when the gradient rate of change does not.
+In our case, i.e. for LIF models, this does in effect only gain the benefit of being able to converge without too much calibration of the learning rate, as this is adapted throughout inference.
+In effect this may be seen as a type of simulated annealing, only relative to each parameter and their gradients.
 
 \includepdf[pages=-]{files/icml2021_draft_snn_inference_berg_onken.pdf}
+
+
+This report provides the basis for SNN inference using GBO, different loss metrics and optimisers for the case of LIF SNNs, and also presents a way of evaluating the goodness of fit using NMF, comparing with GLMs as a baseline model.
+This is the foundation upon which the rest of the work in this thesis is based on, and expands on.
+In the rest of this thesis, we consider the case of using the Adam optimiser with different classes of SNNs and either a rate-based loss metric over intervals of spikes, the van Rossum distance, or the negative log-likelihood where considering probabilistic models.
+As no significant performance gain was observed when using a combination of the two metrics was observed, this is not used in further GBO work using other SNN models.
+In fact, as we shall see, when increasing the model complexity, the fact that the van Rossum distance may emphasise the timing of spikes in such a way that the gradient may be obscured, may be disastrous on inference, resulting in divergence.
 
 
 % =======================================================
@@ -1418,6 +1482,8 @@ The results highlight that the procedure is feasible by demonstration a working 
 \chapter{Sleep regulation in the rodent brainstem}\label{chpt:sleep}
 
 My initial research proposal outlines a research project where the goal is to meet research needs within the field of sleep regulation through computational modelling.
+In this chapter, we apply the inference methodology of this thesis pertaining to spike based SNN inference using GBO to biological spike train data, recorded from the brainstem of mice during different vigilance and sleep states, and assess to what extent the higher-order NMF modules, which correlate with the brain state, are captured in the inferred models.
+
 More specifically, the aspiration was to model neurons of the pedunculopontine and laterodorsal tegmental areas within the brainstem during different brain states, based on their neuroanatomy as described, even though scarcely, within the literature, and based on in vivo data from these brain areas \cite{Herice2019c, Tsunematsu2019, Pal2007, Martinez-Gonzalez2011, Fraigne2015}.
 Further, an overarching research goal was to be able to capture the emergence of neural ensembles as identified in vivo in the model by using non-negative matrix factorisation (NMF) \cite{Seung1999, Seung2001, Onken2016a}.
 To this end, we have implemented various types of SNN models, a framework for gradient based optimisation using Adam in a modular way, compatible with any differentiable model as well as loss metric, all in PyTorch. This work is presented previously in this dissertation.
