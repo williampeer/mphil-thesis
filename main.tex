@@ -1906,8 +1906,10 @@ For both tasks, we observed convergence in every experiment, with some experimen
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\columnwidth]{figures/Gating/AutoEncoding/NLIF_sample/plot_loss_test_mt_NLIF_et_AutoEncoding_N_30_titers_200.png}
-    \includegraphics[width=0.49\columnwidth]{figures/Gating/AutoEncoding/NLIF_sample/test_plot_outputs_NLIF_seed_23.png}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/Gating/AutoEncoding/NLIF_sample/plot_loss_test_mt_NLIF_et_AutoEncoding_N_30_titers_200.png}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/Gating/AutoEncoding/NLIF_sample/test_plot_outputs_NLIF_seed_23.png}
     \caption{Auto-encoding with a NLIF SNN for a sample experiment, with the loss per epoch on the left, target and readout signals on the right.}
     \label{fig:autoencoding_NLIF}
 \end{figure}
@@ -1915,8 +1917,10 @@ For both tasks, we observed convergence in every experiment, with some experimen
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\columnwidth]{figures/Gating/AutoEncoding/LIF_sample/plot_loss_test_mt_LIF_et_AutoEncoding_N_30_titers_200.png}
-    \includegraphics[width=0.49\columnwidth]{figures/Gating/AutoEncoding/LIF_sample/test_plot_outputs_LIF_seed_25.png}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/Gating/AutoEncoding/LIF_sample/plot_loss_test_mt_LIF_et_AutoEncoding_N_30_titers_200.png}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/Gating/AutoEncoding/LIF_sample/test_plot_outputs_LIF_seed_25.png}
     \caption{Auto-encoding with a LIF SNN for a sample experiment, with the loss per epoch on the left, target and readout signals on the right.}
     \label{fig:autoencoding_LIF}
 \end{figure}
@@ -1924,45 +1928,65 @@ For both tasks, we observed convergence in every experiment, with some experimen
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\columnwidth]{figures/Gating/GeneralPredictiveEncoding/NLIF_sample/plot_loss_test_mt_NLIF_et_GeneralPredictiveEncoding_N_30_titers_200.png}
-    \includegraphics[width=0.49\columnwidth]{figures/Gating/GeneralPredictiveEncoding/NLIF_sample/test_plot_outputs_NLIF_seed_25.png}
+\vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/Gating/GeneralPredictiveEncoding/NLIF_sample/plot_loss_test_mt_NLIF_et_GeneralPredictiveEncoding_N_30_titers_200.png}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/Gating/GeneralPredictiveEncoding/NLIF_sample/test_plot_outputs_NLIF_seed_25.png}
     \caption{General predictive encoding with a NLIF SNN for a sample experiment, with the loss per epoch on the left, target and readout signals on the right.}
     \label{fig:general_predictive_NLIF}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\columnwidth]{figures/Gating/GeneralPredictiveEncoding/LIF_sample/plot_loss_test_mt_LIF_et_GeneralPredictiveEncoding_N_30_titers_200.png}
-    \includegraphics[width=0.49\columnwidth]{figures/Gating/GeneralPredictiveEncoding/LIF_sample/test_plot_outputs_LIF_seed_24.png}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/Gating/GeneralPredictiveEncoding/LIF_sample/plot_loss_test_mt_LIF_et_GeneralPredictiveEncoding_N_30_titers_200.png}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/Gating/GeneralPredictiveEncoding/LIF_sample/test_plot_outputs_LIF_seed_24.png}
     \caption{General predictive encoding with a LIF SNN for a sample experiment, with the loss per epoch on the left, target and readout signals on the right.}
     \label{fig:general_predictive_LIF}
 \end{figure}
 
 
-The error landscapes for the different parameters illuminate that they are quite similar for leaky and non-leaky IF SNN models.
+The error landscapes for the different parameters illuminate that they are quite similar for leaky and non-leaky IF SNN models, as illustrated in figures \ref{fig:p_landscape_LIF_autoencoding_1}, \ref{fig:p_landscape_LIF_autoencoding_2}, \ref{fig:p_landscape_NLIF_autoencoding_1}, \ref{fig:p_landscape_NLIF_autoencoding_2}.
 In fact, they show that it may be just as well-defined for a LIF SNN as for a NLIF SNN, illuminating the potential for using this synapse model also for leaky SNN models.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/NLIF/test_export_2d_heatmap_N_4_loss_original_loss_W_fast_W_syn.eps}
-    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/NLIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_O.eps}
-    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/NLIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_W_fast.eps}
-    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/NLIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_W_syn.eps}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/param_landscape_heatmaps/gating/NLIF/test_export_2d_heatmap_N_4_loss_original_loss_W_fast_W_syn.eps}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/param_landscape_heatmaps/gating/NLIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_O.eps}
     \caption{The parameter error landscape for NLIF SNNs over the auto-encoding task as the target signal.}
-    \label{fig:p_landscape_NLIF_autoencoding}
+    \label{fig:p_landscape_NLIF_autoencoding_1}
 \end{figure}
-% can insert rate plot too
+\begin{figure}
+    \centering
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/param_landscape_heatmaps/gating/NLIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_W_fast.eps}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/param_landscape_heatmaps/gating/NLIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_W_syn.eps}
+    \caption{The parameter error landscape for NLIF SNNs over the auto-encoding task as the target signal.}
+    \label{fig:p_landscape_NLIF_autoencoding_2}
+\end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/LIF/test_export_2d_heatmap_N_4_loss_original_loss_W_fast_W_syn.eps}
-    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/LIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_O.eps}
-    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/LIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_W_fast.eps}
-    \includegraphics[width=0.49\columnwidth]{figures/param_landscape_heatmaps/gating/LIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_W_syn.eps}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/param_landscape_heatmaps/gating/LIF/test_export_2d_heatmap_N_4_loss_original_loss_W_fast_W_syn.eps}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/param_landscape_heatmaps/gating/LIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_O.eps}
     \caption{The parameter error landscape for LIF SNNs over the auto-encoding task as the target signal.}
-    \label{fig:p_landscape_LIF_autoencoding}
+    \label{fig:p_landscape_LIF_autoencoding_1}
 \end{figure}
-% can insert rate plot too
+\begin{figure}
+    \centering
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/param_landscape_heatmaps/gating/LIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_W_fast.eps}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/param_landscape_heatmaps/gating/LIF/test_export_2d_heatmap_N_4_loss_original_loss_W_in_W_syn.eps}
+    \caption{The parameter error landscape for LIF SNNs over the auto-encoding task as the target signal.}
+    \label{fig:p_landscape_LIF_autoencoding_2}
+\end{figure}
 
 
 \begin{table}
@@ -1983,6 +2007,7 @@ GPE & LIF & \textbf{0.058} & 0.011 \\
 We have included further results in \ref{appendix:supplementary_material}, should the reader wish to study further illustrated results, and for consistency.
 
 
+\clearpage
 \section{Discussion}
 
 By introducing a synapse model that varies continuously with the membrane potential when inside of an active zone, and defining the signal such that it generates a spike current summing to one in all cases of entering the active zone, we replicate the findings of the original paper \cite{Huh2018} for two distinct tasks.
