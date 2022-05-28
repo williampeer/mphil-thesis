@@ -138,6 +138,7 @@ I replicated some of the findings of the original study before proceeding to emp
  \acro{ABC}{Approximate bayesian computation}
  \acro{SBI}{Simulation-based inference}
  \acro{ODE}{Ordinary differential equation}
+ \acro{BP}{Backpropagation}
  \acro{BPTT}{Backpropagation through time}
  \acro{GD}{Gradient descent}
  \acro{HH}{Hodgkin-Huxley}
@@ -856,7 +857,7 @@ where $s^i$ is the number of spikes for neuron $i$ in a given interval $\Delta t
 \begin{figure}
     \centering
     \vskip -0.1in
-    \includegraphics[width=0.9\columnwidth]{figures/samples/neur_vr_conv_sample.eps}
+    \includegraphics[width=0.8\columnwidth]{figures/samples/neur_vr_conv_sample.eps}
     \vskip -0.1in
     \caption{An illustration of the van Rossum convolution over a sample spike train.}
     \label{fig:vrd_conv_sample}
@@ -867,7 +868,7 @@ One thing is quantifying distances in terms of spike metrics.
 Another is designing a metric that is well-defined for gradient-descent.
 While the van Rossum metric describes the distance between two spike trains both in terms of rates and timing, due to its sensitivity to exact timing the gradient signal might be obscured for non-matching neurons, and more well-defined where the rates better match.
 
-The van Rossum distance \cite{VanRossum2001} may be defined as the Euclidean distance between two spike trains where each spike is convolved with an exponential kernel forward in time,
+The van Rossum distance \cite{VanRossum2001} may be defined as the Euclidean distance between two spike trains where each spike is convolved with an exponential kernel, see figure \ref{fig:vrd_conv_sample}, forward in time,
 
 \begin{equation}
     f_{conv}(t, t_{i, spike}) = e^{\frac{-\Delta t_i}{\tau_{\mathrm{vr}}}}
@@ -1216,26 +1217,6 @@ However, as illuminated in part by figure \ref{fig:p_landscape_hmap_SGIF}, these
     \label{fig:p_landscape_hmap_SGIF}
 \end{figure}
 
-% \begin{figure}
-%     \centering
-%     \vskip -0.1in
-%     \includegraphics[width=0.32\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_4_loss_tau_theta_J_theta.eps}
-%     \includegraphics[width=0.32\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_c_Delta_u.eps}
-%     \includegraphics[width=0.32\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_E_L_tau_m.eps}
-%     \vskip -0.1in
-%     \caption{p landscape SGIF 2}
-% \end{figure}
-
-% \begin{figure}
-%     \centering
-%     \vskip -0.1in
-%     \includegraphics[width=0.32\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_tau_m_tau_s.eps}
-%     \includegraphics[width=0.32\columnwidth]{figures/param_landscape_heatmaps/microGIF/test_export_2d_heatmap_N_21_loss_tau_theta_J_theta.eps}
-%     \vskip -0.1in
-%     \caption{p landscape SGIF 3}
-% \end{figure}
-% Description parameter landscape plots. 
-
 
 \subsection{Gradient descent with Adam}
 
@@ -1279,8 +1260,9 @@ As for the rates, these also reflect these results, with the closes fits being a
 \begin{figure}
     \centering
     \vspace{-0.1in}
-    \includegraphics[width=0.8\columnwidth]{figures/samples/GLIF/12-09_16-14-54-627/spike_trains_train_iter_100.png}
-    \includegraphics[width=0.8\columnwidth]{figures/samples/GLIF/12-09_16-14-54-627/plot_loss_test12-09_16-16-45-54312-09_16-16-45-543.png}
+    \includegraphics[width=0.9\linewidth]{figures/samples/GLIF/12-09_16-14-54-627/spike_trains_train_iter_100.png}
+    \vspace{-0.1in}
+    \includegraphics[width=0.9\linewidth]{figures/samples/GLIF/12-09_16-14-54-627/plot_loss_test12-09_16-16-45-54312-09_16-16-45-543.png}
     \vspace{-0.1in}
     \caption{Sample GLIF SNN, spike trains after training (top) for a particular experiment, along with the loss per epoch (bottom), corresponding membrane potentials and parameter inference trajectories in \ref{fig:sample_GLIF_exp_vs_traject}.}
     \label{fig:sample_GLIF_exp}
@@ -1289,8 +1271,9 @@ As for the rates, these also reflect these results, with the closes fits being a
 \begin{figure}
     \centering
     \vspace{-0.1in}
-    \includegraphics[width=0.8\columnwidth]{figures/samples/GLIF/12-09_16-14-54-627/membrane_pots_train_i_100.png}
-    \includegraphics[width=0.8\columnwidth]{figures/samples/GLIF/12-09_16-14-54-627/test_weights_inference_trajectories_param_w.png}
+    \includegraphics[width=0.9\linewidth]{figures/samples/GLIF/12-09_16-14-54-627/membrane_pots_train_i_100.png}
+    \vspace{-0.1in}
+    \includegraphics[width=0.9\linewidth]{figures/samples/GLIF/12-09_16-14-54-627/test_weights_inference_trajectories_param_w.png}
     \vspace{-0.1in}
     \caption{Membrane potentials (top) for the spike train plotted in \ref{fig:sample_GLIF_exp}, and the average trajectory (bottom) of the weights throughout inference.}
     \label{fig:sample_GLIF_exp_vs_traject}
@@ -1299,8 +1282,9 @@ As for the rates, these also reflect these results, with the closes fits being a
 \begin{figure}
     \centering
     \vspace{-0.1in}
-    \includegraphics[width=0.8\columnwidth]{figures/samples/LIF/12-10_09-55-57-223/spike_trains_train_iter_100.png}
-    \includegraphics[width=0.8\columnwidth]{figures/samples/LIF/12-10_09-55-57-223/plot_loss_test12-10_09-56-55-12812-10_09-56-55-128.png}
+    \includegraphics[width=0.9\columnwidth]{figures/samples/LIF/12-10_09-55-57-223/spike_trains_train_iter_100.png}
+    \vspace{-0.1in}
+    \includegraphics[width=0.9\columnwidth]{figures/samples/LIF/12-10_09-55-57-223/plot_loss_test12-10_09-56-55-12812-10_09-56-55-128.png}
     \vspace{-0.1in}
     \caption{Sample LIF SNN, spike trains after training for a particular experiment, along with the loss per epoch, and corresponding membrane potentials for the spike train plotted above and the average trajectory of the weights throughout inference in \ref{fig:sample_GLIF_exp_vs_traject}.}
     \label{fig:sample_LIF_exp_spikes_loss}
@@ -1309,8 +1293,9 @@ As for the rates, these also reflect these results, with the closes fits being a
 \begin{figure}
     \centering
     \vspace{-0.1in}
-    \includegraphics[width=0.8\columnwidth]{figures/samples/LIF/12-10_09-55-57-223/membrane_pots_train_i_100.png}
-    \includegraphics[width=0.8\columnwidth]{figures/samples/LIF/12-10_09-55-57-223/test_weights_inference_trajectories_param_w.png}
+    \includegraphics[width=0.9\columnwidth]{figures/samples/LIF/12-10_09-55-57-223/membrane_pots_train_i_100.png}
+    \vspace{-0.1in}
+    \includegraphics[width=0.9\columnwidth]{figures/samples/LIF/12-10_09-55-57-223/test_weights_inference_trajectories_param_w.png}
     \vspace{-0.1in}
     \caption{Sample LIF SNN membrane potentials for the spike train plotted in \ref{fig:sample_LIF_exp_spikes_loss}, and the average trajectory of the weights throughout inference.}
     \label{fig:sample_LIF_exp_vs_traject}
@@ -1329,11 +1314,9 @@ As for the rates, these also reflect these results, with the closes fits being a
 	\label{fig:rate_p_dists_GBO}
 \end{figure}
 
-Overall, these results show that ground-truth retrieval is highly unlikely with the specified model definitions and loss metrics, as illuminated by the error landscape plots in \ref{sect:e_landscapes}.
-% However, they demonstrate that although local minima are inferred, they may be done so by using GBO - the scalable approach recently highly successfully and widely applied ML-algorithm - here for SNNs.
-% The results highlight that the procedure is feasible by demonstration a working implementation and integration of various model classes, for both stochastic and leaky integrate-and-fire, and highlight that a stricter definition of the model perturbation scheme, as well as a more informative loss metric design, may be key to improving inference performance.
+Overall, these results, particularly illustrated by the average parameter distances in figure \ref{fig:rate_p_dists_GBO}, show that ground-truth retrieval is highly unlikely with the specified model definitions and loss metrics, as illuminated by the error landscape plots in \ref{sect:e_landscapes}.
 
-
+\clearpage
 \subsection{Stochastic general integrate-and-fire neurons}
 
 \begin{figure}
@@ -1353,7 +1336,10 @@ Overall, these results show that ground-truth retrieval is highly unlikely with 
 %     \label{fig:PNLL_SGIF_sample_loss}
 % \end{figure}
 
-These results show that GBO is possible for direct, scalable inference of neuron-level models when using a stochastic formulation of the LIF model and the Bernoulli or Poisson NLL by assuming spikes distributed in either of the corresponding probability densities, both being exponential family distributions with shared properties for the case of spike trains.
+Figure \ref{fig:sample_SGIF_plots} illustrates that GBO is possible for direct, scalable inference of neuron-level models when using a stochastic formulation of the LIF model and the Bernoulli or Poisson NLL by assuming spikes distributed in either of the corresponding probability densities, both being exponential family distributions with shared properties for the case of spike trains.
+However, as is found and described in table \ref{tab:rho_converged_GBO_pop}, the models are less correlated than when using MCMC sampling over the full posterior.
+It can be argued that this is expected, since no parameter dependence is assumed in the GBO inference methodology, as in the ABC-procedure of \cite{Rene2020}.
+Convergence rates are nonetheless good (table \ref{tab:rmse_converged_GBO_pop}), and parameter distances are somewhat closer on average when using GBO (figure \ref{fig:rate_p_dists_GBO}), and in contrast significantly further away from the ground-truth than the initial, pseudorandomly distributed model parameters in the case of SBI (see figure \ref{fig:rate_p_dists_SBI}).
 
 % SameModelClassTarget
 % \subsection{Known ground-truth synthetic data}
@@ -1431,16 +1417,19 @@ This shows that particularly for more complex models, which SNNs quite often are
 
 \begin{figure}
     \centering
-	\includegraphics[width=0.49\columnwidth]{figures/sbi_plot_rates_all.eps}
-	\includegraphics[width=0.49\columnwidth]{figures/sbi_mean_p_dist_all.eps}
-	\caption{Fitted model rates across model types and loss metrics, and average parameter distance between the ground-truth model and both the initial and converged inferred models when using \textbf{SBI} for model inference. see figure \ref{fig:rate_p_dists_GBO} for comparison with GBO.}
+    \vspace{-0.2in}
+	\includegraphics[width=0.7\columnwidth]{figures/sbi_plot_rates_all.eps}
+	\vspace{-0.1in}
+	\includegraphics[width=0.7\columnwidth]{figures/sbi_mean_p_dist_all.eps}
+	\vspace{-0.1in}
+	\caption{Fitted model rates across model types and loss metrics, and average parameter distance between the ground-truth model and both the initial and converged inferred models when using \textbf{SBI} for model inference. See figure \ref{fig:rate_p_dists_GBO} for comparison with GBO.}
 	\label{fig:rate_p_dists_SBI}
 \end{figure}
 
 
 \begin{figure}
     \centering
-	\includegraphics[width=0.5\columnwidth]{figures/sbi_p_avgs_pairplot_SNPE_LIF_12-15_04-56-19-338.eps}
+	\includegraphics[width=0.9\columnwidth]{figures/sbi_p_avgs_pairplot_SNPE_LIF_12-15_04-56-19-338.eps}
 	\caption{Mean posterior marginals between parameters for the LIF model class, fitted using the same ground-truth model and synthetic data as in the LIF GBO experiments.}
 	\label{fig:mean_posterior_marginal_SNPE_LIF}
 \end{figure}
@@ -1454,13 +1443,13 @@ This shows that particularly for more complex models, which SNNs quite often are
 
 \begin{figure}
     \centering
-	\includegraphics[width=0.85\columnwidth]{figures/sbi_p_avgs_pairplot_SNPE_microGIF_12-14_16-14-12-736.eps}
+	\includegraphics[width=\columnwidth]{figures/sbi_p_avgs_pairplot_SNPE_microGIF_12-14_16-14-12-736.eps}
 	\caption{Mean posterior marginals between parameters for the SGIF model class.}
 	\label{fig:mean_posterior_marginal_SNPE_SGIF}
 \end{figure}
 
 
-
+\clearpage
 \subsection{NMF analysis}
 
 We analyse the fits attained with the different approaches in order to assess to what extent the inferred models capture functional organisation of the networks that generated the target data.
@@ -1471,41 +1460,53 @@ A high similarity of the factorised representations of neuronal co-activity indi
 % Custom coupled GLM fitted to target spike trains. Baseline.
 % citecite
 
+% \begin{figure}
+%     \hspace{-0.1\columnwidth}
+%     \includegraphics[width=1.2\columnwidth]{figures/matlab/export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_mesoGIF_N_4.eps}
+%     \caption{A stimulus response filter, coupling filters, and spike train rate predictions for a GLM fitted to a population level (N=4) SGIF model.}
+%     \label{fig:GLM_mesoGIF}
+% \end{figure}
 \begin{figure}
-    \hspace{-0.1\columnwidth}
-    \includegraphics[width=1.2\columnwidth]{figures/matlab/export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_mesoGIF_N_4.eps}
-    \caption{A stimulus response filter, coupling filters, and spike train rate predictions for a GLM fitted to a population level (N=4) SGIF model.}
-    \label{fig:GLM_mesoGIF}
+    \centering
+    \vspace{-0.1in}
+    \includegraphics[width=0.8\columnwidth]{figures/matlab/font_fix/export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_mesoGIF_N_4_1.png}
+    \includegraphics[width=0.8\columnwidth]{figures/matlab/font_fix/export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_mesoGIF_N_4_2.png}
+    \vspace{-0.1in}
+    \caption{A stimulus response filter and coupling filters for a GLM fitted to a population level (N=4) SGIF model.}
+    \label{fig:GLM_mesoGIF_filters}
 \end{figure}
 
-As a baseline model for assessing how well we capture higher-order spike statistics, we implement and fit GLMs as previously described (see section \ref{subsect:GLMs}), and also perform NMF on the predicted spike trains of these models when perturbing them just as with the other models when generating their spike trains with white noise.
-A sample figure of one of the neuron in the GLM is shown in figure \ref{fig:GLM_mesoGIF}.
+\begin{figure}
+    \centering
+    \vspace{-0.1in}
+    \includegraphics[width=1.7\columnwidth, angle=270]{figures/matlab/font_fix/export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_mesoGIF_N_4_3.png}
+    \vspace{-0.1in}
+    \caption{Spike train rate predictions for the fitted GLM where two of the response filters are illustrated in figure \ref{fig:GLM_mesoGIF_filters}.}
+    \label{fig:GLM_mesoGIF_rate_preds}
+\end{figure}
+
+As a baseline model for assessing how well we capture higher-order spike statistics, we implement and fit GLMs as previously described (see section \ref{subsect:GLMs}), and also perform NMF (see figures \ref{fig:ACs_NMF_modules_mesoGIF_4}, \ref{fig:ACs_SGIF_N_21}, \ref{fig:modules_SGIF_N_21}) on the predicted spike trains of these models when perturbing them just as with the other models when generating their spike trains with white noise.
+A sample figure of one of the neuron response filters of the GLM is shown in figure \ref{fig:GLM_mesoGIF_filters}, along with spike train rate predictions in figure \ref{fig:GLM_mesoGIF_rate_preds}.
 Due to the fairly low-dimensional nature of the LIF model, MLE for a coupled Poisson GLM fits almost perfectly to the generative target LIF model.
 Both SBI and GBO also perform fairly well for this model class in terms of the geodesic similarity (see figure \ref{fig:geodesic_all}).
 However, when considering the more complex GLIF model class, which may exert a wider range of spike patterns and behaviours, the GLM performs slightly worse than GBO using a rate-based metric.
 Interestingly, it performs just as well for both small and large SGIF networks, as the limit there seems to be the stochasticity introduced in this model class.
 It is however outperformed for smaller SGIF networks by both GBO and SBI using NLL minimisation, but performs slightly better than GBO for larger networks.
 
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=1.1\columnwidth]{figures/matlab/export_GLM_filters_pred_bin_size_0_1_cell_2_target_GT_model_microGIF_N_21.eps}
-%     \caption{GLM microGIF}
-%     \label{fig:GLM_microGIF}
-% \end{figure}
-
 
 \begin{figure}
-    \includegraphics[width=0.49\columnwidth]{figures/matlab/NMF/ACs_target_GT_model_mesoGIF_N_4.eps}
-    \includegraphics[width=0.49\columnwidth]{figures/matlab/NMF/ACs_nuovo_spikes_mt_microGIF_euid_12-09_16-02-03-400_lfn_bernoulli_nll.eps}
-    \centering
+    \includegraphics[width=0.65\columnwidth]{figures/matlab/NMF/ACs_target_GT_model_mesoGIF_N_4.eps}
     \includegraphics[width=0.3\columnwidth]{figures/matlab/NMF/target_GT_model_mesoGIF_N_4.eps}
+    \centering
+    \includegraphics[width=0.65\columnwidth]{figures/matlab/NMF/ACs_nuovo_spikes_mt_microGIF_euid_12-09_16-02-03-400_lfn_bernoulli_nll.eps}
     \includegraphics[width=0.3\columnwidth]{figures/matlab/NMF/modules_nuovo_spikes_mt_microGIF_euid_12-09_16-02-03-400_lfn_bernoulli_nll_4.eps}
-    \caption{Activation coefficients (ACs) (top, seconds along the x-axis, and activation coefficient along the y-axis) for SGIF models, N=4, for target (left) and fitted models (right), using the Bernoulli negative log-likelihood (NLL) as the loss metric, along with the factorised NMF modules (bottom).}
+    \caption{Activation coefficients (ACs) (top, seconds along the x-axis, and activation coefficient along the y-axis) for SGIF models, N=4, for target (top) and fitted models (bottom), using the Bernoulli negative log-likelihood (NLL) as the loss metric, along with the factorised NMF modules (right).}
+    \label{fig:ACs_NMF_modules_mesoGIF_4}
 \end{figure}
 
 \begin{figure}
-    \includegraphics[width=0.49\columnwidth]{figures/matlab/NMF/ACs_target_GT_model_microGIF_N_21.eps}
-    \includegraphics[width=0.49\columnwidth]{figures/matlab/NMF/ACs_nuovo_synthetic_v2_spikes_mt_microGIF_lfn_bernoulli_nll_euid_01-01_15-56-11-305.eps}
+    \includegraphics[width=0.65\columnwidth]{figures/matlab/NMF/ACs_target_GT_model_microGIF_N_21.eps}
+    \includegraphics[width=0.65\columnwidth]{figures/matlab/NMF/ACs_nuovo_synthetic_v2_spikes_mt_microGIF_lfn_bernoulli_nll_euid_01-01_15-56-11-305.eps}
     \caption{Activation coefficients (ACs) (top, seconds along the x-axis, and activation coefficient along the y-axis) for SGIF models, N=21, for target (left) and fitted models (right), using the Bernoulli negative log-likelihood (NLL) as the loss metric, with the factorised NMF modules plotted in figure \ref{fig:modules_SGIF_N_21}.}
     \label{fig:ACs_SGIF_N_21}
 \end{figure}
@@ -1517,16 +1518,12 @@ It is however outperformed for smaller SGIF networks by both GBO and SBI using N
     \label{fig:modules_SGIF_N_21}
 \end{figure}
 
-% \begin{figure}
-%     \includegraphics[width=0.49\columnwidth]{figures/matlab/NMF/ACs_target_GT_model_mesoGIF_N_4.eps}
-%     \includegraphics[width=0.49\columnwidth]{figures/matlab/NMF/ACs_target_GT_model_microGIF_N_21.eps}
-%     \caption{ACs SGIF, N=4, N=21 (right)}
-% \end{figure}
-
 
 \begin{figure}
     \hspace{-0.1\columnwidth}
-    \includegraphics[width=1.2\columnwidth]{figures/matlab/NMF_geodesic_all_Synthetic_v2.eps}
+    \vspace{-0.3in}
+    \includegraphics[width=1.75\columnwidth, angle=270]{figures/matlab/NMF_geodesic_all_Synthetic_v2.eps}
+    \vspace{-0.3in}
     \caption{The geodesic distances between the NMF modules for all synthetic experiments.}
     \label{fig:geodesic_all}
 \end{figure}
