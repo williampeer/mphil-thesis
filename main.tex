@@ -1668,16 +1668,19 @@ These were also the two only data sets for which three NMF modules were needed i
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\columnwidth]{figures/LDA/lda_temporal_shifting_and_prediction_bins_4_lda_acs_temporal_windows_4_exp_6.eps}
-    \includegraphics[width=0.49\columnwidth]{figures/LDA/lda_temporal_shifting_and_prediction_bins_4_lda_acs_temporal_windows_4_exp_4.eps}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/LDA/lda_temporal_shifting_and_prediction_bins_4_lda_acs_temporal_windows_4_exp_6.eps}
+    \vspace{-0.1in}
+    \includegraphics[width=0.7\columnwidth]{figures/LDA/lda_temporal_shifting_and_prediction_bins_4_lda_acs_temporal_windows_4_exp_4.eps}
+    \vspace{-0.1in}
     \caption{Prediction accuracy (second axis) by the time preceding the predicted state in seconds (first axis). The biological data often contained silent neurons, with the most consistently active signals and thus 'well-defined' data being particularly the data sets for experiments 4 and 6.}
     \label{fig:lda_classification}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\columnwidth]{figures/LDA/bars_LDA_per_signal_t_3.eps}
-    \includegraphics[width=0.49\columnwidth]{figures/LDA/bars_RF_per_signal_t_3.eps}
+    \includegraphics[width=0.7\columnwidth]{figures/LDA/bars_LDA_per_signal_t_3.eps}
+    \includegraphics[width=0.7\columnwidth]{figures/LDA/bars_RF_per_signal_t_3.eps}
     \caption{LDA and random-forest classification over the different experiments.}
     \label{fig:lda_rf_classification}
 \end{figure}
@@ -1686,18 +1689,23 @@ These were also the two only data sets for which three NMF modules were needed i
 % Thus, functional ensembles should be well represented by modules, and be a correspondingly suitable methodology to assess capturing these by calculating the similarity of the factorised modules for fitted SNN models.
 % As the similarity metric, we simply calculate the geodesic similarity between modules, as previously in the synthetic SNN inference work.
 
+\clearpage
 \section{Inference}
 
 As mentioned above, we have focussed on the two experiments with consistently high 'quality' in terms of neuronal activity and vigilance state prediction performance.
 Further, we adopt the differentiable SGIF-model as described in previous chapters \cite{Rene2020}, using GBO for direct neuron-level SNN inference by negative log-likelihood minimisation, assuming either a Bernoulli or Poisson distribution of the spike train.
-For NMF performance evaluation, we also fit GLMs (section \ref{subsect:GLMs}) as a baseline comparison model in NMF module similarity assessment.
+For NMF performance evaluation between NMF modules (such as illustrated in \ref{fig:modules_exp5}, \ref{fig:modules_exp7}), we also fit GLMs (section \ref{subsect:GLMs}) as a baseline comparison model in NMF module similarity assessment (with the similarity distance plotted in \ref{fig:geodesic_distances_exp5}, \ref{fig:geodesic_distances_exp7}).
 
-For each experiment, we fit $N=20$ models as in the other setups to each experiment, for each model type and loss function, pseudorandomly and uniformy initialising the model parameters before inference, with a different random seed for each experiment.
-We here report the results for each configuration for the two data sets, in addition to illustrations of the fitted GLMs.
+For each experiment, we fit $N=20$ models as in the other setups to each experiment, for each model type and loss function, pseudorandomly and uniformly initialising the model parameters before inference, with a different random seed for each experiment.
+We here report the results for each configuration for the two data sets, in addition to illustrations of the fitted GLMs (figures \ref{fig:stimulus_response_filters}, \ref{fig:glm_sample_cell_5_exp_5}).
 
 \begin{figure}
-    \includegraphics[width=1.1\columnwidth]{figures/sleep/plot1_cell5_pdf.eps}
+    \centering
+    \vspace{-0.1in}
+    \includegraphics[width=0.9\linewidth]{figures/sleep/plot_1_cell_5_subplot.png}
+    \vspace{-0.1in}
     \caption{Response filters for the GLM, here fitted to experiment 5 data, with corresponding sample node filters shown in figure \ref{fig:glm_sample_cell_5_exp_5}.}
+    \label{fig:stimulus_response_filters}
 \end{figure}
 
 \begin{figure}
@@ -1710,8 +1718,11 @@ We here report the results for each configuration for the two data sets, in addi
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\columnwidth]{figures/sleep/approx_rate_across_exp_microGIF_bernoulli_nll_vs_fitted.eps}
-    \includegraphics[width=0.49\columnwidth]{figures/sleep/approx_rate_across_exp_microGIF_poisson_nll_vs_fitted.eps}
+    \vspace{-0.1in}
+    \includegraphics[width=0.65\columnwidth]{figures/sleep/approx_rate_across_exp_microGIF_bernoulli_nll_vs_fitted.eps}
+    \vspace{-0.1in}
+    \includegraphics[width=0.65\columnwidth]{figures/sleep/approx_rate_across_exp_microGIF_poisson_nll_vs_fitted.eps}
+    \vspace{-0.1in}
     \caption{Inferred model firing rates per data set for the SGIF model, using white noise with a fixed rate as input perturbation, Bernoulli NLL (top), and Poisson NLL (bottom).}
     \label{fig:approx_rates_sleep_exps_SGIF}
 \end{figure}
@@ -1719,8 +1730,11 @@ We here report the results for each configuration for the two data sets, in addi
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\columnwidth]{figures/sleep/ACs138.eps}
-    \includegraphics[width=0.49\columnwidth]{figures/sleep/ACs_SGIF_exp5_fit_bernoulli_nll_2.eps}
+    \vspace{-0.1in}
+    \includegraphics[width=0.8\columnwidth]{figures/sleep/ACs138.eps}
+    \vspace{-0.1in}
+    \includegraphics[width=0.65\columnwidth]{figures/sleep/ACs_SGIF_exp5_fit_bernoulli_nll_2.eps}
+    \vspace{-0.1in}
     \caption{Activation coefficients (ACs) (second axis) by time in seconds (first axis) for experiment 5 for the target (left), and SGIF fitted model (right), using the Bernoulli NLL as the loss metric.}
     \label{fig:ACs_exp5}
 \end{figure}
@@ -1742,8 +1756,8 @@ We here report the results for each configuration for the two data sets, in addi
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.49\columnwidth]{figures/sleep/ACs147.eps}
-    \includegraphics[width=0.49\columnwidth]{figures/sleep/ACs_nuovo_sleep_v2_spikes_mt_microGIF_euid_12-29_02-12-29-631_exp_6_lfn_poisson_nll.eps}
+    \includegraphics[width=0.8\columnwidth]{figures/sleep/ACs147.eps}
+    \includegraphics[width=0.65\columnwidth]{figures/sleep/ACs_nuovo_sleep_v2_spikes_mt_microGIF_euid_12-29_02-12-29-631_exp_6_lfn_poisson_nll.eps}
     \caption{ACs (second axis) by time in seconds (first axis) for experiment 7 for the target (left), and SGIF model fit (right), using Poisson NLL minimisation.}
     \label{fig:ACs_exp7}
 \end{figure}
@@ -1763,8 +1777,8 @@ We here report the results for each configuration for the two data sets, in addi
     \label{fig:geodesic_distances_exp7}
 \end{figure}
 
-
-Interestingly, the results show that assuming a Poisson distribution and using this to optimise over the negative log-likelihood results in a significantly lower loss than when assuming a Bernoulli distribution: Student-T test (statistic=$9.87$, $p_{value}=6.23e^{-05}$).
+The results show that we may infer a model where the rates match fairly well for each neuron, \ref{fig:approx_rates_sleep_exps_SGIF}.
+Interestingly, the results also show that assuming a Poisson distribution and using this to optimise over the negative log-likelihood results in a significantly lower loss than when assuming a Bernoulli distribution: Student-T test (statistic=$9.87$, $p_{value}=6.23e^{-05}$).
 This is in contrast to the work on synthetic target data, in which the best performance was attained by assuming a Bernoulli distribution when optimising over the NLL.
 One possible explanation for this is that true biological data may be of a more complex nature, which is better described by a Poisson- rather than a Bernoulli-assumption.
 % Elaborate more?
